@@ -1,0 +1,724 @@
+/* ============================================================================
+
+   全站按钮 / 滑块 / 卡片圆角 统一规范（2026-09-23）
+
+   背景：各页（原厂内联页 + 自研页）历史上各写各的按钮样式，实测圆角有
+
+         3px / 6px / 7px / 8px / 9px / 10px / 25px 七种，主色有 rgb(53,106,230)
+
+         与 rgb(37,99,235) 两种，底色有实白、实蓝、实绿……五花八门。
+
+   规范：① 圆角与卡片一致（16px）
+
+         ② 一套配色：主色 #376cf4，字色 #3d5878，全部半透明底（能透出背景）
+
+         ③ 滑块统一胶囊形
+
+   本文件在 index.html 里最后加载，样式带 !important，用于压过各页历史规则。
+
+   ============================================================================ */
+
+
+
+:root {
+
+  --ui-radius: 16px;
+
+  --ui-blue: #376cf4;
+
+  --ui-ink: #3d5878;
+
+  --ui-mute: #8b9ab0;
+
+  --ui-line: rgba(125, 148, 185, .32);   /* 按钮勾线：原来是白色描边，落在浅色卡片上看不出边界 */
+
+  --ui-fill: rgba(255, 255, 255, .5);
+
+  --ui-fill-hover: rgba(255, 255, 255, .74);
+
+}
+
+
+
+/* ---------- ① 卡片圆角统一 ---------- */
+
+.stat-card,
+
+.info-card,
+
+.setting-card,
+
+.frame-card,
+
+.limits-panel,
+
+.devices-overview,
+
+.air-inner .stats-box,
+
+.air-inner .setting-group,
+
+.air-charge-card,
+
+.air-charge-form-box,
+
+.air-charge-stat-item,
+
+.air-charge-field-row,
+
+.air-inner .parsed-details,
+
+.air-inner .toast,
+
+.radar-analysis-box,
+
+.radar-ap-section {
+
+  border-radius: var(--ui-radius) !important;
+
+}
+
+
+
+/* ---------- ② 按钮：统一圆角 + 一套透明配色 ---------- */
+
+.btn,
+
+.air-inner .btn,
+
+.air-charge-btn-save,
+
+.air-charge-btn,
+
+.pwd-save,
+
+.logout-btn,
+
+.dialog-btn,
+
+.radar-scan-btn,
+
+.radar-tab-btn,
+
+.btn-auto-switch,
+
+.text-link {
+
+  border-radius: var(--ui-radius) !important;
+
+  background: var(--ui-fill) !important;
+
+  border: 1px solid var(--ui-line) !important;
+
+  color: var(--ui-ink) !important;
+
+  box-shadow: none !important;
+
+  transition: background .16s ease, border-color .16s ease, transform .16s ease;
+
+}
+
+
+
+.btn:hover,
+
+.air-inner .btn:hover,
+
+.air-charge-btn-save:hover,
+
+.pwd-save:hover,
+
+.logout-btn:hover,
+
+.dialog-btn:hover,
+
+.radar-scan-btn:hover,
+
+.radar-tab-btn:hover,
+
+.btn-auto-switch:hover {
+
+  background: var(--ui-fill-hover) !important;
+
+  border-color: rgba(125, 148, 185, .5) !important;
+
+  transform: translateY(-1px);
+
+}
+
+
+
+.btn:active,
+
+.air-inner .btn:active,
+
+.radar-scan-btn:active,
+
+.btn-auto-switch:active,
+
+.dialog-btn:active {
+
+  transform: scale(.97) !important;
+
+}
+
+
+
+/* 主按钮：同一支蓝，半透明底 */
+
+.btn.primary,
+
+.btn-primary,
+
+.pwd-save,
+
+.radar-scan-btn,
+
+.btn-auto-switch {
+
+  background: rgba(55, 108, 244, .14) !important;
+
+  border-color: rgba(55, 108, 244, .3) !important;
+
+  color: var(--ui-blue) !important;
+
+}
+
+.btn.primary:hover,
+
+.pwd-save:hover,
+
+.radar-scan-btn:hover,
+
+.btn-auto-switch:hover {
+
+  background: rgba(55, 108, 244, .22) !important;
+
+  border-color: rgba(55, 108, 244, .42) !important;
+
+}
+
+
+
+/* 次要 / 警示 / 危险：同样半透明，只换色相 */
+
+.btn-warning,
+
+.air-inner .btn-warning {
+
+  background: rgba(55, 108, 244, .1) !important;
+
+  border-color: rgba(55, 108, 244, .26) !important;
+
+  color: var(--ui-blue) !important;
+
+}
+
+.btn-danger,
+
+.air-inner .btn-danger,
+
+.air-charge-btn-danger {
+
+  background: rgba(194, 100, 112, .12) !important;
+
+  border-color: rgba(194, 100, 112, .3) !important;
+
+  color: #b05c68 !important;
+
+}
+
+
+
+/* 选中态 / 禁用态 */
+
+.radar-tab-btn.active {
+
+  background: rgba(55, 108, 244, .18) !important;
+
+  border-color: rgba(55, 108, 244, .38) !important;
+
+  color: var(--ui-blue) !important;
+
+}
+
+.btn:disabled,
+
+.btn-disabled,
+
+.air-inner .btn-disabled,
+
+.air-inner .btn:disabled {
+
+  background: rgba(240, 243, 248, .45) !important;
+
+  border-color: rgba(255, 255, 255, .6) !important;
+
+  color: var(--ui-mute) !important;
+
+  box-shadow: none !important;
+
+  opacity: 1 !important;
+
+}
+
+
+
+/* ---------- ③ 滑块 / 开关：胶囊形，配色与按钮同源 ---------- */
+
+.toggle-slider,
+
+.slider,
+
+.switch,
+
+.toggle-switch {
+
+  border-radius: 999px !important;
+
+}
+
+.toggle-slider,
+
+.slider {
+
+  background: rgba(222, 230, 242, .72) !important;
+
+}
+
+input:checked + .toggle-slider,
+
+input:checked + .slider {
+
+  background: rgba(55, 108, 244, .55) !important;
+
+}
+
+.toggle-slider:before,
+
+.slider:before {
+
+  box-shadow: 0 1px 3px rgba(38, 61, 100, .16) !important;
+
+}
+
+
+
+/* ---------- ⑤ 电池页「阈值/开关」四行：padding 与对齐统一 ----------
+
+   实测第一行是 12px 14px、后三行是 14px 0 → 文字左边距差 14px、宽窄也不一。
+
+   统一成同一套内边距，四行的标题/描述/控件左边距与行间距就一致了。 */
+
+.air-charge-field-row {
+
+  padding: 12px 14px !important;
+
+  gap: 14px !important;
+
+  align-items: center !important;
+
+}
+
+.air-charge-field-info {
+
+  flex: 1 1 auto !important;
+
+  min-width: 0 !important;
+
+}
+
+
+
+/* ---------- ④ 输入框 / 下拉：跟着同一套圆角与透明底 ---------- */
+
+.air-inner input[type="text"],
+
+.air-inner input[type="password"],
+
+.air-inner input[type="number"],
+
+.air-inner select,
+
+.layui-input,
+
+.layui-textarea,
+
+.air-charge-input {
+
+  border-radius: var(--ui-radius) !important;
+
+  background: rgba(255, 255, 255, .5) !important;
+
+  border: 1px solid rgba(255, 255, 255, .78) !important;
+
+  color: var(--ui-ink) !important;
+
+}
+
+.air-inner input:focus,
+
+.air-inner select:focus,
+
+.layui-input:focus,
+
+.air-charge-input:focus {
+
+  border-color: rgba(55, 108, 244, .45) !important;
+
+  background: rgba(255, 255, 255, .66) !important;
+
+}
+
+
+
+/* ---------- ⑥ 输入框：补一条浅边界线 ----------
+
+   上面 ④ 用的是白色描边，落在浅色卡片上等于没有边界（用户："输入框要有浅边界线"）。
+
+   这里统一换成可见但不刺眼的浅灰蓝。 */
+
+.air-inner input[type="text"],
+
+.air-inner input[type="password"],
+
+.air-inner input[type="number"],
+
+.air-inner select,
+
+.layui-input,
+
+.layui-textarea,
+
+.air-charge-input,
+
+.device-limits input {
+
+  border: 1px solid rgba(125, 148, 185, .32) !important;
+
+}
+
+
+
+/* ---------- ⑦「当前生效」的模式按钮：给选中色 ----------
+
+   SIM 卡切换 / 网络模式切换里，代表"当前正在用"的那个按钮是 disabled 的，
+
+   统一成灰底后完全看不出哪个是选中的（用户："不然不好区分是否选中"）。
+
+   给这一组单独一套选中色：蓝底 + 蓝字 + 加粗。 */
+
+#clashweb-section .btn-disabled,
+
+#clashweb-section .btn:disabled,
+
+#clashweb-section .setting-group .btn[disabled] {
+
+  background: rgba(55, 108, 244, .18) !important;
+
+  border-color: rgba(55, 108, 244, .38) !important;
+
+  color: #376cf4 !important;
+
+  font-weight: 600 !important;
+
+}
+
+
+
+/* ---------- ⑧「保存 / 应用」类按钮：统一主色 ----------
+
+   Wi-Fi 设置页的保存按钮原先和普通按钮一样是白底（用户："保存按钮也要有颜色"）。
+
+   ⚠️ 选择器必须够"具体"：`[id^="apply-"]` 只是属性选择器(0,1,0)，
+
+   会被各页的 `#xxx-section .btn`(1,1,0) 和 `.air-inner .btn`(0,2,0) 压过 ——
+
+   所以这里按页分别用 id 前缀、并保留 .air-inner 前缀的写法。 */
+
+#usbmodeweb-section [id^="apply-"],
+
+#tfcweb-section [id^="apply-"],
+
+#clashweb-section [id^="apply-"],
+
+#chargeweb-section [id^="apply-"],
+
+#clashui-section [id^="apply-"],
+
+#devices-section [id^="apply-"],
+
+#dashboard-section [id^="apply-"],
+
+.air-inner [id^="apply-"],
+
+.air-inner .air-charge-btn-save,
+
+.air-inner .pwd-save,
+
+.air-charge-btn-save,
+
+.pwd-save {
+
+  background: rgba(55, 108, 244, .15) !important;
+
+  border-color: rgba(55, 108, 244, .34) !important;
+
+  color: #376cf4 !important;
+
+  font-weight: 600 !important;
+
+}
+
+#usbmodeweb-section [id^="apply-"]:hover,
+
+#chargeweb-section [id^="apply-"]:hover,
+
+#tfcweb-section [id^="apply-"]:hover,
+
+#clashui-section [id^="apply-"]:hover,
+
+.air-inner [id^="apply-"]:hover,
+
+.air-inner .air-charge-btn-save:hover,
+
+.air-inner .pwd-save:hover {
+
+  background: rgba(55, 108, 244, .24) !important;
+
+  border-color: rgba(55, 108, 244, .46) !important;
+
+}
+
+#usbmodeweb-section [id^="apply-"]:disabled,
+
+.air-inner [id^="apply-"]:disabled {
+
+  background: rgba(55, 108, 244, .1) !important;
+
+  border-color: rgba(55, 108, 244, .22) !important;
+
+  color: rgba(55, 108, 244, .7) !important;
+
+}
+
+
+
+/* ---------- ⑨ 滑块：统一成清晰实色 ----------
+
+   上一版只覆盖了 .toggle-slider / .slider（半透明底 → 发"雾"），
+
+   而电池页用的是 .air-charge-slider（实色 #cbd5e1 / #376cf4）没被覆盖 → 两边观感不一致。
+
+   现在全部按"清晰"的那一套统一：关=浅灰实色，开=主色实色，滑块头=白。 */
+
+.toggle-slider,
+
+.slider,
+
+.air-charge-slider {
+
+  background: #cbd5e1 !important;
+
+}
+
+input:checked + .toggle-slider,
+
+input:checked + .slider,
+
+.air-charge-switch input:checked + .air-charge-slider {
+
+  background: #376cf4 !important;
+
+}
+
+.toggle-slider:before,
+
+.slider:before,
+
+.air-charge-slider:before {
+
+  background: #fff !important;
+
+}
+
+
+
+/* ---------- ⑩ 雷达「2.4 / 5 GHz」频段切换按钮：删掉外面那圈框 ----------
+
+   它原本就是 border:0 的无框小标签，是我统一按钮时给它补了白描边。 */
+
+.radar-tab-btn,
+
+.radar-tab-btn:hover,
+
+.radar-tab-btn.active {
+
+  border: 0 !important;
+
+  box-shadow: none !important;
+
+}
+
+
+
+/* ---------- ⑪ Wi-Fi 设置卡片独占一行 ----------
+
+   雷达卡已经整行，上面那张「Wi-Fi 设置」卡仍是半宽、右边空着。 */
+
+#usbmodeweb-section .container > .setting-group {
+
+  grid-column: 1 / -1;
+
+}
+
+
+/* ---------- ⑫ 消息提示框（toast）：恢复「顶部居中」 ----------
+   全局 air-inner.css 里的 .air-inner .toast 本来是 left:50% + translate(-50%) 居中的；
+   但上一轮为消除同名 id 冲突，把三个页的 .toast 改成了 #wifi-toast / #liu-toast / #toast，
+   id 选择器(1,0,0) 反过来压过了全局的 (0,2,0) —— 于是页级那套「全宽贴在顶上、左对齐」
+   的定位生效了，提示框整体靠左不再居中。这里按全局那套定位统一回来（只统一定位，
+   各页自己的成功/失败配色仍由各自的 #xxx-toast.error 等规则负责）。 */
+.air-inner .toast,
+#toast, #wifi-toast, #liu-toast,
+#sys-toast, .sys-toast {
+  position: fixed !important;
+  top: 12px !important;
+  left: 50% !important;
+  right: auto !important;
+  width: calc(100% - 32px) !important;
+  max-width: 520px !important;
+  transform: translate(-50%, -200%) !important;
+  border-radius: var(--ui-radius) !important;
+  padding: 12px 17px !important;
+  font-size: 12px !important;
+  box-sizing: border-box !important;
+  z-index: 10000 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+  transition: transform .25s cubic-bezier(.16,1,.3,1), opacity .2s ease, visibility .25s !important;
+}
+#toast.show, #wifi-toast.show, #liu-toast.show,
+#sys-toast.show, .sys-toast.show {
+  transform: translate(-50%, 0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  box-shadow: 0 8px 22px rgba(20,40,70,.18) !important;
+}
+
+
+/* ---------- ⑬ 手机端侧边栏：默认收起 ----------
+   窄屏规则本来是 .sidebar{transform:translateX(-100%)}，但 .sidebar 自身挂着入场动画
+   animation:airSlideIn .5s … both —— 关键帧 to{transform:none} 经 fill:both 被算成
+   matrix(1,0,0,1,0,0)，而「动画层的 transform 优先级高于普通声明」，
+   于是 translateX(-100%) 永远被压住，侧边栏在手机上一直贴在屏内、盖住内容。
+   解法：窄屏下把入场动画关掉，收起/展开改由 transform 控制（桌面端保留入场动画）。 */
+@media (max-width: 900px) {
+  #sidebar {
+    animation: none !important;
+    transform: translateX(-100%) !important;
+    transition: transform .22s ease !important;
+  }
+  #sidebar.active {
+    transform: translateX(0) !important;
+  }
+}
+
+/* ---------- ⑭ 手机端 Wi-Fi 雷达 AP 列表响应式自适应 ----------
+   手机端视口较窄（<=600px）时，.radar-ap-item 单行双列展示信道、信号条和加密标签
+   容易触发横向溢出。在窄屏下将其调整为更紧凑的弹性布局，允许参数列适度换行对齐，
+   同时对 .table-scroll 容器开启丝滑 -webkit-overflow-scrolling: touch。 */
+@media (max-width: 600px) {
+  .radar-ap-item {
+    flex-wrap: wrap !important;
+    gap: 6px 10px !important;
+    padding: 10px !important;
+  }
+  .radar-ap-col-info {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+  }
+  .radar-ap-col-params {
+    flex: 1 1 100% !important;
+    flex-wrap: wrap !important;
+    gap: 6px 8px !important;
+    white-space: normal !important;
+  }
+  .table-scroll {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+  }
+  .pwd-form {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .pwd-form input {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .pwd-save {
+    width: 100% !important;
+  }
+}
+
+/* ---------- ⑮ 电池充放电预估横幅与详细参数卡片 ---------- */
+.battery-estimate-banner {
+  margin: 14px 0 16px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(238, 244, 255, 0.8), rgba(245, 248, 255, 0.5));
+  border: 1px solid rgba(190, 210, 250, 0.6);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  transition: all 0.25s ease;
+}
+.battery-estimate-banner.is-charging {
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.85), rgba(240, 253, 244, 0.5));
+  border-color: rgba(167, 243, 208, 0.8);
+}
+.battery-estimate-banner.is-discharging {
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.85), rgba(245, 248, 255, 0.5));
+  border-color: rgba(191, 219, 254, 0.8);
+}
+.battery-estimate-banner.is-full {
+  background: linear-gradient(135deg, rgba(240, 253, 244, 0.85), rgba(248, 250, 252, 0.5));
+  border-color: rgba(187, 247, 208, 0.8);
+}
+.battery-estimate-icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.battery-estimate-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.battery-estimate-content small {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+.battery-estimate-content strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.2px;
+}
+.battery-estimate-banner.is-charging strong {
+  color: #059669;
+}
+.battery-estimate-banner.is-discharging strong {
+  color: #2563eb;
+}
+.battery-estimate-banner.is-full strong {
+  color: #10b981;
+}
+
+
+

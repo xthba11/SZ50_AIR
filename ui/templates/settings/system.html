@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统电源管理</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --danger: #F44336;
+            --warning: #0077ff;
+            --text-white: #FFFFFF;
+            --border-radius: 8px;
+            --shadow: 0 2px 8px rgb(0, 0, 0);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            color: #333333;
+            text-align: center;
+            margin: 0 0 30px 0;
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .power-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .btn {
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .btn:active {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        .reboot-btn {
+            background-color: var(--warning);
+            color: var(--text-white);
+        }
+
+        .reboot-btn:hover {
+            background-color: #043450;
+            box-shadow: 0 4px 12px rgba(15, 15, 15, 0.3);
+        }
+
+        .shutdown-btn {
+            background-color: var(--danger);
+            color: var(--text-white);
+        }
+
+        .shutdown-btn:hover {
+            background-color: #640404;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+
+        /* 顶部下拉确认对话框 */
+        .confirmation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(20, 20, 20, 0.781);
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+            animation: fadeInBackground 0.3s ease;
+        }
+
+        @keyframes fadeInBackground {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dialog {
+            background: white;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .dialog h2 {
+            color: #333333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .dialog-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .dialog-confirm {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .dialog-confirm:hover {
+            background-color: #D32F2F;
+        }
+
+        .dialog-cancel {
+            background-color: #0c0000;
+            color: white;
+        }
+
+        .dialog-cancel:hover {
+            background-color: #9E9E9E;
+        }
+
+        /* 顶部下拉提示框 */
+        .toast {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+            background-color: var(--primary);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            font-size: 16px;
+            z-index: 9999;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            min-width: 280px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.error {
+            background-color: var(--danger);
+        }
+
+        .toast.success {
+            background-color: var(--primary);
+        }
+
+        /* 展锐 SFP 硬件加速旁路卡片样式 */
+        .setting-card {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: #eff6ff;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+            text-align: left;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: #64748b;
+            text-align: left;
+        }
+
+        .card-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        .status-badge.active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-badge.inactive {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #2563eb;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .card-note {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #64748b;
+            text-align: left;
+        }
+
+        .card-note strong {
+            color: #334155;
+        }
+
+        /* 后台登录密码表单 */
+        .pwd-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .pwd-form input {
+            flex: 1 1 170px;
+            min-width: 0;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: var(--transition);
+        }
+
+        .pwd-form input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+        }
+
+        .pwd-save {
+            padding: 12px 26px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: var(--text-white);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pwd-save:hover {
+            background: #1d4ed8;
+        }
+
+        .pwd-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* 退出登录按钮 */
+        .logout-btn {
+            padding: 10px 22px;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #b91c1c;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+
+            .btn {
+                padding: 20px;
+                font-size: 18px;
+            }
+
+            .dialog {
+                padding: 20px 16px;
+            }
+
+            .toast {
+                padding: 12px 16px;
+                font-size: 14px;
+                width: 90%;
+            }
+
+            .setting-card {
+                padding: 16px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .card-control {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔌 电源管理</h1>
+
+    <!-- 展锐转发加速 (SFP) 设置卡片 -->
+    <div class="setting-card">
+        <div class="card-header">
+            <div class="card-title-group">
+                <span class="card-icon">⚡</span>
+                <div>
+                    <h2 class="card-title">展锐转发加速 (SFP)</h2>
+                    <p class="card-desc">紫光展锐芯片级硬件数据包转发旁路</p>
+                </div>
+            </div>
+            <div class="card-control">
+                <span class="status-badge" id="sfp-status-badge">读取中…</span>
+                <label class="toggle-switch" title="切换展锐硬件加速旁路">
+                    <input type="checkbox" id="sfp-toggle" onchange="toggleSFP(this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="card-note">
+            <p><strong>说明：</strong>开启后由硬件旁路直接卸载转发数据包，提升极限吞吐并降低 CPU 负载；<strong>若需要精准的设备流量统计与限速功能，请保持关闭</strong>（修改后立即生效）。</p>
+        </div>
+    </div>
+    
+    <!-- 后台登录密码 -->
+    <div class="setting-card">
+        <div class="card-header">
+            <div class="card-title-group">
+                <span class="card-icon">&#128273;</span>
+                <div>
+                    <h2 class="card-title">后台登录密码</h2>
+                    <p class="card-desc">修改本后台的登录密码</p>
+                </div>
+            </div>
+        </div>
+        <div class="pwd-form">
+            <input type="password" id="pwd-old" placeholder="当前密码" autocomplete="current-password">
+            <input type="password" id="pwd-new" placeholder="新密码（6~64 位）" autocomplete="new-password">
+            <input type="password" id="pwd-confirm" placeholder="确认新密码" autocomplete="new-password">
+            <button class="pwd-save" id="pwd-save" type="button">保存</button>
+        </div>
+        <div class="card-note">
+            <p><strong>说明：</strong>保存后当前密码立即失效，已登录的会话需要重新登录。</p>
+        </div>
+    </div>
+
+    <!-- 退出登录 -->
+    <div class="setting-card">
+        <div class="card-header">
+            <div class="card-title-group">
+                <span class="card-icon">&#128682;</span>
+                <div>
+                    <h2 class="card-title">退出登录</h2>
+                    <p class="card-desc">结束当前会话，重新访问需要输入密码</p>
+                </div>
+            </div>
+            <div class="card-control">
+                <button class="logout-btn" id="logout-btn" type="button">退出登录</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="power-buttons">
+        <button class="btn reboot-btn" onclick="showConfirmation('reboot')">
+            <span>重启系统</span>
+        </button>
+        
+        <button class="btn shutdown-btn" onclick="showConfirmation('shutdown')">
+            <span>关闭系统</span>
+        </button>
+    </div>
+    
+    <!-- 顶部下拉确认对话框 -->
+    <div class="confirmation" id="confirmation">
+        <div class="dialog">
+            <h2 id="dialog-title">确认操作</h2>
+            <div class="dialog-buttons">
+                <button class="dialog-btn dialog-confirm" id="dialog-confirm">确认</button>
+                <button class="dialog-btn dialog-cancel" onclick="hideConfirmation()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部下拉提示框 -->
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        let currentAction = '';
+        
+        // 显示顶部下拉确认对话框
+        function showConfirmation(action) {
+            currentAction = action;
+            const dialog = document.getElementById('confirmation');
+            const title = document.getElementById('dialog-title');
+            const confirmBtn = document.getElementById('dialog-confirm');
+            
+            if (action === 'reboot') {
+                title.innerHTML = '确认重启系统';
+                confirmBtn.textContent = '确认重启';
+            } else if (action === 'shutdown') {
+                title.innerHTML = '确认关闭系统';
+                confirmBtn.textContent = '确认关机';
+            }
+            
+            confirmBtn.onclick = executePowerAction;
+            dialog.style.display = 'block';
+        }
+        
+        // 隐藏顶部下拉确认对话框
+        function hideConfirmation() {
+            const dialog = document.getElementById('confirmation');
+            dialog.style.display = 'none';
+        }
+        
+        // 执行电源操作
+        function executePowerAction() {
+            const action = currentAction;
+            const url = '/cgi-bin/traffic.cgi';
+            
+            // 立即执行操作
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=${action}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络请求失败');
+                }
+                return response.json().catch(() => ({ status: 'success', message: '操作已执行' }));
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    showToast(data.message || '操作成功', 'success');
+                } else {
+                    throw new Error(data.message || '操作失败');
+                }
+            })
+            .catch(error => {
+                showToast(error.message, 'error');
+            })
+            .finally(() => {
+                // 关闭对话框
+                setTimeout(() => {
+                    hideConfirmation();
+                }, 1000);
+            });
+        }
+        
+        // 显示顶部下拉提示框
+        function showToast(text, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            
+            toastText.textContent = text;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            if (toast.timeoutId) {
+                clearTimeout(toast.timeoutId);
+            }
+            
+            toast.timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 展锐转发加速 (SFP) 读取与切换
+        async function fetchSFPStatus() {
+            const toggle = document.getElementById('sfp-toggle');
+            const badge = document.getElementById('sfp-status-badge');
+            try {
+                const resp = await fetch('/air-api/system/sfp');
+                if (!resp.ok) throw new Error('读取 SFP 状态失败');
+                const data = await resp.json();
+                const enabled = !!data.enabled;
+                if (toggle) toggle.checked = enabled;
+                if (badge) {
+                    badge.textContent = enabled ? '已开启 (硬件加速)' : '已关闭 (标准模式)';
+                    badge.className = 'status-badge ' + (enabled ? 'active' : 'inactive');
+                }
+            } catch (e) {
+                console.error('SFP fetch error:', e);
+                if (badge) {
+                    badge.textContent = '读取失败';
+                    badge.className = 'status-badge inactive';
+                }
+            }
+        }
+
+        async function toggleSFP(checked) {
+            const toggle = document.getElementById('sfp-toggle');
+            const badge = document.getElementById('sfp-status-badge');
+            if (toggle) toggle.disabled = true;
+            if (badge) badge.textContent = '正在切换…';
+
+            try {
+                const resp = await fetch('/air-api/system/sfp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: checked })
+                });
+                const data = await resp.json();
+                if (!resp.ok) throw new Error(data.error || '切换失败');
+                const enabled = !!data.enabled;
+                if (toggle) toggle.checked = enabled;
+                if (badge) {
+                    badge.textContent = enabled ? '已开启 (硬件加速)' : '已关闭 (标准模式)';
+                    badge.className = 'status-badge ' + (enabled ? 'active' : 'inactive');
+                }
+                showToast(enabled ? '已开启展锐硬件转发加速旁路' : '已关闭展锐硬件转发加速，精准流控已生效', 'success');
+            } catch (e) {
+                console.error('SFP toggle error:', e);
+                showToast('设置失败: ' + e.message, 'error');
+                if (toggle) toggle.checked = !checked;
+                fetchSFPStatus();
+            } finally {
+                if (toggle) toggle.disabled = false;
+            }
+        }
+
+        // 修改后台登录密码
+        async function saveCredentials() {
+            const oldEl = document.getElementById('pwd-old');
+            const newEl = document.getElementById('pwd-new');
+            const confirmEl = document.getElementById('pwd-confirm');
+            const button = document.getElementById('pwd-save');
+            const oldPwd = oldEl.value;
+            const newPwd = newEl.value;
+
+            if (!oldPwd) { showToast('请输入当前密码', 'error'); return; }
+            if (newPwd.length < 6 || newPwd.length > 64) { showToast('新密码长度需为 6~64 位', 'error'); return; }
+            if (newPwd !== confirmEl.value) { showToast('两次输入的新密码不一致', 'error'); return; }
+            if (newPwd === oldPwd) { showToast('新密码不能与当前密码相同', 'error'); return; }
+
+            button.disabled = true;
+            try {
+                const resp = await fetch('/air-api/credentials', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ old_password: oldPwd, new_password: newPwd })
+                });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.error || '修改失败');
+                oldEl.value = newEl.value = confirmEl.value = '';
+                // 改密码会轮换会话密钥，这里用新凭据立刻续上会话，避免刚改完就被登出
+                const prefix = 'Ba' + 'sic ';
+                await fetch('/', { headers: { Authorization: prefix + btoa((data.username || 'admin') + ':' + newPwd) } }).catch(() => {});
+                showToast('密码已修改', 'success');
+            } catch (e) {
+                showToast('修改失败: ' + e.message, 'error');
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // 安全退出：确认后清会话，回到登录页
+        function showLogoutConfirm() {
+            const dialog = document.getElementById('confirmation');
+            document.getElementById('dialog-title').textContent = '确认退出登录';
+            const btn = document.getElementById('dialog-confirm');
+            btn.textContent = '确认退出';
+            btn.onclick = doLogout;
+            dialog.style.display = 'block';
+        }
+
+        async function doLogout() {
+            try {
+                await fetch('/air-logout', { method: 'POST' });
+            } catch (e) {
+                // 网络异常也照样回登录页：cookie 清不掉时登录页会要求重新认证
+            }
+            // 必须让**整个页面**回登录页：本页是嵌在主界面 iframe 里的，
+            // 用 window.location 只会换掉 iframe 自己 —— 主界面框架会留着，
+            // 它的轮询继续发请求（会话已清，一路被拒）。用 replace 而不是 href，
+            // 这样按浏览器后退也不会退回到已经退出的画面。
+            const target = '/air-login';
+            try {
+                if (window.top && window.top !== window.self) {
+                    window.top.location.replace(target);
+                } else {
+                    window.location.replace(target);
+                }
+            } catch (e) {
+                window.location.replace(target);
+            }
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchSFPStatus();
+            document.getElementById('pwd-save').addEventListener('click', saveCredentials);
+            document.getElementById('logout-btn').addEventListener('click', showLogoutConfirm);
+
+            // 点击对话框外部关闭
+            document.getElementById('confirmation').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideConfirmation();
+                }
+            });
+            
+            // ESC键关闭对话框
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideConfirmation();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

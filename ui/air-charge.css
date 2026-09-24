@@ -1,0 +1,332 @@
+/* SZ50 AIR Smart Battery Protection & Charging Rule Styles */
+.air-charge-card {
+    margin-top: 22px;
+    background: linear-gradient(160deg, rgba(255,255,255,.74), rgba(255,255,255,.5));
+    border: 1px solid rgba(255,255,255,.82);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(35, 50, 80, 0.03);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+}
+
+.air-charge-card:hover {
+    box-shadow: 0 4px 18px rgba(55, 108, 244, 0.06);
+    border-color: #d4e1f5;
+}
+
+.air-charge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eef3fa;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.air-charge-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.air-charge-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #eaf1ff;
+    color: #376cf4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.air-charge-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #294260;
+    letter-spacing: -0.2px;
+}
+
+.air-charge-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.air-charge-badge.active {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.air-charge-badge.disabled {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.air-charge-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.active .air-charge-badge-dot {
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.disabled .air-charge-badge-dot {
+    background: #94a3b8;
+}
+
+/* 电池状态仪表排 */
+.air-charge-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.air-charge-stat-item {
+    background: #f8fafc;
+    border: 1px solid #edf2f8;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.air-charge-stat-label {
+    font-size: 12px;
+    color: #7188a9;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.air-charge-stat-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #294260;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.air-charge-stat-unit {
+    font-size: 13px;
+    font-weight: 500;
+    color: #7188a9;
+}
+
+/* 电池电量条 */
+.air-charge-bar-wrap {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+}
+
+.air-charge-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease, background 0.3s ease;
+    background: #10b981;
+}
+
+/* 保护策略设定表单 */
+.air-charge-form-box {
+    background: rgba(255,255,255,.5);
+    border: 1px solid #edf2f8;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+}
+
+.air-charge-field-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #f4f7fb;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.air-charge-field-row:last-child {
+    border-bottom: none;
+    padding-bottom: 4px;
+}
+
+.air-charge-field-row:first-child {
+    padding-top: 4px;
+}
+
+.air-charge-field-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #294260;
+}
+
+.air-charge-field-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #7188a9;
+    line-height: 1.4;
+}
+
+.air-charge-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.air-charge-input {
+    width: 90px;
+    height: 38px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #294260;
+    background: #fafcff;
+    border: 1px solid #dfe7f3;
+    border-radius: 10px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.air-charge-input:focus {
+    border-color: #376cf4;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(55, 108, 244, 0.15);
+}
+
+.air-charge-input-unit {
+    font-size: 13px;
+    font-weight: 600;
+    color: #7188a9;
+}
+
+/* 开关 Toggle */
+.air-charge-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.air-charge-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.air-charge-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 26px;
+}
+
+.air-charge-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.air-charge-switch input:checked + .air-charge-slider {
+    background-color: #376cf4;
+}
+
+.air-charge-switch input:checked + .air-charge-slider:before {
+    transform: translateX(22px);
+}
+
+/* 按钮与提示 */
+.air-charge-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.air-charge-btn-save {
+    background: #376cf4;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgba(55, 108, 244, 0.2);
+}
+
+.air-charge-btn-save:hover {
+    background: #2756d1;
+    box-shadow: 0 4px 12px rgba(55, 108, 244, 0.28);
+}
+
+.air-charge-btn-save:active {
+    transform: scale(0.97);
+}
+
+.air-charge-btn-save:disabled {
+    background: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.air-charge-msg {
+    font-size: 13px;
+    color: #526b8c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.air-charge-tip {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: rgba(255,251,235,.6);
+    border: 1px solid #fef3c7;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #92400e;
+    line-height: 1.6;
+}
+
+.air-charge-tip strong {
+    color: #78350f;
+}

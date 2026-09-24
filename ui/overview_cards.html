@@ -1,0 +1,23 @@
+<div class="cards-grid device-grid">
+
+ <article class="info-card"><div class="card-header"><div><div class="card-title">电池与供电</div></div></div>
+  <div class="device-highlights">
+    <div>
+      <small>供电状态</small>
+      <div class="charge-status-row">
+        <div class="battery-visual" id="battery-visual" aria-hidden="true">
+          <div class="battery-shell">
+            <div class="battery-core" id="battery-core"></div>
+            <div class="battery-bolt" id="battery-bolt"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 11-12h-7l2-8z"/></svg></div>
+          </div>
+          <div class="battery-terminal"></div>
+        </div>
+        <strong id="chargeStatus">--</strong>
+      </div>
+    </div>
+    <div><small>电池温度</small><strong id="battery-temp">--</strong></div>
+  </div>
+  <table class="info-table"><tr><td>电池健康</td><td id="battery-health">--</td></tr><tr><td>当前电压</td><td id="battery-voltage">--</td></tr><tr><td>当前电流</td><td id="currentNow">--</td></tr><tr><td>电池检测 / 供电在线</td><td id="battery-presence">--</td></tr></table>
+  <details class="device-details"><summary>更多参数</summary><table class="info-table"><tbody id="battery-details"></tbody></table></details>
+ </article>
+</div>

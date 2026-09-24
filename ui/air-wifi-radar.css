@@ -1,0 +1,534 @@
+/* Wi-Fi Radar & Spectrum Analyzer Styles */
+.wifi-radar-card {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: var(--radius, 16px);
+    padding: 22px 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.radar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.radar-title-box,
+.air-inner .setting-group.wifi-radar-card .radar-title-box {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.radar-title-box h2,
+.air-inner .setting-group.wifi-radar-card .radar-title-box h2,
+.air-inner .wifi-radar-card h2 {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.radar-badge-pulse,
+.air-inner .setting-group.wifi-radar-card .radar-badge-pulse {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    min-height: 8px !important;
+    background: #10b981 !important;
+    border-radius: 50% !important;
+    display: inline-block !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
+    animation: radarPulse 2s infinite ease-in-out !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    vertical-align: middle !important;
+}
+
+@keyframes radarPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.radar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.radar-band-tabs {
+    display: inline-flex;
+    background: #f1f5f9;
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.radar-tab-btn {
+    border: 0;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.radar-tab-btn.active {
+    background: #ffffff;
+    color: #2563eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.radar-scan-btn {
+    height: 28px;
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 7px;
+    background: #2563eb;
+    color: #ffffff;
+    border: 0;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.radar-scan-btn:hover {
+    background: #1d4ed8;
+}
+
+.radar-scan-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.radar-scan-status {
+    font-size: 11px;
+    color: #2563eb;
+    font-weight: 500;
+    padding: 6px 10px;
+    background: #eff6ff;
+    border-radius: 6px;
+    display: none;
+}
+
+/* Spectrum Canvas Box */
+.radar-chart-container {
+    position: relative;
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 4px 6px;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+#wifi-radar-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    cursor: crosshair;
+}
+
+/* Curve group styles & animation */
+.radar-curve-group {
+    transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.radar-curve-group.dimmed {
+    opacity: 0.15 !important;
+}
+
+.radar-curve-group.highlighted {
+    opacity: 1 !important;
+}
+
+.radar-curve-group.highlighted .radar-curve-path {
+    stroke-width: 3.2px !important;
+    stroke: #2563eb !important;
+    filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.5));
+}
+
+.radar-curve-group.highlighted .radar-curve-area {
+    fill-opacity: 0.45 !important;
+}
+
+.radar-curve-group.highlighted .radar-curve-dot {
+    r: 5px !important;
+    fill: #2563eb !important;
+    stroke: #ffffff !important;
+    stroke-width: 2px !important;
+}
+
+/* Interactive Channel Cursor & Tooltip */
+.radar-tooltip {
+    position: absolute;
+    display: none;
+    pointer-events: none;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.15), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    z-index: 99;
+    min-width: 180px;
+    max-width: 280px;
+    line-height: 1.4;
+    transition: transform 0.06s ease-out;
+}
+
+.radar-tip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 5px;
+    margin-bottom: 6px;
+}
+
+.radar-tip-ch {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.radar-tip-count {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.radar-tip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.radar-tip-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+    color: #334155;
+    padding: 2px 0;
+}
+
+.radar-tip-item.self {
+    color: #2563eb;
+    font-weight: 700;
+}
+
+.radar-tip-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.radar-tip-rssi {
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.radar-tip-item.self .radar-tip-rssi {
+    color: #2563eb;
+}
+
+/* Optimization Analysis Banner */
+.radar-analysis-box {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
+    border: 1px solid #dcfce7;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.radar-meta-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #334155;
+    flex-wrap: wrap;
+}
+
+.radar-meta-rec-line {
+    align-items: center;
+    margin-top: 2px;
+}
+
+.radar-meta-label {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.radar-rec-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #22c55e;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.radar-rec-score-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #16a34a;
+}
+
+.radar-rec-desc {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.btn-auto-switch {
+    border: 1px solid #16a34a;
+    background: #16a34a;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-left: auto;
+}
+
+.btn-auto-switch:hover {
+    background: #15803d;
+}
+
+.btn-auto-switch:disabled {
+    background: #cbd5e1;
+    border-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* Detected Hotspots List Section */
+.radar-ap-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 14px;
+}
+
+.radar-ap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.radar-ap-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.radar-ap-count-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 1px 7px;
+    border-radius: 12px;
+}
+
+.radar-ap-tip {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.radar-ap-list {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.radar-ap-list::-webkit-scrollbar {
+    width: 6px;
+}
+.radar-ap-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+/* Single-row, 2-column all-left-aligned item for each Wi-Fi */
+.radar-ap-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    text-align: left;
+}
+
+.radar-ap-item:last-child {
+    border-bottom: 0;
+}
+
+.radar-ap-item:hover, .radar-ap-item.active {
+    background: #f8fafc;
+}
+
+.radar-ap-item.active {
+    background: #eff6ff;
+    border-left: 3px solid #2563eb;
+}
+
+/* Column 1: SSID Info - Left aligned */
+.radar-ap-col-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 130px;
+    max-width: 140px;
+    min-width: 100px;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.radar-ap-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.radar-ap-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radar-ap-self-badge {
+    font-size: 10px;
+    font-weight: 700;
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Column 2: Parameters (CH, Signal, Full Crypto) - All Left aligned in single row */
+.radar-ap-col-params {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.radar-ap-col-ch {
+    font-size: 11px;
+    font-weight: 600;
+    color: #334155;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* 带宽徽标：与信道号同格显示，如 "CH 40 80M" */
+.radar-ap-bw-tag {
+    margin-left: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #2563eb;
+    background: #dbeafe;
+    padding: 1px 3px;
+    border-radius: 3px;
+    letter-spacing: 0.2px;
+}
+
+.radar-ap-rssi-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.radar-ap-mini-bar {
+    width: 36px;
+    height: 5px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.radar-ap-mini-fill {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.radar-ap-rssi-val {
+    font-size: 11px;
+    color: #64748b;
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.radar-ap-crypto-tag {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: #475569;
+    font-size: 11px;
+    font-family: monospace;
+    font-weight: 500;
+    white-space: nowrap;
+    text-align: left;
+    flex-shrink: 0;
+}

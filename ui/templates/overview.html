@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>SZ50 - Air</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <script src="./layui/layui.js"></script>
+    <script src="./index.js"></script>
+    <style>
+        /* 保持原有样式不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .layui-form-label {
+            width: auto;
+            padding: 9px 10px;
+        }
+        
+        /* 统一按钮样式 - 圆角风格 */
+        .layui-btn {
+            border-radius: 6px !important;
+            transition: all 0.2s ease;
+        }
+        
+        .layui-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        #atcommand-btns {
+            padding: 15px;
+        }
+        
+        #atcommand-btns button {
+            margin: 0 8px 8px 0;
+        }
+        
+        .signal-strength-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 4px;
+        }
+        
+        .signal-bar-container {
+            width: 100%;
+            height: 14px;
+            background-color: #e9ecef;
+            border-radius: 7px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .signal-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #409eff;
+            border-radius: 7px;
+            transition: all .3s ease;
+            position: absolute;
+            z-index: 10;
+        }
+        
+        .signal-text {
+            position: absolute;
+            z-index: 20;
+            width: 100%;
+            text-align: center;
+            line-height: 14px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .signal-bar-excellent {
+            background-color: #52c41a;
+        }
+        
+        .signal-bar-good {
+            background-color: #1890ff;
+        }
+        
+        .signal-bar-fair {
+            background-color: #faad14;
+        }
+        
+        .signal-bar-poor {
+            background-color: #ff4d4f;
+        }
+        
+        .network-type {
+            display: inline-flex;
+            align-items: center;
+            background: #f0f2f5;
+            border-radius: 16px;
+            padding: 2px;
+            font-size: 13px;
+        }
+        
+        .network-primary {
+            background: #409eff;
+            color: #fff;
+            padding: 1px 8px;
+            border-radius: 16px;
+            font-weight: 500;
+        }
+        
+        .network-secondary {
+            color: #409eff;
+            padding: 1px 8px;
+            font-weight: 400;
+        }
+        
+        .mobile-header {
+            display: none;
+            background-color: #409eff;
+            color: #fff;
+            padding: 12px 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .mobile-header h1 {
+            font-size: 17px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .mobile-menu-btn {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* 侧边栏样式 - 移动端和桌面端都默认隐藏 */
+        .sidebar {
+            position: fixed;
+            left: -200px;  /* 默认隐藏 */
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: 1px 0 2px rgba(0, 0, 0, .1);
+            transition: left .3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+        
+        .sidebar.active {
+            left: 0;  /* 激活时才显示 */
+        }
+        
+        .sidebar-header {
+            background-color: #409eff;
+            color: #fff;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .sidebar-header p {
+            font-size: 13px;
+            opacity: .9;
+        }
+        
+        .sidebar-footer {
+            position: fixed;
+            bottom: 10px;
+            width: 200px;
+            text-align: center;
+            color: #888;
+            padding: 8px 0;
+            background-color: #fff;
+            font-size: 12px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+        
+        .nav-menu li {
+            margin-bottom: 2px;
+        }
+        
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            transition: all .2s ease;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+        }
+        
+        .nav-menu a.active,
+        .nav-menu a:hover {
+            background: #f0f7ff;
+            border-left-color: #409eff;
+            color: #409eff;
+        }
+        
+        .nav-menu i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* 主内容区样式 - 桌面端居中80% */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            margin-left: 0;
+            padding: 15px;
+            transition: margin-left .3s ease;
+            width: 100%;
+        }
+        
+        /* 内容包装器 - 实现居中效果 */
+        .content-wrapper {
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .info-card {
+            background: #fff;
+            border-radius: 2px;
+            padding: 5px;
+            border: 1px solid #eee; /* 1px 边框，颜色为浅灰色 */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
+            color: #fff;
+        }
+        
+        .device-icon-card {
+            background-color: #409eff;
+        }
+        
+        .network-icon-card {
+            background-color: #52c41a;
+        }
+        
+        .temp-icon-card {
+            background-color: #fa8c16;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .info-table tr {
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .info-table td {
+            padding: 10px 0;
+            font-size: 13px;
+        }
+        
+        .info-table td:first-child {
+            color: #666;
+            font-weight: 400;
+            width: 40%;
+        }
+        
+        .info-table td:last-child {
+            color: #333;
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .network-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .network-table tr {
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .network-table tr:hover {
+            background-color: #fafafa;
+        }
+        
+        .network-table td,
+        .network-table th {
+            padding: 10px 5px;
+            text-align: center;
+        }
+        
+        .network-table th {
+            color: #666;
+            font-weight: 500;
+            background-color: #f9f9f9;
+        }
+        
+        .network-table td {
+            color: #333;
+            font-weight: 400;
+        }
+        
+        .signal-strength {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 400;
+        }
+        
+        .signal-excellent {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .signal-good {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .signal-fair {
+            background: #fffbe6;
+            color: #faad14;
+        }
+        
+        .signal-poor {
+            background: #fff2f0;
+            color: #ff4d4f;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .3);
+            z-index: 999;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .action-btn {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-btn:hover {
+            border-color: #409eff;
+            background-color: #f0f7ff;
+        }
+        
+        .action-btn i {
+            font-size: 20px;
+            color: #409eff;
+            margin-bottom: 6px;
+            display: block;
+        }
+        
+        .action-btn .action-btn-text {
+            padding: 5px 0 0 0;
+            font-size: 13px;
+            font-weight: 400;
+            color: #2383e2;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #409eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: block;
+            }
+            
+            .content-wrapper {
+                max-width: 100%;
+                padding: 0 5px;
+            }
+            
+            .main-content {
+                padding: 10px;
+                margin-top: 5px;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .info-card {
+                padding: 15px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .action-btn {
+                padding: 12px 8px;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+            
+            .network-table {
+                font-size: 12px;
+            }
+            
+            .network-table td, .network-table th {
+                padding: 8px 3px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .sidebar {
+                left: 0;  /* 桌面端默认展开 */
+            }
+            
+            .main-content {
+                margin-left: 200px;
+                padding: 20px;
+            }
+            
+            .overlay {
+                display: none !important;
+            }
+            .info-card {
+                border: 1px solid #eee; /* 强制1px边框 */
+                padding: 12px; /* 减小内边距（比桌面端更紧凑） */
+                box-shadow: 0 1px 2px rgba(0, 0, 0, .02); /* 弱化阴影 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 移动端头部 -->
+    <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            <i class="layui-icon layui-icon-spread-left"></i>
+        </button>
+        <h1>SZ50-Air</h1>
+    </div>
+
+    <div class="main-container">
+        <!-- 侧边栏导航 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>SZ50-Air</h2>
+            </div>
+            <ul class="nav-menu">
+                <li>
+                    <a href="#" onclick='showSection("dashboard")'>
+                        <i class="layui-icon layui-icon-console"></i>概况
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("clashweb")'>
+                        <i class="layui-icon layui-icon-release"></i>网络•卡槽
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("usbmodeweb")'>
+                        <i class="layui-icon layui-icon-release"></i>WiFi配置
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("timerebootweb")'>
+                        <i class="layui-icon layui-icon-log"></i>充电控制
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("tfcweb")'>
+                        <i class="layui-icon layui-icon-test"></i>流量控制
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("atweb")'>
+                        <i class="layui-icon layui-icon-set"></i>8080后台
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("terminalweb")'>
+                        <i class="layui-icon layui-icon-senior"></i>网页终端
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("atcommand")'>
+                        <i class="layui-icon layui-icon-code-circle"></i>改串•调试
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick='showSection("clashui")'>
+                        <i class="layui-icon layui-icon-set"></i>系统管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 遮罩层（移动端侧边栏切换用） -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                <!-- 概况模块 -->
+                <div id="dashboard-section">
+                    <div class="quick-actions">
+                        <div class="action-btn">
+                            <i class="layui-icon layui-icon-cellphone"></i>
+                            <div>SIM状态</div>
+                            <div class="action-btn-text" id="simStatus">--</div>
+                        </div>
+                        <div class="action-btn">
+                            <i class="layui-icon layui-icon-website"></i>
+                            <div>网络状态</div>
+                            <div class="action-btn-text" id="networkStatus">--</div>
+                        </div>
+                        <div class="action-btn">
+                            <i class="layui-icon layui-icon-engine"></i>
+                            <div>设备温度</div>
+                            <div class="action-btn-text" id="temperature">--</div>
+                        </div>
+                        <div class="action-btn">
+                            <i class="layui-icon layui-icon-wifi"></i>
+                            <div>信号强度</div>
+                            <div class="action-btn-text" id="RSRP">--</div>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid">
+                        <div class="info-card">
+                            <div class="card-header">
+                                <div class="card-icon device-icon-card">
+                                    <i class="layui-icon layui-icon-cellphone layui-font-24"></i>
+                                </div>
+                                <div class="card-title">设备信息</div>
+                            </div>
+                            <table class="info-table">
+                                <tr>
+                                    <td colspan="2" style="text-align: left; font-weight: bold; color: #666; padding: 8px 0 8px 0px;">
+                                        📱 基本信息
+                                    </td>
+                                </tr>
+                                <tr><td>WiFi状态</td><td id="wifiSwitchStatus">--</td></tr>
+                                <tr><td>WiFi频段</td><td id="wifiBand">--</td></tr>
+                                <tr><td>WiFi名称</td><td id="wifiSsid">--</td></tr>
+                                <tr><td>WiFi密码</td><td id="wifiPassword">--</td></tr>
+                                <tr><td>IMEI</td><td id="imei">--</td></tr>
+                                <tr><td>ICCID</td><td id="iccid">--</td></tr>
+                                <tr><td>运营商</td><td id="ISP">--</td></tr>
+                                <!-- 电池信息分隔行 -->
+                                <tr style="border-top: 2px solid #f0f0f0;">
+                                    <td colspan="2" style="text-align: left; font-weight: bold; color: #666; padding: 8px 0 8px 0px;">
+                                        🔋 电池信息
+                                    </td>
+                                </tr>
+                                <tr><td>电池电量</td><td id="batteryLevel">--</td></tr>
+                                <tr><td>充电状态</td><td id="chargeStatus">--</td></tr>
+                                <tr><td>当前电流</td><td id="currentNow">--</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="card-header">
+                                <div class="card-icon network-icon-card">
+                                    <i class="layui-icon layui-icon-website layui-font-24"></i>
+                                </div>
+                                <div class="card-title">网络信息</div>
+                            </div>
+                            <table class="info-table">
+                                <tr><td>网络类型</td><td id="technology"></td></tr>
+                                <tr><td>频段 BAND</td><td id="Band">--</td></tr>
+                                <tr><td>小区标识 PCI</td><td id="PCI">--</td></tr>
+                                <tr><td>频道编号 ARFCN</td><td id="ARFCN">--</td></tr>
+                                <tr>
+                                    <td>信号强度 RSRP</td>
+                                    <td>
+                                        <div class="signal-strength-container">
+                                            <div class="signal-bar-container">
+                                                <div class="signal-bar" id="rsrp-bar"></div>
+                                                <div class="signal-text" id="rsrp-quality"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>信号质量 RSRQ</td>
+                                    <td>
+                                        <div class="signal-strength-container">
+                                            <div class="signal-bar-container">
+                                                <div class="signal-bar" id="rsrq-bar"></div>
+                                                <div class="signal-text" id="rsrq-text">--</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>信噪比 SINR</td>
+                                    <td>
+                                        <div class="signal-strength-container">
+                                            <div class="signal-bar-container">
+                                                <div class="signal-bar" id="sinr-bar"></div>
+                                                <div class="signal-text" id="sinr-text">--</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr><td>优先级 QCI</td><td id="qci">--</td></tr>
+                                <tr><td>上行速率</td><td id="ul" style="color: #52c41a">--</td></tr>
+                                <tr><td>下行速率</td><td id="dl" style="color: #52c41a">--</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="card-header">
+                                <div class="card-icon temp-icon-card">
+                                    <i class="layui-icon layui-icon-engine layui-font-24"></i>
+                                </div>
+                                <div class="card-title">温度监控</div>
+                            </div>
+                            <table class="info-table" id="tempTableBody"></table>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid">
+                        <div class="info-card">
+                            <div class="card-header">
+                                <div class="card-icon" style="background-color:#722ed1">
+                                    <i class="layui-icon layui-icon-search layui-font-24"></i>
+                                </div>
+                                <div class="card-title">附近基站 <span id="technology2"></span></div>
+                            </div>
+                            <table class="network-table">
+                                <thead>
+                                    <tr>
+                                        <th>BAND <small>频段</small></th>
+                                        <th>ARFCN <small>频道</small></th>
+                                        <th>PCI <small>小区</small></th>
+                                        <th>RSRP <small>强度</small></th>
+                                        <th>RSRQ <small>质量</small></th>
+                                        <th>SINR <small>信噪比</small></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="networkTableBody">
+                                    <tr>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+<!-- AT命令模块 -->
+<div id="atcommand-section" style="display:none">
+    <div class="info-card">
+        <div>
+            <!-- 原有的AT命令输入部分保持不变 -->
+            <div style="margin-bottom:15px">
+                <!-- IMEI1 修改 -->
+                <div style="display:flex;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+                    <div style="width:70px;color:#666;font-size:13px">IMEI 1：</div>
+                    <input id="imei1Input" type="text" class="layui-input" 
+                           placeholder="请输入15位IMEI" 
+                           maxlength="15"
+                           style="width:170px;margin-right:10px;font-family:monospace">
+                    <button onclick="setImei(1)" class="layui-btn layui-btn-sm" style="background:#52c41a;color:white">修改</button>
+                </div>
+                
+                <!-- IMEI2 修改 -->
+                <div style="display:flex;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+                    <div style="width:70px;color:#666;font-size:13px">IMEI 2：</div>
+                    <input id="imei2Input" type="text" class="layui-input" 
+                           placeholder="请输入15位IMEI" 
+                           maxlength="15"
+                           style="width:170px;margin-right:10px;font-family:monospace">
+                    <button onclick="setImei(2)" class="layui-btn layui-btn-sm" style="background:#fa8c16;color:white">修改</button>
+                </div>
+                <br><br>
+                <div><label for="atCommandInput">AT命令：</label></div>
+                <br>
+                <div style="display:flex;align-items:center">
+                    <input id="atCommandInput" type="text" class="layui-input" lay-affix="clear" style="flex:1;max-width:350px;margin-right:10px">
+                    <button id="sendAtCommandBtn" class="layui-btn layui-btn-normal">发送</button>
+                </div>
+            </div>
+
+        <!--<div class="layui-form-item">
+                <div style="margin-bottom:10px;font-size:14px;color:#666">常用命令，点击快捷输入</div>
+                <div id="atcommand-btns">
+                    <button class="layui-btn layui-btn-primary">查询ICCID：AT+CCID</button>
+                    <button class="layui-btn layui-btn-primary">查询IMEI：AT+GSN</button>
+                    <button class="layui-btn layui-btn-primary">查询签约速率：AT+C5GQOSRDP</button>
+                </div>
+            </div>-->
+
+            <div style="margin:15px 0 0">
+                <label for="atCommandResponse">响应内容：</label>
+                <textarea id="atCommandResponse" class="layui-textarea" style="width:100%;height:500px;margin:10px 0 0" readonly="readonly"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <!-- 其他模块 -->
+                <div id="atweb-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="atweb" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="timerebootweb-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="timerebootweb" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tfcweb-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="tfcweb" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                        </div>
+                </div>
+
+                <div id="usbmodeweb-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="usbmodeweb" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                        </div>
+                </div>
+
+                <div id="clashweb-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="clashweb" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                        </div>
+                </div>
+
+                <div id="clashui-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="clashui" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                        </div>
+                </div>
+
+                <div id="terminalweb-section" style="display:none">
+                    <div class="info-card">
+                        <div>
+                            <iframe id="terminalweb" src="" width="100%" height="800px" border="0" marginwidth="0" marginheight="0" scrolling="auto" allowtransparency="yes" frameborder="0"></iframe>
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化iframe地址（基于当前页面IP）
+        const currentIp = window.location.hostname;
+        const url_8080 = `http://${currentIp}:8080`;
+        const url_9998 = `http://${currentIp}:80/html/sim.html`;
+        const url_clashui = `http://${currentIp}:80/html/system.html`;
+        const url_51887 = `http://${currentIp}:80/html/z50_air_wifi.html`;
+        const url_51886 = `http://${currentIp}:80/html/liuliang.html`;
+        const url_51888 = `http://${currentIp}:80/html/charger.html`;
+        const url_7681 = `http://${currentIp}:7681`;
+
+        // 绑定iframe地址
+        document.getElementById('atweb').src = url_8080;
+        document.getElementById('clashweb').src = url_9998;
+        document.getElementById('clashui').src = url_clashui;
+        document.getElementById('tfcweb').src = url_51886;
+        document.getElementById('usbmodeweb').src = url_51887;
+        document.getElementById('timerebootweb').src = url_51888;
+        document.getElementById('terminalweb').src = url_7681;
+
+        /**
+         * 切换侧边栏显示/隐藏
+         */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        /**
+         * 显示指定模块，隐藏其他模块
+         */
+        function showSection(sectionName) {
+            const sections = [
+                'dashboard', 'atcommand', 
+                'atweb', 'timerebootweb', 'tfcweb', 'usbmodeweb', 
+                'clashweb', 'clashui', 'terminalweb'
+            ];
+            
+            // 隐藏所有模块
+            sections.forEach(section => {
+                const element = document.getElementById(`${section}-section`);
+                if (element) element.style.display = 'none';
+            });
+            
+            // 显示目标模块
+            const targetSection = document.getElementById(`${sectionName}-section`);
+            if (targetSection) targetSection.style.display = 'block';
+            
+            // 移动端自动关闭侧边栏
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+            
+            // 更新导航选中状态
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            if (event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // 保存当前选中的模块
+            localStorage.setItem('currentSection', sectionName);
+        }
+
+        /**
+         * 窗口大小变化时，在桌面端自动关闭侧边栏
+         */
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+
+        // 页面加载时恢复上次选中的模块
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSection = localStorage.getItem('currentSection') || 'dashboard';
+            showSection(savedSection);
+        });
+
+        // 初始化Layui组件
+        layui.use(['element', 'form'], function() {
+            const element = layui.element;
+            const form = layui.form;
+            form.render();
+        });
+        // IMEI修改函数
+// IMEI修改函数
+function setImei(type) {
+    const inputId = type === 1 ? 'imei1Input' : 'imei2Input';
+    const imei = document.getElementById(inputId).value.trim();
+    
+    if (!imei || imei.length !== 15 || !/^\d+$/.test(imei)) {
+        layer.msg('请输入15位有效的IMEI号码', {icon: 2});
+        return;
+    }
+    
+    // 弹出确认提示框
+    layer.confirm(
+        '修改IMEI后必须重启设备才能生效！\n是否继续修改？',
+        {
+            title: '重要提示',
+            icon: 3,
+            btn: ['确认修改', '取消'] // 两个按钮
+        },
+        function(index) {
+            // 点击确认按钮的回调
+            const atCommand = `AT+SPIMEI=${type === 1 ? 0 : 2},"${imei}"`;
+            document.getElementById('atCommandInput').value = atCommand;
+            // 自动点击发送按钮
+            document.getElementById('sendAtCommandBtn').click();
+            
+            // 关闭提示框
+            layer.close(index);
+            
+            // 提示重启
+            layer.msg('IMEI修改命令已发送，请重启设备使修改生效', {icon: 1, time: 3000});
+        },
+        function(index) {
+            // 点击取消按钮的回调
+            layer.close(index); // 关闭提示框
+        }
+    );
+}
+    </script>
+
+<script>
+    // 完整的JavaScript代码，从8080端口获取所有信息，并添加WiFi状态显示
+const baseUrl = window.location.origin + '/';
+const wifiBaseUrl = 'http://' + window.location.hostname + ':80/'; // WiFi管理接口
+let socThmZoneValue = 0;
+let imei = '';
+let iccid = '';
+let hasAmbrData = false;
+let ambrRefreshInterval = 2000;
+
+layui.use(function() {
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+
+    let btns = document.querySelectorAll('#atcommand-btns button');
+    if (btns) {
+        btns.forEach(item => {
+            item.onclick = function() {
+                let atcmd = item.innerText.split('：')[1];
+                document.getElementById('atCommandInput').value = atcmd;
+            }
+        })
+    }
+
+    function fetchTempData() {
+        fetch(baseUrl + 'api/get/sysinfo').then((response) => response.json()).then((data) => {
+            if (data.Code === 0 && data.Data && data.Data.CPU_TEMP) {
+                const tempTableBody = document.getElementById('tempTableBody');
+                tempTableBody.innerHTML = '';
+                
+                // 处理CPU温度数据
+                data.Data.CPU_TEMP.forEach((temp, index) => {
+                    let tempValue = (temp / 1000).toFixed(2);
+                    let percent = Math.min(tempValue, 100);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>CPU${index}</td>
+                                <td><span class="temp-indicator">${tempValue}°C <div class="temp-bar"><div class="temp-fill" style="width: ${percent}%"></div></div></span></td>`;
+                    tempTableBody.appendChild(row);
+                    
+                    // 设置主要温度值
+                    if (index === 0) {
+                        socThmZoneValue = tempValue;
+                        document.getElementById('temperature').innerHTML = socThmZoneValue + ' °C';
+                    }
+                });
+            }
+        }).catch((error) => {
+            console.error('fetchTempData err', error);
+        });
+    }
+
+    function fetchNetwork() {
+        fetch(baseUrl + 'api/get/network').then((response) => response.json()).then((data) => {
+            if (data.Code !== 0 || !data.Data) {
+                return;
+            }
+            
+            let networks = data.Data.Network;
+            let networkTableBody = document.getElementById('networkTableBody');
+            networkTableBody.innerHTML = '';
+            
+            for (let network of networks) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${network.Band}</td><td>${network.ARFCN}</td><td>${network.PCI}</td><td>${network.RSRP}</td><td>${network.RSRQ}</td><td>${network.SINR}</td>`;
+                networkTableBody.appendChild(row);
+            }
+            
+            if (networks.length) {
+                document.getElementById('Band').innerHTML = networks[0].Band;
+                document.getElementById('ARFCN').innerHTML = networks[0].ARFCN;
+                document.getElementById('PCI').innerHTML = networks[0].PCI;
+                
+                const rsrpValue = networks[0].RSRP;
+                document.getElementById('RSRP').innerHTML = rsrpValue + ' dBm';
+                updateRSRPDisplay(rsrpValue);
+                
+                let rsrqPercent = calcPercent(networks[0].RSRQ, -19, -3);
+                document.getElementById('rsrq-text').innerText = networks[0].RSRQ;
+                document.getElementById('rsrq-bar').style.width = `${rsrqPercent}%`;
+                
+                let sinrPercent = calcPercent(networks[0].SINR, -13, 20);
+                document.getElementById('sinr-text').innerText = networks[0].SINR;
+                document.getElementById('sinr-bar').style.width = `${sinrPercent}%`;
+            }
+            
+            let technology = data.Data.Technology;
+            let technologyDisplay = '';
+            if (technology == 'lte') {
+                technologyDisplay = `<span class="network-type"><span class="network-primary">4G</span><span class="network-secondary">LTE</span></span>`;
+            } else if (technology == 'nr5g') {
+                technologyDisplay = `<span class="network-type"><span class="network-primary">5G</span><span class="network-secondary">NR</span></span>`;
+            } else {
+                technologyDisplay = `<span class="network-type"><span class="network-primary">${technology.toUpperCase()}</span></span>`;
+            }
+            
+            document.getElementById('technology').innerHTML = technologyDisplay;
+            document.getElementById('technology2').innerHTML = technologyDisplay;
+            
+        }).catch((error) => {
+            console.error('fetchNetwork err', error);
+        });
+    }
+
+    // 独立的签约信息获取函数
+    function fetchAmbrInfo() {
+        fetch(baseUrl + 'api/get/network').then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }).then((data) => {
+            if (data.Code === 0 && data.Data && data.Data.Cgeqosrdp) {
+                const ambr = data.Data.Cgeqosrdp;
+                const hasData = !!(ambr && ambr.Qci);
+                
+                // 更新签约信息显示
+                document.getElementById('qci').innerHTML = ambr.Qci || '--';
+                document.getElementById('dl').innerHTML = ambr.DL ? (ambr.DL / 1000 + ' Mbps') : '--';
+                document.getElementById('ul').innerHTML = ambr.UL ? (ambr.UL / 1000 + ' Mbps') : '--';
+                
+                if (ambr.Qci) {
+                    document.getElementById('networkStatus').innerHTML = `✓ 已联网`;
+                    hasAmbrData = true;
+                } else {
+                    document.getElementById('networkStatus').innerHTML = `<span style="color: #e74c3c">× 疑似断网</span>`;
+                    hasAmbrData = false;
+                }
+                
+                // 动态调整刷新频率
+                adjustAmbrRefreshRate(hasData);
+            } else {
+                hasAmbrData = false;
+                document.getElementById('networkStatus').innerHTML = `<span style="color: #e74c3c">× 无签约信息</span>`;
+                adjustAmbrRefreshRate(false);
+            }
+        }).catch((error) => {
+            console.log('fetchAmbrInfo err:', error);
+            hasAmbrData = false;
+            adjustAmbrRefreshRate(false);
+        });
+    }
+
+    // 调整签约信息刷新频率
+    function adjustAmbrRefreshRate(hasData) {
+        const newInterval = hasData ? 60000 : 2000;
+        
+        if (newInterval !== ambrRefreshInterval) {
+            ambrRefreshInterval = newInterval;
+            console.log(`签约信息刷新频率调整为: ${ambrRefreshInterval}ms`);
+            restartAmbrTimer();
+        }
+    }
+
+    // 重启签约信息定时器
+    function restartAmbrTimer() {
+        if (window.ambrTimer) {
+            clearInterval(window.ambrTimer);
+        }
+        window.ambrTimer = setInterval(fetchAmbrInfo, ambrRefreshInterval);
+    }
+
+    // 获取WiFi状态信息
+    function fetchWifiInfo() {
+        fetch(wifiBaseUrl + 'cgi-bin/traffic.cgi?action=get_wifi')
+            .then(response => {
+                if (!response.ok) throw new Error('WiFi信息获取失败');
+                return response.json();
+            })
+            .then(data => {
+                // 更新WiFi状态显示
+                updateWifiDisplay(data);
+            })
+            .catch(error => {
+                console.error('获取WiFi信息失败:', error);
+                // 显示错误状态
+                document.getElementById('wifiSwitchStatus').innerHTML = '--';
+                document.getElementById('wifiBand').innerHTML = '--';
+                document.getElementById('wifiSsid').innerHTML = '--';
+                document.getElementById('wifiPassword').innerHTML = '--';
+            });
+    }
+
+    // 更新WiFi状态显示
+    function updateWifiDisplay(wifiData) {
+        // WiFi开关状态
+        const wifiSwitchStatus = document.getElementById('wifiSwitchStatus');
+        if (wifiData.wifi_enabled === "on") {
+            wifiSwitchStatus.innerHTML = '<span style="color: #52c41a">✓ 已开启</span>';
+        } else {
+            wifiSwitchStatus.innerHTML = '<span style="color: #ff4d4f">× 已关闭</span>';
+        }
+
+        // WiFi频段
+        const wifiBand = document.getElementById('wifiBand');
+        if (wifiData.wifi_mode) {
+            wifiBand.innerHTML = wifiData.wifi_mode + "Hz";
+        } else {
+            wifiBand.innerHTML = '--';
+        }
+
+        // WiFi名称
+        const wifiSsid = document.getElementById('wifiSsid');
+        if (wifiData.wifi_ssid) {
+            wifiSsid.innerHTML = wifiData.wifi_ssid;
+        } else {
+            wifiSsid.innerHTML = '--';
+        }
+
+    // WiFi密码 - 改为默认显示
+    const wifiPassword = document.getElementById('wifiPassword');
+    if (wifiData.wifi_key && wifiData.wifi_key !== 'unknown') {
+        wifiPassword.innerHTML = wifiData.wifi_key;  // 直接显示密码
+        wifiPassword.setAttribute('data-password', wifiData.wifi_key);
+    } else {
+        wifiPassword.innerHTML = '未设置';
+        wifiPassword.removeAttribute('data-password');
+    }
+    }
+
+    // 系统信息获取 - 从8080端口获取电池信息
+    function fetchSysInfo() {
+        fetch(baseUrl + 'api/get/sysinfo').then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }).then((data) => {
+            if (data.Code === 0 && data.Data) {
+                const sysData = data.Data;
+                
+                // 电池电量信息
+                if (sysData.POWER_SUPPLY_CAPACITY) {
+                    document.getElementById('batteryLevel').innerHTML = sysData.POWER_SUPPLY_CAPACITY + '%';
+                }
+
+                // 充电状态
+                if (sysData.POWER_SUPPLY_STATUS) {
+                    let chargeStatus = sysData.POWER_SUPPLY_STATUS.trim();
+                    let statusText = '';
+                    let statusColor = '';
+                    
+                    if (chargeStatus === "Not charging") {
+                        statusText = '直供';
+                        statusColor = '#52c41a';
+                    } else if (chargeStatus === "Charging") {
+                        statusText = '充电中';
+                        statusColor = '#1890ff';
+                    } else if (chargeStatus === "Discharging") {
+                        statusText = '放电中';
+                        statusColor = '#faad14';
+                    } else if (chargeStatus === "Full") {
+                        statusText = '已充满';
+                        statusColor = '#722ed1';
+                    } else {
+                        statusText = chargeStatus;
+                        statusColor = '#666';
+                    }
+                    
+                    document.getElementById('chargeStatus').innerHTML = statusText;
+                    document.getElementById('chargeStatus').style.color = statusColor;
+                }
+
+                // 当前电流
+                if (sysData.POWER_SUPPLY_CURRENT_NOW) {
+                    let current = (sysData.POWER_SUPPLY_CURRENT_NOW / 1000).toFixed(0);
+                    document.getElementById('currentNow').innerHTML = current + ' mA';
+                    
+                    // 根据电流正负显示充电/放电状态
+                    if (current > 0) {
+                        document.getElementById('currentNow').style.color = '#1890ff';
+                    } else if (current < 0) {
+                        document.getElementById('currentNow').style.color = '#faad14';
+                    } else {
+                        document.getElementById('currentNow').style.color = '#52c41a';
+                    }
+                }
+
+                // 内存信息
+                if (sysData.totalram && sysData.freeram) {
+                    let totalMemoryMB = (sysData.totalram / (1024 * 1024)).toFixed(2);
+                    let freeMemoryMB = (sysData.freeram / (1024 * 1024)).toFixed(2);
+                    let memoryPercent = calcPercent(freeMemoryMB, 0, totalMemoryMB);
+                    document.getElementById('memory-text').innerHTML = `${freeMemoryMB} / ${totalMemoryMB} MB`;
+                    document.getElementById('memory-bar').style.width = `${memoryPercent}%`;
+                }
+            }
+        }).catch((error) => {
+            console.log('fetchSysInfo err:', error);
+        });
+    }
+
+    // AT命令发送
+    document.getElementById('sendAtCommandBtn').onclick = function() {
+        const commandInput = document.getElementById('atCommandInput').value;
+        const responseBox = document.getElementById('atCommandResponse');
+        if (commandInput === '') {
+            layer.msg('请输入一个 AT 命令！');
+            return;
+        }
+        
+        fetch(baseUrl + 'api/exec/atcmd', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Method: "execat",
+                Cmd: commandInput
+            }),
+        }).then((response) => response.json()).then((data) => {
+            if (data.Code === 0) {
+                responseBox.value = commandInput + '\n' + data.Data + '\n' + responseBox.value;
+            } else {
+                responseBox.value = commandInput + '\n错误: ' + data.Error + '\n' + responseBox.value;
+            }
+        }).catch((error) => {
+            console.error('Error sending AT command:', error);
+            responseBox.value = commandInput + '\n发送失败：' + error + '\n' + responseBox.value;
+        });
+    };
+
+    // 初始化加载
+    fetchTempData();
+    fetchNetwork();
+    fetchSysInfo();
+    fetchAmbrInfo();
+    fetchWifiInfo(); // 获取WiFi信息
+    getIMEI();
+    
+    // 设置定时器
+    setInterval(function() {
+        fetchTempData();
+        fetchNetwork();
+        fetchSysInfo();
+        fetchWifiInfo(); // 定期更新WiFi信息
+        if (!imei || !iccid) {
+            getIMEI();
+        }
+    }, 3000);
+    
+    // 启动签约信息定时器
+    restartAmbrTimer();
+    
+    setInterval(function() {
+        getIMEI();
+    }, 1000 * 60);
+});
+
+function calcPercent(value, min, max) {
+    value = Number(value);
+    min = Number(min);
+    max = Number(max);
+    if (min >= max) {
+        console.warn('calcPercent: 最小值必须小于最大值');
+        return 0;
+    }
+    if (value <= min) return 0;
+    if (value >= max) return 100;
+    return Math.round(((value - min) / (max - min)) * 100);
+}
+
+function updateRSRPDisplay(rsrpValue) {
+    const rsrp = parseInt(rsrpValue);
+    let percentage = calcPercent(rsrp, -120, -70);
+    let quality = '';
+    let qualityClass = '';
+    
+    if (percentage > 80) {
+        quality = '好';
+        qualityClass = 'signal-quality-excellent';
+    } else if (percentage > 60) {
+        quality = '较好';
+        qualityClass = 'signal-quality-good';
+    } else if (percentage >= 40) {
+        quality = '一般';
+        qualityClass = 'signal-quality-good';
+    } else if (percentage >= 20) {
+        quality = '较差';
+        qualityClass = 'signal-quality-fair';
+    } else {
+        quality = '极差';
+        qualityClass = 'signal-quality-poor';
+    }
+    
+    const barElement = document.getElementById('rsrp-bar');
+    const qualityElement = document.getElementById('rsrp-quality');
+    
+    if (barElement) {
+        barElement.style.width = `${percentage}%`;
+        barElement.classList.remove('signal-bar-excellent', 'signal-bar-good', 'signal-bar-fair', 'signal-bar-poor');
+        
+        if (percentage >= 80) {
+            barElement.classList.add('signal-bar-excellent');
+        } else if (percentage >= 60) {
+            barElement.classList.add('signal-bar-good');
+        } else if (percentage >= 40) {
+            barElement.classList.add('signal-bar-fair');
+        } else {
+            barElement.classList.add('signal-bar-poor');
+        }
+    }
+    
+    if (qualityElement) {
+        qualityElement.textContent = `${rsrpValue}dBm ${quality}`;
+        qualityElement.classList.remove('signal-quality-excellent', 'signal-quality-good', 'signal-quality-fair', 'signal-quality-poor');
+        qualityElement.classList.add(qualityClass);
+    }
+}
+
+function getIMEI() {
+    fetch(baseUrl + 'api/exec/atcmd', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            Method: "execat",
+            Cmd: "AT+CGSN"
+        }),
+    }).then((response) => response.json()).then((data) => {
+        if (data.Code === 0) {
+            imei = data.Data.replace(/[^\d]/g, '');
+            document.getElementById('imei').innerHTML = imei;
+            getICCID();
+        } else {
+            console.error('Error getIMEI:', data.Error);
+            getICCID();
+        }
+    }).catch((error) => {
+        console.error('Error getIMEI:', error);
+        getICCID();
+    });
+}
+
+
+function getICCID() {
+    fetch(baseUrl + 'api/exec/atcmd', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            Method: "execat",
+            Cmd: "AT+CCID"
+        }),
+    }).then((response) => response.json()).then((data) => {
+        if (data.Code === 0) {
+            let result = data.Data.match(/"([^"]*)"/);
+            if (result) {
+                iccid = result[1];
+                getISP(iccid);
+                document.getElementById('simStatus').innerHTML = '✓ 已插卡';
+            } else {
+                iccid = '';
+                document.getElementById('simStatus').innerHTML = '--';
+            }
+            document.getElementById('iccid').innerHTML = iccid;
+        } else {
+            console.error('Error getICCID:', data.Error);
+        }
+    }).catch((error) => {
+        console.error('Error getICCID:', error);
+    });
+}
+
+function getISP(iccid) {
+    if (iccid.startsWith('898600') || iccid.startsWith('898602') || iccid.startsWith('898604') || iccid.startsWith('898607')) {
+        document.getElementById('ISP').innerHTML = '中国移动';
+    } else if (iccid.startsWith('898601') || iccid.startsWith('898606') || iccid.startsWith('898609')) {
+        document.getElementById('ISP').innerHTML = '中国联通';
+    } else if (iccid.startsWith('898603') || iccid.startsWith('898611')) {
+        document.getElementById('ISP').innerHTML = '中国电信';
+    } else if (iccid.startsWith('898615')) {
+        document.getElementById('ISP').innerHTML = '中国广电';
+    } else {
+        document.getElementById('ISP').innerHTML = '未知';
+    }
+}
+</script>
+
+</body>
+</html>

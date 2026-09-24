@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/air-wifi-radar.css?v=2.26">
+    <style>
+        /* 保持原样式不变 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            height: auto;
+            min-height: 0;
+            overflow-y: visible;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: white;
+            padding: 10px 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #4CAF50;
+            padding-bottom: 8px;
+            width: 100%;
+        }
+        
+        .stats-box {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            width: 100%;
+        }
+        
+        .stats-box h2 {
+            margin: 0;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        .stats-content {
+            font-size: 13px;
+            line-height: 1.4;
+            width: 100%;
+        }
+        
+        .alert {
+            color: #d32f2f;
+            padding: 6px;
+            margin: 8px 0;
+            background-color: #ffebee;
+            border-radius: 3px;
+            font-size: 13px;
+            white-space: pre-line;
+        }
+        
+        .setting-group {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .setting-group h2 {
+            margin: 0 0 16px 0;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 9px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .btn-danger {
+            background-color: #f44336;
+        }
+        
+        .btn-warning {
+            background-color: #ff9800;
+        }
+        
+        .btn-disabled {
+            background-color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        
+        .btn:active {
+            opacity: 0.8;
+        }
+        
+        input[type="text"], input[type="password"], select {
+            flex: 1;
+            padding: 4px;
+            margin: 0 6px 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 12px;
+            min-width: 100px;
+        }
+        
+        .status {
+            display: inline-block;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .enabled {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .disabled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .control-group {
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .control-group.justify-between {
+            justify-content: space-between;
+        }
+        
+        .setting-label {
+            display: inline-block;
+            width: 80px;
+            text-align: left;
+            font-size: 13px;
+        }
+        
+        .status-value {
+            min-width: 100px;
+            display: inline-block;
+            text-align: left;
+            font-size: 13px;
+        }
+        
+        .refresh-timer {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .wifi-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234CAF50"><path d="M12 3C7.79 3 3.7 4.41.38 7 4.41 12.06 7.89 16.37 12 21.5c4.08-5.08 7.49-9.42 11.62-14.5C20.32 4.41 16.22 3 12 3zm0 2c3.07 0 6.09.86 8.71 2.45l-1.94 2.43C17.26 8.97 14.68 8 12 8s-5.26.97-7.77 2.88L2.29 7.45C4.91 5.86 7.93 5 12 5z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .wifi-icon.off {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23f44336"><path d="M12 3C7.79 3 3.7 4.41.38 7 4.41 12.06 7.89 16.37 12 21.5c4.08-5.08 7.49-9.42 11.62-14.5C20.32 4.41 16.22 3 12 3zm0 2c3.07 0 6.09.86 8.71 2.45l-1.94 2.43C17.26 8.97 14.68 8 12 8s-5.26.97-7.77 2.88L2.29 7.45C4.91 5.86 7.93 5 12 5z"/></svg>');
+        }
+        
+        .toast {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background-color: #a4eeba;
+            color: rgb(24, 24, 24);
+            padding: 8px 16px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+        }
+        
+        .toast.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .form-group {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+        }
+        
+        .form-group label {
+            display: inline-block;
+            width: 80px;
+            font-size: 13px;
+        }
+        
+        /* 移除密码显示/隐藏文字的样式 */
+        .show-password {
+            display: none;
+        }
+        
+        /* 按钮占位区域，用于对齐 */
+        .button-placeholder {
+            width: 50px;
+            visibility: hidden; /* 隐藏但保留空间 */
+        }
+        
+        /* 开关按钮样式 */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            margin-left: auto;
+            cursor: pointer;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* 频段模式显示样式 */
+        .mode-active-setting {
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .mode-inactive-setting {
+            color: #999;
+        }
+        
+        /* WiFi状态和频段显示样式 */
+        .wifi-status-display {
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .wifi-mode-display {
+            display: inline-block;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        /* 设置区域频段显示样式 */
+        .wifi-mode-setting {
+            font-size: 13px;
+        }
+
+        /* 密码显示/隐藏图标样式 */
+        .password-toggle-icon {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-left: auto;
+        }
+        
+        /* 密码显示容器 - 用于对齐控制 */
+        .password-display-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+            .air-inner #security-status, .air-inner #mode-status, .air-inner #channel-status { margin-left: 88px !important; }
+        @media (max-width: 440px) { .air-inner #security-status, .air-inner #mode-status, .air-inner #channel-status { margin-left: 0 !important; } }
+        .air-inner .setting-group.wifi-radar-card .radar-title-box { display: inline-flex !important; align-items: center !important; gap: 8px !important; margin: 0 !important; padding: 0 !important; line-height: 1 !important; }
+        .air-inner .setting-group.wifi-radar-card .radar-title-box h2 { margin: 0 !important; padding: 0 !important; line-height: 1 !important; font-size: 15px !important; display: inline-flex !important; align-items: center !important; }
+        .air-inner .setting-group.wifi-radar-card .radar-badge-pulse { width: 8px !important; height: 8px !important; min-width: 8px !important; min-height: 8px !important; margin: 0 !important; display: inline-block !important; vertical-align: middle !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="wifi-icon" id="wifi-icon"></span>WiFi管理</h1>
+        
+        <!-- 下面显示设置功能 -->
+        <div class="setting-group">
+            <h2>Wi-Fi 设置</h2><p id="settings-error" role="status" hidden>读取失败</p>
+            <div class="control-group">
+                <span class="setting-label">WiFi状态：</span>
+                <span id="wifi-status-text-setting" class="wifi-status-display">加载中...</span>
+                <div class="toggle-switch" id="toggle-wifi" role="button" tabindex="0" style="cursor:pointer;">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <span class="setting-label">WiFi频段：</span>
+                <span id="wifi-mode-setting" class="wifi-mode-setting">
+                    <span class="mode-active-setting">2.4G</span><span class="mode-inactive-setting">/5G</span>
+                </span>
+                <!-- 频段切换开关 -->
+                <div class="toggle-switch" id="switch-mode" role="button" tabindex="0" style="cursor:pointer;">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </div>
+            </div>
+            <p id="mode-status" role="status" style="margin:2px 0 6px;font-size:12px;line-height:1.4;color:#64748b"></p>
+            <!-- 第二行：SSID输入框，右侧添加按钮占位区域保持对齐 -->
+            <div class="form-group">
+                <label for="ssid-input">wifi名字：</label>
+                <input type="text" id="ssid-input" placeholder="输入WiFi名称">
+                <div class="button-placeholder">保存</div> <!-- 占位区域 -->
+            </div>
+            
+            <!-- 第三行：密码输入框，右边保存按钮 -->
+            <div class="form-group">
+                <label for="password-input">wifi密码：</label>
+                <input type="password" id="password-input" placeholder="输入WiFi密码">
+                <button class="btn" id="apply-settings">保存</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="security-select">加密方式：</label>
+                <select id="security-select"><option value="wpa2">WPA2（推荐）</option><option value="wpa">WPA（兼容）</option><option value="none">开放</option></select>
+                <button class="btn" id="apply-security" type="button" disabled>保存</button>
+            </div>
+            <p id="security-status" role="status" style="margin:4px 0 0;font-size:12px;line-height:1.4;color:#64748b"></p>
+            <!-- 第四行：信道输入框，右边保存按钮 -->
+            <div class="form-group">
+                <label for="channel-select">wifi信道：</label>
+                <select id="channel-select">
+                    <!-- 动态生成选项 -->
+                </select>
+                <button class="btn" id="apply-channel">保存</button>
+            </div>
+            <p id="channel-status" role="status" style="margin:2px 0 6px;font-size:12px;line-height:1.4;color:#64748b"></p>
+        </div>
+
+        <!-- 信道雷达与频域图谱 -->
+        <div class="setting-group wifi-radar-card">
+            <div class="radar-header">
+                <div class="radar-title-box">
+                    <span class="radar-badge-pulse"></span>
+                    <h2>信道雷达与频域图谱</h2>
+                </div>
+                <div class="radar-actions">
+                    <div class="radar-band-tabs">
+                        <button type="button" class="radar-tab-btn" id="radar-tab-24g">2.4 GHz</button>
+                        <button type="button" class="radar-tab-btn active" id="radar-tab-5g">5 GHz</button>
+                    </div>
+                    <button type="button" class="radar-scan-btn" id="btn-scan-radar">探测周围信道</button>
+                </div>
+            </div>
+
+            <div id="radar-scan-status" class="radar-scan-status"></div>
+
+            <div class="radar-chart-container">
+                <svg id="wifi-radar-svg" viewBox="0 0 640 260"></svg>
+                <div id="radar-tooltip" class="radar-tooltip"></div>
+            </div>
+
+            <div class="radar-analysis-box">
+                <div class="radar-meta-line">
+                    <span class="radar-meta-label">当前热点：</span>
+                    <b id="radar-cur-channel">读取中…</b>
+                    <span class="radar-cur-score-text" id="radar-cur-score" style="color:#64748b;font-size:12px;margin-left:6px;font-weight:600;"></span>
+                </div>
+                <div class="radar-meta-line radar-meta-rec-line">
+                    <span class="radar-meta-label">推荐最优：</span>
+                    <span class="radar-rec-badge" id="radar-rec-channel">—</span>
+                    <span class="radar-rec-score-text" id="radar-rec-score">（清洁度 —）</span>
+                    <button type="button" class="btn-auto-switch" id="btn-auto-switch-channel">⚡ 一键应用</button>
+                </div>
+                <p class="radar-rec-desc" id="radar-rec-reason">正在分析当前频段所有热点的同频与邻频重叠干扰…</p>
+            </div>
+
+            <!-- 周围热点分布清单（彻底解决重叠遮挡与文字看不清问题） -->
+            <div class="radar-ap-section">
+                <div class="radar-ap-header">
+                    <div class="radar-ap-title">
+                        <span>周围 Wi-Fi 信号明细</span>
+                        <span class="radar-ap-count-tag" id="radar-ap-count">0 个</span>
+                    </div>
+                    <div class="radar-ap-tip">悬停或点击热点条目，频域图中对应曲线将独占高亮</div>
+                </div>
+                <div class="radar-ap-list" id="radar-ap-list">
+                    <!-- 动态渲染热点卡片 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        // 页面加载时初始化数据
+        let currentData = {}; // 初始化数据对象
+        let refreshIntervalId; // 所有数据的刷新定时器
+        let settingsInitialized = false; // 标记设置区域是否已初始化
+
+        // 信道选项（5G 支持全信道包括 52-64：36, 40, 44, 48, 52, 56, 60, 64, 149, 153, 157, 161, 165）
+        const channels24G = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+        const channels5G = [36, 40, 44, 48, 52, 56, 60, 64, 149, 153, 157, 161, 165];
+        
+        window.onload = function() {
+            startRealTimeRefresh();
+            setupPasswordToggle();
+            setupToggleEvents();
+        };
+        
+        // 实时刷新所有数据
+        function startRealTimeRefresh() {
+            // 立即加载一次数据
+            loadWifiData();
+            
+            // 设置定时器，每2秒刷新一次所有数据
+            refreshIntervalId = setInterval(() => {
+                loadWifiData();
+            }, 2000);
+        }
+        
+        
+        function showModeStatus(text, state) {
+            const el = document.getElementById('mode-status');
+            if (!el) return;
+            el.textContent = text ? '[' + text + ']' : '';
+            el.style.color = state === 'success' ? '#15803d' : state === 'error' ? '#dc2626' : state === 'pending' ? '#ca8a04' : '#64748b';
+        }
+        function showChannelStatus(text, state) {
+            const el = document.getElementById('channel-status');
+            if (!el) return;
+            el.textContent = text ? '[' + text + ']' : '';
+            el.style.color = state === 'success' ? '#15803d' : state === 'error' ? '#dc2626' : state === 'pending' ? '#ca8a04' : '#64748b';
+        }
+
+        // 设置开关事件
+        function setupToggleEvents() {
+            // WiFi开关事件
+            const wifiToggle = document.getElementById('toggle-wifi');
+            const wifiInput = wifiToggle.querySelector('input');
+            let wifiBusy = false;
+
+            wifiToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (wifiBusy) return;
+
+                const currentlyOn = wifiInput.checked;
+                // 仅从开到关时提示安全警告；从关到开直接开启无需确认
+                if (currentlyOn) {
+                    if (!window.confirm("确定要关闭 Wi-Fi 吗？关闭后将无法通过 Wi-Fi 访问后台（需通过 USB 网络共享或重启设备恢复）。确定继续？")) {
+                        return; // 用户点击取消：什么都不做，开关保持开启状态
+                    }
+                }
+
+                wifiBusy = true;
+                wifiInput.disabled = true;
+                wifiToggle.style.opacity = '0.5';
+
+                const targetState = !currentlyOn;
+                fetch('/air-api/wifi/power', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ enable: targetState })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('操作失败');
+                    return response.json();
+                })
+                .then(data => {
+                    showToast(data.message || (targetState ? 'Wi-Fi 热点已开启' : 'Wi-Fi 热点已关闭'));
+                    wifiInput.checked = targetState;
+                    const wifiStatusText = document.getElementById('wifi-status-text-setting');
+                    const wifiIcon = document.getElementById('wifi-icon');
+                    if (targetState) {
+                        if (wifiStatusText) wifiStatusText.textContent = "已启用";
+                        if (wifiIcon) wifiIcon.className = "wifi-icon";
+                    } else {
+                        if (wifiStatusText) wifiStatusText.textContent = "已禁用";
+                        if (wifiIcon) wifiIcon.className = "wifi-icon off";
+                    }
+                })
+                .catch(error => {
+                    wifiInput.checked = currentlyOn;
+                    showToast('操作失败: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    wifiBusy = false;
+                    wifiInput.disabled = false;
+                    wifiToggle.style.opacity = '1';
+                });
+            });
+            
+            // 频段切换开关事件（2.4G <-> 5G 联动自动切换最优信道）
+            const modeToggle = document.getElementById('switch-mode');
+            const modeInput = modeToggle.querySelector('input');
+            let modeBusy = false;
+
+            modeToggle.addEventListener('click', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (modeBusy) return;
+
+                const isCurrently5G = modeInput.checked;
+                const targetMode = isCurrently5G ? "2.4G" : "5G";
+                
+                // 自动选择新频段的最优信道，不再保留旧频段信道
+                let targetChannel = (targetMode === "5G") ? 44 : 6;
+                if (window.radarData) {
+                    if (targetMode === "5G" && window.radarData.best_channel_5g) {
+                        targetChannel = window.radarData.best_channel_5g;
+                    } else if (targetMode === "2.4G" && window.radarData.best_channel_24g) {
+                        targetChannel = window.radarData.best_channel_24g;
+                    }
+                }
+
+                if (!window.confirm(`切换 Wi-Fi 频段至 ${targetMode}（将自动匹配信道 ${targetChannel}）会断开当前连接并重启热点。确定继续？`)) {
+                    return;
+                }
+
+                modeBusy = true;
+                modeInput.disabled = true;
+                modeToggle.style.opacity = '0.5';
+
+                showModeStatus(`正在切换至 ${targetMode}（信道 ${targetChannel}）…`, 'pending');
+                showToast(`正在切换至 ${targetMode} 频段（信道 ${targetChannel}）…`);
+
+                try {
+                    // 1. 同步通知固件 CGI 切换频段模式
+                    await fetch('/cgi-bin/traffic.cgi', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: `action=switch_wifi_mode&target_mode=${targetMode}`
+                    }).catch(() => {});
+
+                    // 2. 调用 /air-api/wifi/channel 直接写入 softap.ini 与 Connman 驱动硬件真切换
+                    const resp = await fetch('/air-api/wifi/channel', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ channel: targetChannel, mode: targetMode })
+                    });
+                    const resJson = await resp.json().catch(() => ({}));
+                    if (!resp.ok) throw new Error(resJson.error || '信道切换失败');
+
+                    modeInput.checked = (targetMode === "5G");
+                    const modeContainerSetting = document.getElementById('wifi-mode-setting');
+                    if (modeContainerSetting) {
+                        if (targetMode === "2.4G") {
+                            modeContainerSetting.innerHTML = '<span class="mode-active-setting">2.4G</span><span class="mode-inactive-setting">/5G</span>';
+                        } else {
+                            modeContainerSetting.innerHTML = '<span class="mode-inactive-setting">2.4G</span><span class="mode-active-setting">/5G</span>';
+                        }
+                    }
+
+                    // 动态更新信道下拉框选项并选中目标信道
+                    const channelSelect = document.getElementById('channel-select');
+                    if (channelSelect) {
+                        delete channelSelect.dataset.initialized;
+                        generateChannelSelect(targetMode, targetChannel);
+                        channelSelect.value = targetChannel;
+                        markChannelPending(targetChannel);
+                    }
+
+                    showModeStatus('已生效', 'success');
+                    if (typeof showChannelStatus === 'function') {
+                        showChannelStatus(`已同步切换至信道 ${targetChannel}`, 'success');
+                    }
+                    showToast(`频段已切换至 ${targetMode}，信道已自动切为 ${targetChannel}`);
+
+                    // 重新探测雷达刷新界面
+                    if (typeof window.fetchRadarData === 'function') {
+                        setTimeout(() => window.fetchRadarData(true), 2500);
+                    }
+                    setTimeout(() => {
+                        settingsInitialized = false;
+                    }, 3000);
+                } catch (error) {
+                    const message = '切换失败: ' + error.message;
+                    showModeStatus(message, 'error');
+                    showToast(message, 'error');
+                } finally {
+                    modeBusy = false;
+                    modeInput.disabled = false;
+                    modeToggle.style.opacity = '1';
+                }
+            });
+        }
+        
+        // 设置密码自动显示/隐藏功能
+        function setupPasswordToggle() {
+            // 设置区域的密码输入框：聚焦时显示密码，失焦时隐藏
+            const passwordInput = document.getElementById('password-input');
+            
+            passwordInput.addEventListener('focus', function() {
+                this.type = 'text';
+            });
+            
+            passwordInput.addEventListener('blur', function() {
+                this.type = 'password';
+            });
+        }
+        
+        // 加载WiFi数据
+        function loadWifiData() {
+            Promise.all([
+                fetch('/cgi-bin/traffic.cgi?action=get_wifi').then(r => r.ok ? r.json() : {}).catch(() => ({})),
+                fetch('/air-api/wifi/power').then(r => r.ok ? r.json() : {}).catch(() => ({}))
+            ]).then(([data, pwr]) => {
+                if (pwr && typeof pwr.enabled === 'boolean') {
+                    data.wifi_enabled = pwr.enabled ? 'on' : 'off';
+                }
+                // 信道/频段以网关实测的射频真值为准：原厂 CGI 的 wifi_channel 与 connman 属性都是滞后值，
+                // 切换信道后它们不会跟着变（实测一直返回旧值），拿它们渲染会让下拉框与实际射频不符。
+                if (pwr && typeof pwr.channel === 'number' && pwr.channel > 0) {
+                    data.wifi_channel = String(pwr.channel);
+                }
+                if (pwr && pwr.mode && pwr.mode !== 'unknown') {
+                    data.wifi_mode = pwr.mode;
+                }
+                currentData = { ...currentData, ...data };
+                    
+                    // 更新WiFi状态显示（上半部分）
+                    const wifiStatusTextSetting = document.getElementById('wifi-status-text-setting');
+                    const wifiIcon = document.getElementById('wifi-icon');
+                    const wifiToggle = document.getElementById('toggle-wifi').querySelector('input');
+                    
+                    if (data.wifi_enabled === "on") {
+
+                        wifiStatusTextSetting.textContent = "已启用";
+                        wifiIcon.className = "wifi-icon";
+                        wifiToggle.checked = true;
+                    } else {
+
+                        wifiStatusTextSetting.textContent = "已禁用";
+                        wifiIcon.className = "wifi-icon off";
+                        wifiToggle.checked = false;
+                    }
+                    
+                    // 更新频段模式显示
+                    const modeContainerSetting = document.getElementById('wifi-mode-setting');
+                    const modeToggle = document.getElementById('switch-mode').querySelector('input');
+                    
+                    if (data.wifi_mode === "2.4G") {
+
+                        modeContainerSetting.innerHTML = '<span class="mode-active-setting">2.4G</span><span class="mode-inactive-setting">/5G</span>';
+                        modeToggle.checked = false;
+                    } else if (data.wifi_mode === "5G") {
+
+                        modeContainerSetting.innerHTML = '<span class="mode-inactive-setting">2.4G</span><span class="mode-active-setting">/5G</span>';
+                        modeToggle.checked = true;
+                    } else {
+
+                        modeContainerSetting.innerHTML = '<span class="mode-inactive-setting">2.4G</span><span class="mode-inactive-setting">/5G</span>';
+                    }
+                    
+                    // 处理设置区域（下半部分）
+                    // 只在首次加载或用户没有正在编辑时才更新设置区域
+                    if (!settingsInitialized || !isUserEditingSettings()) {
+                        updateSettingsArea(data);
+                        if (!settingsInitialized) {
+                            settingsInitialized = true; // 设置区域初始化完成
+                        }
+                    }
+                    
+                    // 更新实时状态显示
+                    document.getElementById('settings-error').hidden=true;
+                })
+                .catch(error => {
+                    console.error('加载WiFi数据失败:', error);
+                    document.getElementById('settings-error').hidden=false;
+                });
+        }
+        
+        // 检查用户是否正在编辑设置区域
+        function isUserEditingSettings() {
+            const ssidInput = document.getElementById('ssid-input');
+            const passwordInput = document.getElementById('password-input');
+            
+            // 如果任何输入框处于聚焦状态，说明用户正在编辑
+            return ssidInput === document.activeElement || 
+                   passwordInput === document.activeElement;
+        }
+        
+        // 更新设置区域内容
+        function updateSettingsArea(data) {
+            // 更新SSID输入框
+            const ssidInput = document.getElementById('ssid-input');
+            if (data.wifi_ssid && ssidInput.value !== data.wifi_ssid) {
+                ssidInput.value = data.wifi_ssid;
+            }
+            
+            // 更新密码输入框（仅在为空时更新，避免覆盖用户输入）
+            const passwordInput = document.getElementById('password-input');
+            if ((!passwordInput.value || passwordInput.value === '') && 
+                data.wifi_key && data.wifi_key !== 'unknown') {
+                passwordInput.value = data.wifi_key;
+            }
+            
+            // 更新信道选择器
+            generateChannelSelect(data.wifi_mode, data.wifi_channel);
+        }
+        
+        // 生成信道选择器选项，并让选中值与射频实际信道保持同步
+        function generateChannelSelect(currentMode, currentChannel) {
+            const channelSelect = document.getElementById('channel-select');
+            if (!channelSelect) return;
+            const targetChannel = parseInt(currentChannel, 10) || 0;
+            const mode = currentMode === "2.4G" ? "2.4G" : "5G";
+
+            // 频段变化或首次加载时重建选项列表
+            if (channelSelect.dataset.currentMode !== mode || !channelSelect.dataset.initialized) {
+                channelSelect.innerHTML = ''; // 清空现有选项
+                const channelsToShow = mode === "2.4G" ? channels24G : channels5G;
+
+                channelsToShow.forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    if (targetChannel === channel) {
+                        option.selected = true;
+                    }
+                    channelSelect.appendChild(option);
+                });
+
+                channelSelect.dataset.currentMode = mode;
+                channelSelect.dataset.initialized = true;
+            }
+
+            // 关键修复：原先只在重建选项时才更新选中值，导致切换信道后下拉框一直显示旧信道。
+            if (channelSelect === document.activeElement) return; // 用户正在操作下拉框，不打扰
+
+            const pendingUntil = parseInt(channelSelect.dataset.pendingUntil || '0', 10);
+            const pendingChannel = parseInt(channelSelect.dataset.pendingChannel || '0', 10);
+            if (pendingUntil > Date.now()) {
+                // 刚提交过切换：等射频重载完成（最多 20 秒），或真实信道已经追上目标值
+                if (targetChannel !== pendingChannel) return;
+            } else if (pendingUntil > 0) {
+                delete channelSelect.dataset.pendingUntil;
+                delete channelSelect.dataset.pendingChannel;
+            }
+
+            if (targetChannel > 0 && parseInt(channelSelect.value, 10) !== targetChannel) {
+                const hasTarget = Array.prototype.some.call(channelSelect.options, o => parseInt(o.value, 10) === targetChannel);
+                if (hasTarget) channelSelect.value = String(targetChannel);
+            }
+        }
+
+        // 提交切换后的保护期：热点重载期间不让 2 秒轮询把下拉框拉回旧信道
+        function markChannelPending(channel) {
+            const channelSelect = document.getElementById('channel-select');
+            if (!channelSelect || !channel) return;
+            channelSelect.dataset.pendingChannel = String(channel);
+            channelSelect.dataset.pendingUntil = String(Date.now() + 20000);
+            if (parseInt(channelSelect.value, 10) !== parseInt(channel, 10)) {
+                const hasTarget = Array.prototype.some.call(channelSelect.options, o => parseInt(o.value, 10) === parseInt(channel, 10));
+                if (hasTarget) channelSelect.value = String(channel);
+            }
+        }
+        window.markChannelPending = markChannelPending;
+        
+        // 应用信道设置
+        document.getElementById('apply-channel').addEventListener('click', function() {
+            const channelSelect = document.getElementById('channel-select');
+            const selectedChannel = parseInt(channelSelect.value, 10);
+            
+            if (!selectedChannel) {
+                showToast('请选择信道', 'error');
+                return;
+            }
+            
+            if (!window.confirm(`切换 Wi-Fi 信道至 ${selectedChannel} 会短暂断开当前连接。继续？`)) {
+                return;
+            }
+            
+            const mode = selectedChannel <= 14 ? '2.4G' : '5G';
+            markChannelPending(selectedChannel);
+            showChannelStatus('正在切换信道，断线后请重新连接', 'pending');
+            showToast(`正在切换至信道 ${selectedChannel}，热点重启中…`);
+            const btn = this;
+            btn.disabled = true;
+            
+            fetch('/air-api/wifi/channel', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ channel: selectedChannel, mode: mode })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('信道设置失败');
+                return response.json();
+            })
+            .then(data => {
+                showChannelStatus('已生效', 'success');
+                showToast(data.message || '信道设置成功，正在重连…');
+            })
+            .catch(error => {
+                const message = '信道设置失败: ' + error.message;
+                showChannelStatus(message, 'error');
+                showToast(message, 'error');
+            })
+            .finally(() => {
+                btn.disabled = false;
+            });
+        });
+        
+        // 应用WiFi设置
+        document.getElementById('apply-settings').addEventListener('click', function() {
+            const ssid = document.getElementById('ssid-input').value.trim();
+            const password = document.getElementById('password-input').value;
+            
+            if (!ssid) {
+                showToast('请输入网络名称', 'error');
+                return;
+            }
+            
+            if (password && password.length < 8) {
+                showToast('密码长度至少8位', 'error');
+                return;
+            }
+            
+            fetch('/cgi-bin/traffic.cgi', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=update_wifi_settings&ssid=${encodeURIComponent(ssid)}&key=${encodeURIComponent(password)}`
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('设置失败');
+                return response.json();
+            })
+            .then(data => {
+                showToast(data.message || 'WiFi设置已更新');
+                // 不需要手动刷新，实时更新会自动处理
+            })
+            .catch(error => {
+                const message = '设置失败: ' + error.message;
+                showToast(message, 'error');
+            });
+        });
+        
+        // 显示提示消息
+        function showToast(text, type = '') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            
+            toastText.textContent = text;
+            toast.className = type === 'error' ? 'toast error' : 'toast';
+            toast.classList.add('show');
+            
+            if (toast.timeoutId) {
+                clearTimeout(toast.timeoutId);
+            }
+            
+            toast.timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+<script src="/air-security.js?v=2.11.2"></script>
+<script src="/air-wifi-radar.js?v=2.26"></script>
+</body>
+</html>

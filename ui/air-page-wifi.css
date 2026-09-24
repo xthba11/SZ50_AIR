@@ -1,0 +1,339 @@
+/* 保持原样式不变 */
+
+        .container {
+            background-color: white;
+            padding: 10px 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #4CAF50;
+            padding-bottom: 8px;
+            width: 100%;
+        }
+        
+        .stats-box {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            width: 100%;
+        }
+        
+        .stats-box h2 {
+            margin: 0;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        .stats-content {
+            font-size: 13px;
+            line-height: 1.4;
+            width: 100%;
+        }
+        
+        .alert {
+            color: #d32f2f;
+            padding: 6px;
+            margin: 8px 0;
+            background-color: #ffebee;
+            border-radius: 3px;
+            font-size: 13px;
+            white-space: pre-line;
+        }
+        
+        .setting-group {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .setting-group h2 {
+            margin: 0 0 16px 0;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        #usbmodeweb-section .btn{
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 9px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+            width: 50px;
+            text-align: center;
+        }
+        
+        #usbmodeweb-section .btn-danger{
+            background-color: #f44336;
+        }
+        
+        #usbmodeweb-section .btn-warning{
+            background-color: #ff9800;
+        }
+        
+        #usbmodeweb-section .btn-disabled{
+            background-color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        
+        #usbmodeweb-section .btn:active{
+            opacity: 0.8;
+        }
+        
+        input[type="text"], input[type="password"], select {
+            flex: 1;
+            padding: 4px;
+            margin: 0 6px 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 12px;
+            min-width: 100px;
+        }
+        
+        .status {
+            display: inline-block;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .enabled {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .disabled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .control-group {
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .control-group.justify-between {
+            justify-content: space-between;
+        }
+        
+        .setting-label {
+            display: inline-block;
+            width: 80px;
+            text-align: left;
+            font-size: 13px;
+        }
+        
+        .status-value {
+            min-width: 100px;
+            display: inline-block;
+            text-align: left;
+            font-size: 13px;
+        }
+        
+        .refresh-timer {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .wifi-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234CAF50"><path d="M12 3C7.79 3 3.7 4.41.38 7 4.41 12.06 7.89 16.37 12 21.5c4.08-5.08 7.49-9.42 11.62-14.5C20.32 4.41 16.22 3 12 3zm0 2c3.07 0 6.09.86 8.71 2.45l-1.94 2.43C17.26 8.97 14.68 8 12 8s-5.26.97-7.77 2.88L2.29 7.45C4.91 5.86 7.93 5 12 5z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .wifi-icon.off {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23f44336"><path d="M12 3C7.79 3 3.7 4.41.38 7 4.41 12.06 7.89 16.37 12 21.5c4.08-5.08 7.49-9.42 11.62-14.5C20.32 4.41 16.22 3 12 3zm0 2c3.07 0 6.09.86 8.71 2.45l-1.94 2.43C17.26 8.97 14.68 8 12 8s-5.26.97-7.77 2.88L2.29 7.45C4.91 5.86 7.93 5 12 5z"/></svg>');
+        }
+        
+        #wifi-toast {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background-color: #a4eeba;
+            color: rgb(24, 24, 24);
+            padding: 8px 16px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        #wifi-toast.show {
+            transform: translateY(0);
+        }
+        
+        #wifi-toast.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .form-group {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+        }
+        
+        .form-group label {
+            display: inline-block;
+            width: 80px;
+            font-size: 13px;
+        }
+        
+        /* 移除密码显示/隐藏文字的样式 */
+        .show-password {
+            display: none;
+        }
+        
+        /* 按钮占位区域，用于对齐 */
+        .button-placeholder {
+            width: 50px;
+            visibility: hidden; /* 隐藏但保留空间 */
+        }
+        
+        /* 开关按钮样式 */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            margin-left: auto;
+            cursor: pointer;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* 频段模式显示样式 */
+        .mode-active-setting {
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .mode-inactive-setting {
+            color: #999;
+        }
+        
+        /* WiFi状态和频段显示样式 */
+        .wifi-status-display {
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .wifi-mode-display {
+            display: inline-block;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        /* 设置区域频段显示样式 */
+        .wifi-mode-setting {
+            font-size: 13px;
+        }
+
+        /* 密码显示/隐藏图标样式 */
+        .password-toggle-icon {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-left: auto;
+        }
+        
+        /* 密码显示容器 - 用于对齐控制 */
+        .password-display-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+            .air-inner #security-status, .air-inner #mode-status, .air-inner #channel-status { margin-left: 88px !important; }
+        @media (max-width: 440px) { .air-inner #security-status, .air-inner #mode-status, .air-inner #channel-status { margin-left: 0 !important; } }
+        .air-inner .setting-group.wifi-radar-card .radar-title-box { display: inline-flex !important; align-items: center !important; gap: 8px !important; margin: 0 !important; padding: 0 !important; line-height: 1 !important; }
+        .air-inner .setting-group.wifi-radar-card .radar-title-box h2 { margin: 0 !important; padding: 0 !important; line-height: 1 !important; font-size: 15px !important; display: inline-flex !important; align-items: center !important; }
+        .air-inner .setting-group.wifi-radar-card .radar-badge-pulse { width: 8px !important; height: 8px !important; min-width: 8px !important; min-height: 8px !important; margin: 0 !important; display: inline-block !important; vertical-align: middle !important; }
+/* 内联到主界面后：只让 shell 铺满主内容区，图表卡片按名字精确跨列。
+   ⚠️ 切勿再用 [class*="radar"] / [class*="cards"] / [class*="-row"] 这类通配符：
+   它们会命中图表区里的每一个按钮、标签、明细行（radar-tab-btn / radar-scan-btn /
+   radar-ap-item / radar-ap-crypto-tag …），把内部元素全部强制成 width:100%，
+   表现为"按钮被拉得很宽很丑、周围 Wi-Fi 明细一行显示不完、频谱图四不像"。
+   同时也别给 [id*="chart-container"] 强加 min-height（会让曲线下方留一大片空白）。 */
+.wifi-shell{max-width:none;width:100%}
+.wifi-radar-card{grid-column:1/-1}   /* 信道雷达与频域图谱卡片整行 */
+
+/* 内容区宽度与其它页的 .content-wrapper(1340px) 对齐 —— 原来 .air-inner .container 是 1120px，
+   2K 屏下左右各少 110px，看起来「卡片区域明显不对齐、比别的页窄」。 */
+#usbmodeweb-section .container{max-width:1340px}

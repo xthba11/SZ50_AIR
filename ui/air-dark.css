@@ -1,0 +1,225 @@
+/* ============================================================================
+   SZ50 AIR 深色模式样式表 (air-dark.css)
+   支持深邃优雅的半透明深空质感 + 极佳的文字对比度与护眼体验
+   ============================================================================ */
+
+/* 深色基础变量覆盖 */
+html[data-theme="dark"] {
+  --ink: #e2e8f0;
+  --muted: #94a3b8;
+  --blue: #4f87ff;
+  --blue-light: rgba(79, 135, 255, 0.16);
+  --line: rgba(255, 255, 255, 0.08);
+  --canvas: #0c121e;
+  --green: #2ecc71;
+  --ui-ink: #cbd5e1;
+  --ui-mute: #94a3b8;
+  --ui-line: rgba(255, 255, 255, 0.12);
+  --ui-fill: rgba(30, 41, 59, 0.7);
+  --ui-fill-hover: rgba(51, 65, 85, 0.85);
+  color-scheme: dark;
+}
+
+/* 背景全站渐变深色化 */
+html[data-theme="dark"] body {
+  background: radial-gradient(60% 50% at 12% 8%, #162032 0%, rgba(15, 23, 42, 0) 70%),
+              radial-gradient(55% 45% at 92% 88%, #1a162b 0%, rgba(15, 23, 42, 0) 70%),
+              #0b101b !important;
+  color: #e2e8f0 !important;
+}
+
+/* 侧边栏与顶栏 */
+html[data-theme="dark"] .sidebar {
+  background: linear-gradient(170deg, rgba(17, 24, 39, 0.82), rgba(15, 23, 42, 0.65)) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 1px 0 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="dark"] .topbar {
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.85), rgba(15, 23, 42, 0.7)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .topbar::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.25) 30%, rgba(255, 255, 255, 0.25) 70%, rgba(255, 255, 255, 0.05)) !important;
+}
+
+html[data-theme="dark"] .sidebar::after {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.15)) !important;
+}
+
+/* 导航项 */
+html[data-theme="dark"] .nav-menu a {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .nav-menu a:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .nav-menu a.active {
+  background: rgba(79, 135, 255, 0.18) !important;
+  color: #60a5fa !important;
+}
+
+/* 卡片系统深色半透明毛玻璃 */
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .info-card,
+html[data-theme="dark"] .setting-card,
+html[data-theme="dark"] .devices-overview,
+html[data-theme="dark"] .limits-panel {
+  background: linear-gradient(158deg, rgba(26, 36, 54, 0.78), rgba(18, 26, 41, 0.65) 55%, rgba(15, 23, 42, 0.58)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .stat-card::before,
+html[data-theme="dark"] .info-card::before {
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.02) 42%, rgba(255, 255, 255, 0.12)) !important;
+}
+
+/* 横幅 */
+html[data-theme="dark"] .connection-banner {
+  background: linear-gradient(105deg, rgba(30, 58, 102, 0.55), rgba(24, 43, 79, 0.42) 64%, rgba(20, 35, 65, 0.5)) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html[data-theme="dark"] .signal-art {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+html[data-theme="dark"] .signal-art::before,
+html[data-theme="dark"] .signal-art::after,
+html[data-theme="dark"] .signal-art i {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* 按钮、图标按钮 */
+html[data-theme="dark"] .btn:not(.primary),
+html[data-theme="dark"] .icon-button {
+  background: rgba(30, 41, 59, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .btn:not(.primary):hover,
+html[data-theme="dark"] .icon-button:hover {
+  background: rgba(51, 65, 85, 0.9) !important;
+  border-color: rgba(96, 165, 250, 0.5) !important;
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] .btn.primary {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* 表格与排版数据文字 */
+html[data-theme="dark"] .stat-value,
+html[data-theme="dark"] .card-title,
+html[data-theme="dark"] .panel-heading h2,
+html[data-theme="dark"] .page-heading h1 {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .network-primary {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .stat-top,
+html[data-theme="dark"] .info-table td:first-child,
+html[data-theme="dark"] .signal-label,
+html[data-theme="dark"] .card-subtitle,
+html[data-theme="dark"] .wifi-caption,
+html[data-theme="dark"] .stat-sub,
+html[data-theme="dark"] .signal-metrics small,
+html[data-theme="dark"] .caption,
+html[data-theme="dark"] .signal-footer,
+html[data-theme="dark"] .heading-note {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .info-table td:last-child {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .info-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .network-table th {
+  background: rgba(15, 23, 42, 0.6) !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .network-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .network-table tbody tr:first-child td {
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #93c5fd !important;
+}
+
+/* 进度条与指标槽 */
+html[data-theme="dark"] .signal-bar-container,
+html[data-theme="dark"] .meter-track,
+html[data-theme="dark"] .temp-bar {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* WiFi 标识条 */
+html[data-theme="dark"] .wifi-identity {
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .wifi-name {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .wifi-glyph {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+}
+
+/* 头像与面包屑 */
+html[data-theme="dark"] .avatar {
+  border-left-color: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .avatar b {
+  background: rgba(59, 130, 246, 0.2) !important;
+  color: #60a5fa !important;
+}
+
+html[data-theme="dark"] .breadcrumbs strong {
+  color: #e2e8f0 !important;
+}
+
+/* 输入框与 AT 终端 */
+html[data-theme="dark"] .layui-input,
+html[data-theme="dark"] .layui-textarea {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] #atCommandResponse {
+  background: rgba(10, 15, 26, 0.85) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 电池条 */
+html[data-theme="dark"] .battery-estimate-banner {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+html[data-theme="dark"] .battery-estimate-content strong {
+  color: #f1f5f9 !important;
+}

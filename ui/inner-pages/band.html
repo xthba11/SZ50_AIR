@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link rel="shortcut icon" href="../images/favicon.ico">
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script type="text/javascript" src="../lib/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="../lib/qrcode.min.js"></script>
+    <script src="../lib/layui/layui.all.js"></script>
+    <script type="text/javascript" src="../lib/echarts.min.js"></script>
+    <script type="text/javascript" src="../lib/json_parse.js"></script>
+    <script type="text/javascript" src="../lib/json2.js"></script>
+
+    <title>频段检测-BandPss</title>
+<link rel="stylesheet" href="/air-inner.css?v=2.18"><script>if(window.self!==window.top)document.documentElement.classList.add("air-embedded");</script></head>
+
+<script>
+function parseBands(hexString, bandRanges) {
+    if (!hexString || hexString.trim() === '') {
+        return [];
+    }
+    try {
+        let bandInt = BigInt(`0x${hexString}`);
+        let bands = [];
+        for (let i = 0; i < bandRanges.length; i++) {
+            if (bandInt & (1n << BigInt(i))) {
+                bands.push(bandRanges[i]);
+            }
+        }
+        return bands;
+    } catch (error) {
+        console.error(`解析频段错误: ${error}`, hexString);
+        return [];
+    }
+}
+
+function getBandRanges() {
+    let lteBandRanges1_64 = Array.from({ length: 64 }, (_, i) => i + 1);
+    let nr5gBandRanges0_64 = Array.from({ length: 64 }, (_, i) => i + 1);
+    let nr5gBandRanges65_512 = Array.from({ length: 448 }, (_, i) => i + 65);
+    return { lteBandRanges1_64, nr5gBandRanges0_64, nr5gBandRanges65_512 };
+}
+
+function addBandsToTable(bands, type) {
+    const table = document.getElementById('band_pass_table');
+    let tbody = table.tBodies[0] || table.createTBody();
+    
+    if (bands.length === 0) {
+        let row = tbody.insertRow();
+        let cell = row.insertCell(0);
+        cell.colSpan = 3;
+        cell.innerHTML = `${type} - 无支持的频段`;
+        cell.style.color = 'orange';
+        cell.style.textAlign = 'center';
+        return;
+    }
+    
+    bands.forEach(band => {
+        let row = tbody.insertRow();
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        cell1.innerHTML = type;
+        cell3.innerHTML = "支持";
+        cell3.style.color = 'green';
+        if (type === 'LTE 4G') {
+            cell2.innerHTML = `B${band}`;
+        } else if (type === 'NR 5G') {
+            cell2.innerHTML = `N${band}`;
+        }
+    });
+}
+
+function GetBandPass() {
+    // 清空表格内容
+    const table = document.getElementById('band_pass_table');
+    let tbody = table.tBodies[0];
+    if (tbody) {
+        tbody.innerHTML = '';
+    } else {
+        tbody = table.createTBody();
+    }
+    
+    // 添加加载提示
+    let loadingRow = tbody.insertRow();
+    let loadingCell = loadingRow.insertCell(0);
+    loadingCell.colSpan = 3;
+    loadingCell.innerHTML = '正在检测频段...';
+    loadingCell.style.color = 'blue';
+    loadingCell.style.textAlign = 'center';
+
+    fetch("http://" + window.location.hostname + ":8080/api/exec/atcmd", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Method: "execat", Cmd: "AT^SYSCFGEX?" })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("API响应:", data);
+        
+        // 清空加载提示
+        tbody.innerHTML = '';
+
+        if (data.Code === 0 && data.Data) {
+            console.log("原始数据:", data.Data);
+            
+            // 解析数据
+            const parts = data.Data.split(",");
+            console.log("数据分割:", parts);
+            
+            let hexLteBand1_64bit = parts[4] || '';
+            let hexLteBand65_128bit = parts[5] || '';
+            let hexNr5g0_64bit = parts[6] || '';
+            let hexNr5g65_512bit = parts[7] || '';
+            
+            console.log("频段数据:", {
+                lte1_64: hexLteBand1_64bit,
+                lte65_128: hexLteBand65_128bit,
+                nr0_64: hexNr5g0_64bit,
+                nr65_512: hexNr5g65_512bit
+            });
+            
+            let { lteBandRanges1_64, nr5gBandRanges0_64, nr5gBandRanges65_512 } = getBandRanges();
+            let lteBands1_64 = parseBands(hexLteBand1_64bit, lteBandRanges1_64);
+            let lteBands65_128 = parseBands(hexLteBand65_128bit, lteBandRanges1_64);
+            let nr5gBands0_64 = parseBands(hexNr5g0_64bit, nr5gBandRanges0_64);
+            let nr5gBands65_512 = parseBands(hexNr5g65_512bit, nr5gBandRanges65_512);
+            
+            console.log("解析结果:", {
+                lteBands: lteBands1_64.concat(lteBands65_128),
+                nr5gBands: nr5gBands0_64.concat(nr5gBands65_512)
+            });
+            
+            addBandsToTable(nr5gBands0_64.concat(nr5gBands65_512), 'NR 5G');
+            addBandsToTable(lteBands1_64.concat(lteBands65_128), 'LTE 4G');
+            
+        } else {
+            let errorRow = tbody.insertRow();
+            let errorCell = errorRow.insertCell(0);
+            errorCell.colSpan = 3;
+            errorCell.innerHTML = `错误: ${data.Error || '未知错误'}`;
+            errorCell.style.color = 'red';
+            errorCell.style.textAlign = 'center';
+        }
+    })
+    .catch(error => {
+        console.error(`Fetch error: ${error}`);
+        tbody.innerHTML = '';
+        let errorRow = tbody.insertRow();
+        let errorCell = errorRow.insertCell(0);
+        errorCell.colSpan = 3;
+        errorCell.innerHTML = `网络错误: ${error}`;
+        errorCell.style.color = 'red';
+        errorCell.style.textAlign = 'center';
+    });
+}
+
+window.onload = function () {
+    const table = document.getElementById('band_pass_table');
+    let thead = table.createTHead();
+    let headerRow = thead.insertRow();
+    let cell1 = document.createElement("th");
+    let cell2 = document.createElement("th");
+    let cell3 = document.createElement("th");
+    cell1.innerHTML = "类型";
+    cell2.innerHTML = "频段";
+    cell3.innerHTML = "状态";
+    headerRow.appendChild(cell1);
+    headerRow.appendChild(cell2);
+    headerRow.appendChild(cell3);
+    GetBandPass();
+};
+</script>
+
+<style>
+    .layui-table th,
+    .layui-table td {
+        width: 33%;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .layui-table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .layui-table tbody tr:nth-child(odd) {
+        background-color: #fff;
+    }
+</style>
+
+<body class="air-inner" data-page="band"><header class="air-page-header"><h1>频段信息</h1></header>
+    <table class="layui-table" id="band_pass_table"></table>
+<script src="/air-embed.js?v=2.5"></script></body>
+
+</html>

@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SIM卡管理</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            height: auto;
+            min-height: 0;
+            overflow-y: visible;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: white;
+            padding: 10px 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #2196F3;
+            padding-bottom: 8px;
+            width: 100%;
+        }
+        
+        .stats-box {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            background: #f9f9f9;
+        }
+        
+        .stats-box h2 {
+            margin: 0;
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .stats-content {
+            font-size: 13px;
+            line-height: 1.4;
+            width: 100%;
+        }
+        
+        .setting-group {
+            margin: 10px 0;
+            padding: 14px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .setting-group h2 {
+            margin: 0 0 14px 0;
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.2s;
+            width: 120px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .btn:active {
+            opacity: 0.8;
+        }
+        
+        .btn-disabled {
+            background-color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        
+        .control-group {
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .setting-label {
+            display: inline-block;
+            width: 80px;
+            text-align: left;
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .sim-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232196F3"><path d="M18,3H6A2,2 0 0,0 4,5V19A2,2 0 0,0 6,21H18A2,2 0 0,0 20,19V5A2,2 0 0,0 18,3M18,19H6V5H18V19M15,17H9V7H15V17Z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .network-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232196F3"><path d="M21,11L18.8,11C18.4,9.8 17.3,9 16,9C14.7,9 13.6,9.8 13.2,11L11,11V5.73C11.6,5.39 12,4.74 12,4C12,2.9 11.1,2 10,2S8,2.9 8,4C8,4.74 8.4,5.39 9,5.73V11H6.8C6.4,9.8 5.3,9 4,9C2.7,9 1.6,9.8 1.2,11H0V13H1.2C1.6,14.2 2.7,15 4,15C5.3,15 6.4,14.2 6.8,13H9V18.27C8.4,18.61 8,19.26 8,20C8,21.1 8.9,22 10,22S12,21.1 12,20C12,19.26 11.6,18.61 11,18.27V13H13.2C13.6,14.2 14.7,15 16,15C17.3,15 18.4,14.2 18.8,13H21V11Z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background-color: #a4eeba;
+            color: rgb(24, 24, 24);
+            padding: 8px 16px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+        }
+        
+        .toast.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .toast.info {
+            background-color: #bbdefb;
+            color: #1565c0;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .sim-status-display {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .current-sim {
+            color: #2196F3;
+        }
+        
+        .current-network {
+            color: #4CAF50;
+        }
+        
+        .network-desc {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 10px 0;
+        }
+
+        /* 实时网速折线图模块样式（PC端平行双列放置：非代理直连在左/前，代理通道在右/后） */
+        .sim-speed-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin: 10px 0 16px 0;
+            padding: 16px 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .sim-speed-subcard {
+            padding: 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sim-speed-row-divider {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .sim-speed-box {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .sim-speed-row-divider {
+                display: block;
+                height: 1px;
+                background: #f1f5f9;
+                margin: 4px 0;
+            }
+        }
+
+        .sim-speed-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .sim-speed-head h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .speed-title-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .proxy-badge-dot {
+            background: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+        }
+        .direct-badge-dot {
+            background: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .sim-speed-subtitle {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .sim-speed-badges {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .speed-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+            letter-spacing: 0.2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+        .speed-stat-badge .badge-arrow {
+            font-weight: 800;
+            font-size: 13px;
+        }
+        .speed-stat-badge .badge-label {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+        .speed-stat-badge .badge-num {
+            font-family: Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
+            font-weight: 700;
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 代理下载方框: 紫色主题 */
+        .badge-proxy-down {
+            color: #7c3aed;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+        }
+        /* 代理上传方框: 亮琥珀橙主题 (与下载高对比) */
+        .badge-proxy-up {
+            color: #d97706;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+        }
+        /* 直连下载方框: 科技蓝主题 */
+        .badge-direct-down {
+            color: #2563eb;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+        /* 直连上传方框: 翠绿主题 */
+        .badge-direct-up {
+            color: #059669;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+
+        .sim-speed-chart-wrap {
+            position: relative;
+            width: 100%;
+            overflow: visible;
+            margin: 12px 0 4px 0;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            top: -38px;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+            z-index: 50;
+            display: none;
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+        .chart-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px 5px 0;
+            border-style: solid;
+            border-color: rgba(15, 23, 42, 0.94) transparent transparent;
+        }
+
+        .sim-speed-chart-wrap svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .sim-speed-grid {
+            stroke: #e2e8f0;
+            stroke-width: 1;
+            stroke-dasharray: 2,2;
+        }
+
+        .sim-speed-axis {
+            fill: #94a3b8;
+            font-size: 10px;
+            font-family: monospace;
+        }
+
+        /* 代理流量折线：下载深紫，上传琥珀橙（细线精致） */
+        .speed-line-proxy {
+            fill: none;
+            stroke: #8b5cf6;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .speed-line-proxy-up {
+            fill: none;
+            stroke: #f59e0b;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 4,2;
+        }
+        .speed-dot-proxy {
+            fill: #8b5cf6;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+        .speed-dot-proxy-up {
+            fill: #f59e0b;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+
+        /* 非代理直连折线：下载科技蓝，上传翠绿（细线精致） */
+        .speed-line-direct {
+            fill: none;
+            stroke: #2563eb;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .speed-line-direct-up {
+            fill: none;
+            stroke: #10b981;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 4,2;
+        }
+        .speed-dot-direct {
+            fill: #2563eb;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+        .speed-dot-direct-up {
+            fill: #10b981;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+
+        .sim-speed-legend {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 6px;
+            padding-top: 6px;
+            font-size: 12px;
+        }
+        .sim-speed-legend small {
+            margin-left: auto;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .legend-bar {
+            display: inline-block;
+            width: 14px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .proxy-down-bar { background: #8b5cf6; }
+        .proxy-up-bar { background: #f59e0b; }
+        .direct-down-bar { background: #2563eb; }
+        .direct-up-bar { background: #10b981; }
+
+        .proxy-down-item span { color: #6d28d9; }
+        .proxy-up-item span { color: #b45309; }
+        .direct-down-item span { color: #1d4ed8; }
+        .direct-up-item span { color: #047857; }
+
+        /* 平滑滑动与入场动画 */
+        @keyframes speedSlide {
+            from { transform: translateX(18px); }
+            to { transform: translateX(0); }
+        }
+        @keyframes speedDotEnter {
+            0% { opacity: 0; transform: scale(0.3); }
+            60% { opacity: 1; transform: scale(1.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .speed-slide {
+            animation: speedSlide 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .speed-dot-enter {
+            animation: speedDotEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+    </style>
+<link rel="stylesheet" href="/air-inner.css?v=2.18"><script>if(window.self!==window.top)document.documentElement.classList.add("air-embedded");</script></head>
+<body class="air-inner" data-page="sim">
+    <div class="container">
+        <header class="air-page-header"><h1><span class="sim-icon"></span>SIM卡与网络管理</h1></header>
+
+        <!-- 实时网速折线图模块（PC端平行双列放置：非代理直连在左/前，代理通道在右/后） -->
+        <div class="stats-box sim-speed-box" id="sim-speed-chart">
+            <div id="sim-speed-total" style="display:none">整体: ↓ 0.000 MB/s　↑ 0.000 MB/s</div>
+            <!-- 列 1：非代理直连网速折线图 -->
+            <div class="sim-speed-subcard direct-chart-subcard">
+                <div class="sim-speed-head">
+                    <div>
+                        <h2><span class="speed-title-badge direct-badge-dot"></span>非代理直连实时网速</h2>
+                        <div class="sim-speed-subtitle" id="direct-samples-hint"></div>
+                    </div>
+                    <div class="sim-speed-badges">
+                        <div class="speed-stat-badge badge-direct-down">
+                            <span class="badge-arrow">↓</span>
+                            <span class="badge-label">下载</span>
+                            <span class="badge-num" id="rate-direct-down">0.000 MB/s</span>
+                        </div>
+                        <div class="speed-stat-badge badge-direct-up">
+                            <span class="badge-arrow">↑</span>
+                            <span class="badge-label">上传</span>
+                            <span class="badge-num" id="rate-direct-up">0.000 MB/s</span>
+                        </div>
+                        <span id="rate-direct-text" style="display:none">↓ 0.000 MB/s　↑ 0.000 MB/s</span>
+                    </div>
+                </div>
+                <div id="direct-chart-container" class="sim-speed-chart-wrap"></div>
+                <div class="sim-speed-legend">
+                    <span class="legend-item direct-down-item">
+                        <span class="legend-bar direct-down-bar"></span>
+                        <span>直连下载</span>
+                        <span id="direct-down-text" style="display:none">0.000 MB/s</span>
+                    </span>
+                    <span class="legend-item direct-up-item">
+                        <span class="legend-bar direct-up-bar"></span>
+                        <span>直连上传</span>
+                        <span id="direct-up-text" style="display:none">0.000 MB/s</span>
+                    </span>
+                    <small>蜂窝原生直连</small>
+                </div>
+            </div>
+
+            <div class="sim-speed-row-divider"></div>
+
+            <!-- 列 2：代理通道网速折线图 -->
+            <div class="sim-speed-subcard proxy-chart-subcard">
+                <div class="sim-speed-head">
+                    <div>
+                        <h2><span class="speed-title-badge proxy-badge-dot"></span>代理通道实时网速</h2>
+                        <div class="sim-speed-subtitle" id="proxy-samples-hint"></div>
+                    </div>
+                    <div class="sim-speed-badges">
+                        <div class="speed-stat-badge badge-proxy-down">
+                            <span class="badge-arrow">↓</span>
+                            <span class="badge-label">下载</span>
+                            <span class="badge-num" id="rate-proxy-down">0.000 MB/s</span>
+                        </div>
+                        <div class="speed-stat-badge badge-proxy-up">
+                            <span class="badge-arrow">↑</span>
+                            <span class="badge-label">上传</span>
+                            <span class="badge-num" id="rate-proxy-up">0.000 MB/s</span>
+                        </div>
+                        <span id="rate-proxy-text" style="display:none">↓ 0.000 MB/s　↑ 0.000 MB/s</span>
+                    </div>
+                </div>
+                <div id="proxy-chart-container" class="sim-speed-chart-wrap"></div>
+                <div class="sim-speed-legend">
+                    <span class="legend-item proxy-down-item">
+                        <span class="legend-bar proxy-down-bar"></span>
+                        <span>代理下载</span>
+                        <span id="proxy-down-text" style="display:none">0.000 MB/s</span>
+                    </span>
+                    <span class="legend-item proxy-up-item">
+                        <span class="legend-bar proxy-up-bar"></span>
+                        <span>代理上传</span>
+                        <span id="proxy-up-text" style="display:none">0.000 MB/s</span>
+                    </span>
+                    <small id="proxy-status-hint">代理转发流量</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 当前状态显示 -->
+        <div class="stats-box">
+            <h2>当前状态</h2>
+            <div class="stats-content">
+                <!-- SIM卡状态 -->
+                <div class="control-group">
+                    <span class="setting-label">当前卡槽：</span>
+                    <span id="current-sim" class="sim-status-display current-sim">加载中...</span>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- 网络模式状态 -->
+                <div class="control-group">
+                    <span class="setting-label">网络模式：</span>
+                    <span id="current-network-mode" class="sim-status-display current-network">加载中...</span>
+                    <span id="network-mode-desc" class="network-desc"></span>
+                </div>
+                <div class="control-group">
+                    <span class="setting-label">模式代码：</span>
+                    <span id="network-mode-code" class="network-desc"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SIM卡切换区域 -->
+        <div class="setting-group">
+            <h2>SIM卡切换</h2>
+            
+            <div class="button-group">
+                <button class="btn" id="switch-to-sim1">切换到SIM1</button>
+                <button class="btn" id="switch-to-sim2">切换到SIM2</button>
+            </div>
+        </div>
+        
+        <!-- 网络模式切换区域 -->
+        <div class="setting-group">
+            <h2><span class="network-icon"></span>网络模式切换</h2>
+            
+            <div class="button-group">
+                <button class="btn" id="switch-to-auto">自动模式</button>
+                <button class="btn" id="switch-to-5g">仅5G模式</button>
+                <button class="btn" id="switch-to-4g">仅4G模式</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        let currentSimData = {};
+        let currentNetworkData = {};
+
+        window.onload = function() {
+            loadSimData();
+            loadNetworkModeData();
+            setupButtonEvents();
+            initSpeedChart();
+        };
+        
+        function setupButtonEvents() {
+            // SIM卡切换按钮
+            document.getElementById('switch-to-sim1').addEventListener('click', function() {
+                switchSimCard('SIM1');
+            });
+            
+            document.getElementById('switch-to-sim2').addEventListener('click', function() {
+                switchSimCard('SIM2');
+            });
+            
+            // 网络模式切换按钮
+            document.getElementById('switch-to-auto').addEventListener('click', function() {
+                switchNetworkMode('auto');
+            });
+            
+            document.getElementById('switch-to-5g').addEventListener('click', function() {
+                switchNetworkMode('5g_only');
+            });
+            
+            document.getElementById('switch-to-4g').addEventListener('click', function() {
+                switchNetworkMode('4g_only');
+            });
+        }
+        
+        function loadSimData() {
+            fetch('/cgi-bin/traffic.cgi?action=get_wifi')
+                .then(response => {
+                    if (!response.ok) throw new Error('网络请求失败');
+                    return response.json();
+                })
+                .then(data => {
+                    currentSimData = data;
+                    updateSimDisplay(data);
+                })
+                .catch(error => {
+                    console.error('加载SIM卡数据失败:', error);
+                    document.getElementById('current-sim').textContent = '加载失败';
+                });
+        }
+        
+        function loadNetworkModeData() {
+            fetch('/cgi-bin/traffic.cgi?action=get_network_mode')
+                .then(response => {
+                    if (!response.ok) throw new Error('网络请求失败');
+                    return response.json();
+                })
+                .then(data => {
+                    currentNetworkData = data;
+                    updateNetworkModeDisplay(data);
+                })
+                .catch(error => {
+                    console.error('加载网络模式数据失败:', error);
+                    document.getElementById('current-network-mode').textContent = '加载失败';
+                });
+        }
+        
+        function updateSimDisplay(data) {
+            const currentSim = data.sim_status || '未知';
+            document.getElementById('current-sim').textContent = currentSim;
+            
+            const sim1Btn = document.getElementById('switch-to-sim1');
+            const sim2Btn = document.getElementById('switch-to-sim2');
+            
+            if (currentSim === 'SIM1') {
+                sim1Btn.disabled = true;
+                sim1Btn.className = 'btn btn-disabled';
+                sim2Btn.disabled = false;
+                sim2Btn.className = 'btn';
+            } else if (currentSim === 'SIM2') {
+                sim1Btn.disabled = false;
+                sim1Btn.className = 'btn';
+                sim2Btn.disabled = true;
+                sim2Btn.className = 'btn btn-disabled';
+            } else {
+                sim1Btn.disabled = false;
+                sim1Btn.className = 'btn';
+                sim2Btn.disabled = false;
+                sim2Btn.className = 'btn';
+            }
+        }
+        
+        function updateNetworkModeDisplay(data) {
+            const currentMode = data.network_mode || '未知';
+            const modeCode = data.mode_code || '未知';
+            const modeDesc = data.mode_desc || '';
+            
+            document.getElementById('current-network-mode').textContent = currentMode;
+            document.getElementById('network-mode-code').textContent = modeCode;
+            document.getElementById('network-mode-desc').textContent = modeDesc;
+            
+            // 更新按钮状态
+            const autoBtn = document.getElementById('switch-to-auto');
+            const fiveGBtn = document.getElementById('switch-to-5g');
+            const fourGBtn = document.getElementById('switch-to-4g');
+            
+            // 重置所有按钮
+            autoBtn.disabled = false;
+            autoBtn.className = 'btn';
+            fiveGBtn.disabled = false;
+            fiveGBtn.className = 'btn';
+            fourGBtn.disabled = false;
+            fourGBtn.className = 'btn';
+            
+            // 根据当前模式禁用相应按钮
+            if (currentMode.includes('自动模式')) {
+                autoBtn.disabled = true;
+                autoBtn.className = 'btn btn-disabled';
+            } else if (currentMode.includes('仅5G')) {
+                fiveGBtn.disabled = true;
+                fiveGBtn.className = 'btn btn-disabled';
+            } else if (currentMode.includes('仅4G')) {
+                fourGBtn.disabled = true;
+                fourGBtn.className = 'btn btn-disabled';
+            }
+        }
+        
+        function switchSimCard(targetSim) {
+            showToast('SIM卡切换中...', 'info');
+            
+            document.getElementById('switch-to-sim1').disabled = true;
+            document.getElementById('switch-to-sim2').disabled = true;
+            document.getElementById('switch-to-sim1').className = 'btn btn-disabled';
+            document.getElementById('switch-to-sim2').className = 'btn btn-disabled';
+            
+            fetch('/cgi-bin/traffic.cgi', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=switch_sim&target_sim=${targetSim}`
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('切换失败');
+                return response.json();
+            })
+            .then(data => {
+                showToast(data.message || `已切换到${targetSim}`);
+                setTimeout(() => {
+                    loadSimData();
+                }, 2000);
+            })
+            .catch(error => {
+                const message = `切换到${targetSim}失败: ` + error.message;
+                showToast(message, 'error');
+                setTimeout(() => {
+                    loadSimData();
+                }, 2000);
+            });
+        }
+        
+        function switchNetworkMode(targetMode) {
+            let modeName = '';
+            switch(targetMode) {
+                case 'auto': modeName = '自动模式'; break;
+                case '5g_only': modeName = '仅5G模式'; break;
+                case '4g_only': modeName = '仅4G模式'; break;
+            }
+            
+            showToast(`${modeName}切换中...`, 'info');
+            
+            const networkBtns = ['switch-to-auto', 'switch-to-5g', 'switch-to-4g'];
+            networkBtns.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.disabled = true;
+                btn.className = 'btn btn-disabled';
+            });
+            
+            fetch('/cgi-bin/traffic.cgi', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `action=switch_network_mode&target_mode=${targetMode}`
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('网络模式切换失败');
+                return response.json();
+            })
+            .then(data => {
+                showToast(data.message || `已切换到${modeName}`);
+                setTimeout(() => {
+                    loadNetworkModeData();
+                }, 2000);
+            })
+            .catch(error => {
+                const message = `${modeName}切换失败: ` + error.message;
+                showToast(message, 'error');
+                setTimeout(() => {
+                    loadNetworkModeData();
+                }, 2000);
+            });
+        }
+        
+        function showToast(text, type = '') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            toastText.textContent = text;
+            
+            if (type === 'error') {
+                toast.className = 'toast error';
+            } else if (type === 'info') {
+                toast.className = 'toast info';
+            } else {
+                toast.className = 'toast';
+            }
+            
+            toast.classList.add('show');
+            if (toast.timeoutId) {
+                clearTimeout(toast.timeoutId);
+            }
+            if (type !== 'info') {
+                toast.timeoutId = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // ================= 实时网速折线图模块 =================
+        function fmtRate(bps) {
+            return `${((Number(bps) || 0) / 8000000).toFixed(3)} MB/s`;
+        }
+
+        function fmtAxisRate(bps) {
+            bps = Number(bps) || 0;
+            if (bps <= 0) return '0.000 MB/s';
+            const mb = Number((bps / 8000000).toFixed(3));
+            return mb + ' MB/s';
+        }
+
+        function niceRateMax(bps) {
+            bps = Number(bps) || 0;
+            const MIN_BPS = 400000; // 最低刻度 0.05 MB/s (400,000 bps)
+            if (bps <= MIN_BPS) return MIN_BPS;
+            const mb = bps / 8000000;
+            const power = 10 ** Math.floor(Math.log10(mb));
+            const ratio = mb / power;
+            const niceMb = (ratio <= 1 ? 1 : ratio <= 2 ? 2 : ratio <= 5 ? 5 : 10) * power;
+            return Math.round(niceMb * 8000000);
+        }
+
+        let speedChartInstance = null;
+
+        function initSpeedChart() {
+            const proxyContainer = document.getElementById('proxy-chart-container');
+            const directContainer = document.getElementById('direct-chart-container');
+            const proxyRateBadge = document.getElementById('rate-proxy-text');
+            const directRateBadge = document.getElementById('rate-direct-text');
+            const proxyDownText = document.getElementById('proxy-down-text');
+            const proxyUpText = document.getElementById('proxy-up-text');
+            const directDownText = document.getElementById('direct-down-text');
+            const directUpText = document.getElementById('direct-up-text');
+            const proxyHint = document.getElementById('proxy-samples-hint');
+            const directHint = document.getElementById('direct-samples-hint');
+            const proxyStatusHint = document.getElementById('proxy-status-hint');
+
+            function buildChart(container, gradDownId, gradUpId, downLineClass, upLineClass, downDotClass, upDotClass, colorDown, colorUp) {
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 600 110');
+                svg.setAttribute('role', 'img');
+
+                const defs = document.createElementNS(svg.namespaceURI, 'defs');
+                defs.innerHTML = `
+                    <linearGradient id="${gradDownId}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="${colorDown}" stop-opacity="0.22"/>
+                        <stop offset="100%" stop-color="${colorDown}" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="${gradUpId}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="${colorUp}" stop-opacity="0.18"/>
+                        <stop offset="100%" stop-color="${colorUp}" stop-opacity="0"/>
+                    </linearGradient>
+                `;
+                svg.append(defs);
+
+                const axisLabels = [];
+                for (const y of [10, 52, 95]) {
+                    const grid = document.createElementNS(svg.namespaceURI, 'line');
+                    const label = document.createElementNS(svg.namespaceURI, 'text');
+                    grid.setAttribute('x1', '74');
+                    grid.setAttribute('x2', '592');
+                    grid.setAttribute('y1', String(y));
+                    grid.setAttribute('y2', String(y));
+                    grid.setAttribute('class', 'sim-speed-grid');
+
+                    label.setAttribute('x', '68');
+                    label.setAttribute('y', String(y + 4));
+                    label.setAttribute('text-anchor', 'end');
+                    label.setAttribute('class', 'sim-speed-axis');
+                    svg.append(grid, label);
+                    axisLabels.push(label);
+                }
+
+                // Area paths
+                const pathDown = document.createElementNS(svg.namespaceURI, 'path');
+                pathDown.setAttribute('fill', `url(#${gradDownId})`);
+                const pathUp = document.createElementNS(svg.namespaceURI, 'path');
+                pathUp.setAttribute('fill', `url(#${gradUpId})`);
+                svg.append(pathDown, pathUp);
+
+                // Smooth Curve Path Generator
+                function getCurvePath(pts, k = 0.18, clampMaxY = 95, clampMinY = 8) {
+                    if (!pts || !pts.length) return '';
+                    if (pts.length === 1) return `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+                    if (pts.length === 2) return `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)} L ${pts[1].x.toFixed(1)},${pts[1].y.toFixed(1)}`;
+                    let d = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+                    for (let i = 0; i < pts.length - 1; i++) {
+                        const p0 = pts[Math.max(0, i - 1)];
+                        const p1 = pts[i];
+                        const p2 = pts[i + 1];
+                        const p3 = pts[Math.min(pts.length - 1, i + 2)];
+
+                        let cp1x = p1.x + (p2.x - p0.x) * k;
+                        let cp1y = p1.y + (p2.y - p0.y) * k;
+                        let cp2x = p2.x - (p3.x - p1.x) * k;
+                        let cp2y = p2.y - (p3.y - p1.y) * k;
+
+                        if (clampMaxY !== null) {
+                            cp1y = Math.min(clampMaxY, cp1y);
+                            cp2y = Math.min(clampMaxY, cp2y);
+                        }
+                        if (clampMinY !== null) {
+                            cp1y = Math.max(clampMinY, cp1y);
+                            cp2y = Math.max(clampMinY, cp2y);
+                        }
+
+                        d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+                    }
+                    return d;
+                }
+
+                // Smooth Lines
+                const lineDown = document.createElementNS(svg.namespaceURI, 'path');
+                lineDown.setAttribute('class', downLineClass);
+                lineDown.setAttribute('fill', 'none');
+                const lineUp = document.createElementNS(svg.namespaceURI, 'path');
+                lineUp.setAttribute('class', upLineClass);
+                lineUp.setAttribute('fill', 'none');
+                svg.append(lineDown, lineUp);
+
+                // End Dots
+                const dotDown = document.createElementNS(svg.namespaceURI, 'circle');
+                dotDown.setAttribute('r', '3.5');
+                dotDown.setAttribute('class', downDotClass);
+                const dotUp = document.createElementNS(svg.namespaceURI, 'circle');
+                dotUp.setAttribute('r', '3.5');
+                dotUp.setAttribute('class', upDotClass);
+                svg.append(dotDown, dotUp);
+
+                // Guideline and hover dots
+                const guideLine = document.createElementNS(svg.namespaceURI, 'line');
+                guideLine.setAttribute('y1', '8');
+                guideLine.setAttribute('y2', '95');
+                guideLine.setAttribute('stroke', '#94a3b8');
+                guideLine.setAttribute('stroke-width', '1');
+                guideLine.setAttribute('stroke-dasharray', '3,3');
+                guideLine.style.display = 'none';
+                guideLine.style.pointerEvents = 'none';
+
+                const hoverDotDown = document.createElementNS(svg.namespaceURI, 'circle');
+                hoverDotDown.setAttribute('r', '4.5');
+                hoverDotDown.setAttribute('fill', colorDown);
+                hoverDotDown.setAttribute('stroke', '#ffffff');
+                hoverDotDown.setAttribute('stroke-width', '2');
+                hoverDotDown.style.display = 'none';
+                hoverDotDown.style.pointerEvents = 'none';
+
+                const hoverDotUp = document.createElementNS(svg.namespaceURI, 'circle');
+                hoverDotUp.setAttribute('r', '4.5');
+                hoverDotUp.setAttribute('fill', colorUp);
+                hoverDotUp.setAttribute('stroke', '#ffffff');
+                hoverDotUp.setAttribute('stroke-width', '2');
+                hoverDotUp.style.display = 'none';
+                hoverDotUp.style.pointerEvents = 'none';
+
+                svg.append(guideLine, hoverDotDown, hoverDotUp);
+
+                // Large Hit Area overlay
+                const hitRect = document.createElementNS(svg.namespaceURI, 'rect');
+                hitRect.setAttribute('x', '0');
+                hitRect.setAttribute('y', '0');
+                hitRect.setAttribute('width', '600');
+                hitRect.setAttribute('height', '110');
+                hitRect.setAttribute('fill', 'transparent');
+                hitRect.setAttribute('pointer-events', 'all');
+                hitRect.style.cursor = 'crosshair';
+                svg.append(hitRect);
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'chart-tooltip';
+
+                container.innerHTML = '';
+                container.append(svg, tooltip);
+
+                let curSamplesCache = [], getDownFn = null, getUpFn = null, curPtsDown = [], curPtsUp = [];
+
+                function showHover(clientX) {
+                    if (!curPtsDown.length || !curSamplesCache.length) return;
+                    const rect = svg.getBoundingClientRect();
+                    const relX = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                    const svgX = relX * 600;
+
+                    let closestIdx = 0, minDist = Infinity;
+                    curPtsDown.forEach((p, i) => {
+                        const d = Math.abs(p.x - svgX);
+                        if (d < minDist) {
+                            minDist = d;
+                            closestIdx = i;
+                        }
+                    });
+
+                    const pDown = curPtsDown[closestIdx];
+                    const pUp = curPtsUp[closestIdx];
+                    const s = curSamplesCache[closestIdx];
+
+                    guideLine.setAttribute('x1', pDown.x.toFixed(1));
+                    guideLine.setAttribute('x2', pDown.x.toFixed(1));
+                    guideLine.style.display = '';
+
+                    hoverDotDown.setAttribute('cx', pDown.x.toFixed(1));
+                    hoverDotDown.setAttribute('cy', pDown.y.toFixed(1));
+                    hoverDotDown.style.display = '';
+
+                    hoverDotUp.setAttribute('cx', pUp.x.toFixed(1));
+                    hoverDotUp.setAttribute('cy', pUp.y.toFixed(1));
+                    hoverDotUp.style.display = '';
+
+                    const timeStr = s.at ? new Date(s.at).toLocaleTimeString() : '';
+                    const dVal = getDownFn ? fmtRate(getDownFn(s)) : '';
+                    const uVal = getUpFn ? fmtRate(getUpFn(s)) : '';
+
+                    tooltip.innerHTML = `
+                        <div style="color:#94a3b8;font-size:10px;font-family:monospace;margin-bottom:2px;">${timeStr}</div>
+                        <div style="display:flex;gap:8px;font-weight:600;">
+                            <span style="color:${colorDown};">↓ ${dVal}</span>
+                            <span style="color:${colorUp};">↑ ${uVal}</span>
+                        </div>
+                    `;
+                    tooltip.style.display = 'block';
+                    const pixelX = (pDown.x / 600) * rect.width;
+                    tooltip.style.left = pixelX + 'px';
+                }
+
+                function hideHover() {
+                    guideLine.style.display = 'none';
+                    hoverDotDown.style.display = 'none';
+                    hoverDotUp.style.display = 'none';
+                    tooltip.style.display = 'none';
+                }
+
+                hitRect.onpointermove = e => showHover(e.clientX);
+                hitRect.onpointerdown = e => showHover(e.clientX);
+                hitRect.onpointerleave = hideHover;
+                hitRect.ontouchstart = e => { if (e.touches.length) showHover(e.touches[0].clientX); };
+                hitRect.ontouchmove = e => { if (e.touches.length) showHover(e.touches[0].clientX); };
+
+                return function update(samples, getDown, getUp, isNew) {
+                    curSamplesCache = samples;
+                    getDownFn = getDown;
+                    getUpFn = getUp;
+
+                    const maxVal = Math.max(0, ...samples.flatMap(s => [Number(getDown(s)) || 0, Number(getUp(s)) || 0]));
+                    const scale = niceRateMax(maxVal);
+
+                    if (axisLabels.length >= 3) {
+                        axisLabels[0].textContent = fmtAxisRate(scale);
+                        axisLabels[1].textContent = fmtAxisRate(scale / 2);
+                        axisLabels[2].textContent = '0.000 MB/s';
+                    }
+
+                    const getX = i => samples.length === 1 ? 74 : 74 + i * 518 / (samples.length - 1);
+                    const getY = val => 95 - (Number(val) || 0) * 85 / scale;
+
+                    curPtsDown = samples.map((s, i) => ({ x: getX(i), y: getY(getDown(s)) }));
+                    curPtsUp = samples.map((s, i) => ({ x: getX(i), y: getY(getUp(s)) }));
+
+                    const curveDown = getCurvePath(curPtsDown, 0.18, 95, 8);
+                    const curveUp = getCurvePath(curPtsUp, 0.18, 95, 8);
+
+                    pathDown.setAttribute('d', curveDown ? `${curveDown} L ${curPtsDown[curPtsDown.length - 1].x.toFixed(1)},95 L ${curPtsDown[0].x.toFixed(1)},95 Z` : '');
+                    lineDown.setAttribute('d', curveDown);
+                    dotDown.setAttribute('cx', curPtsDown[curPtsDown.length - 1].x.toFixed(1));
+                    dotDown.setAttribute('cy', curPtsDown[curPtsDown.length - 1].y.toFixed(1));
+
+                    pathUp.setAttribute('d', curveUp ? `${curveUp} L ${curPtsUp[curPtsUp.length - 1].x.toFixed(1)},95 L ${curPtsUp[0].x.toFixed(1)},95 Z` : '');
+                    lineUp.setAttribute('d', curveUp);
+                    dotUp.setAttribute('cx', curPtsUp[curPtsUp.length - 1].x.toFixed(1));
+                    dotUp.setAttribute('cy', curPtsUp[curPtsUp.length - 1].y.toFixed(1));
+
+                    if (isNew) {
+                        for (const el of [lineDown, lineUp, pathDown, pathUp]) {
+                            el.classList.remove('speed-slide');
+                            void el.clientWidth;
+                            el.classList.add('speed-slide');
+                        }
+                        for (const dot of [dotDown, dotUp]) {
+                            dot.classList.remove('speed-dot-enter');
+                            void dot.clientWidth;
+                            dot.classList.add('speed-dot-enter');
+                        }
+                    }
+                };
+            }
+
+            const updateProxy = buildChart(
+                proxyContainer,
+                'proxyGradDown', 'proxyGradUp',
+                'speed-line-proxy', 'speed-line-proxy-up',
+                'speed-dot-proxy', 'speed-dot-proxy-up',
+                '#8b5cf6', '#f59e0b'
+            );
+
+            const updateDirect = buildChart(
+                directContainer,
+                'directGradDown', 'directGradUp',
+                'speed-line-direct', 'speed-line-direct-up',
+                'speed-dot-direct', 'speed-dot-direct-up',
+                '#2563eb', '#10b981'
+            );
+
+            const rateProxyDown = document.getElementById('rate-proxy-down');
+            const rateProxyUp = document.getElementById('rate-proxy-up');
+            const rateDirectDown = document.getElementById('rate-direct-down');
+            const rateDirectUp = document.getElementById('rate-direct-up');
+
+            let lastSampleCount = 0;
+            let lastSampleAt = null;
+
+            function renderAll(samples, proxyEnabled) {
+                if (!samples || samples.length === 0) {
+                    proxyHint.textContent = '';
+                    directHint.textContent = '';
+                    return;
+                }
+                const last = samples[samples.length - 1];
+                const isNew = samples.length > 1 && (samples.length > lastSampleCount || (last.at && last.at !== lastSampleAt));
+                lastSampleCount = samples.length;
+                lastSampleAt = last.at;
+
+                updateProxy(samples, s => s.proxy_down_bps, s => s.proxy_up_bps, isNew);
+                updateDirect(samples, s => s.direct_down_bps, s => s.direct_up_bps, isNew);
+
+                const totalEl = document.getElementById('sim-speed-total');
+                if (totalEl) totalEl.textContent = `整体: ↓ ${fmtRate(last.total_down_bps)}　↑ ${fmtRate(last.total_up_bps)}`;
+
+                const pDown = fmtRate(last.proxy_down_bps);
+                const pUp = fmtRate(last.proxy_up_bps);
+                const dDown = fmtRate(last.direct_down_bps);
+                const dUp = fmtRate(last.direct_up_bps);
+
+                // Update badges
+                if (proxyEnabled) {
+                    if (proxyRateBadge) proxyRateBadge.textContent = `↓ ${pDown}　↑ ${pUp}`;
+                    if (rateProxyDown) rateProxyDown.textContent = pDown;
+                    if (rateProxyUp) rateProxyUp.textContent = pUp;
+                    if (proxyStatusHint) proxyStatusHint.textContent = '代理通道运行中';
+                } else {
+                    if (proxyRateBadge) proxyRateBadge.textContent = '未启用代理通道';
+                    if (rateProxyDown) rateProxyDown.textContent = '未开启';
+                    if (rateProxyUp) rateProxyUp.textContent = '未开启';
+                    if (proxyStatusHint) proxyStatusHint.textContent = '未启用透明代理';
+                }
+                if (directRateBadge) directRateBadge.textContent = `↓ ${dDown}　↑ ${dUp}`;
+                if (rateDirectDown) rateDirectDown.textContent = dDown;
+                if (rateDirectUp) rateDirectUp.textContent = dUp;
+
+                if (proxyDownText) proxyDownText.textContent = pDown;
+                if (proxyUpText) proxyUpText.textContent = pUp;
+                if (directDownText) directDownText.textContent = dDown;
+                if (directUpText) directUpText.textContent = dUp;
+
+                proxyHint.textContent = '';
+                directHint.textContent = '';
+            }
+
+            async function fetchSpeed() {
+                try {
+                    const res = await fetch('/air-api/network/speed', { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.ok && data.samples) {
+                        renderAll(data.samples, !!data.proxy_enabled);
+                    }
+                } catch (e) {
+                    // Ignore poll network errors
+                }
+            }
+
+            fetchSpeed();
+            setInterval(fetchSpeed, 2000);
+        }
+    </script>
+<script src="/air-embed.js?v=2.5"></script></body>
+</html>

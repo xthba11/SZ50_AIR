@@ -1,0 +1,26 @@
+#!/bin/sh
+
+check_wifi_and_connman() {
+    # 1. 检查 Wi-Fi 驱动，避免系统 rmmod 后热点丢失
+    if ! lsmod | grep -q "sprdwl_ng"; then
+        modprobe sprdwl_ng 2>/dev/null
+        sleep 1
+    fi
+
+    # 2. 检查 connmand 守护进程，如果挂掉自动重启
+    if ! ps | grep -v grep | grep -q "connmand"; then
+        /usr/sbin/connmand 2>/dev/null &
+    fi
+}
+
+while true; do
+    check_wifi_and_connman
+
+    if ! pidof admin-gateway >/dev/null 2>&1; then
+        /home/root/admin-auth/admin-gateway &
+        CHILD=$!
+        echo "$CHILD" >/var/run/admin-auth.pid
+    fi
+
+    sleep 3
+done

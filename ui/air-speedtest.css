@@ -1,0 +1,27 @@
+*{box-sizing:border-box}
+html{overflow:hidden!important}
+body{margin:0!important;padding:12px!important;background:transparent!important;color:#294260;font:13px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden!important}
+.speed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.speed-grid>div{padding:14px;background:linear-gradient(135deg,#fff,#f7faff);border:1px solid #e4ebf5;border-radius:12px;box-shadow:0 2px 8px rgba(35,50,80,.04);transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s ease}
+.speed-grid>div:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(35,50,80,.08);border-color:#d4e1f5}
+.speed-grid span{display:block;color:#71829a;font-size:12px;font-weight:600}
+.speed-grid small{display:block;color:#8f9fb5;font-size:11px}
+.speed-grid strong{display:block;font-size:26px;font-weight:700;letter-spacing:-.6px;margin:6px 0;font-variant-numeric:tabular-nums;color:#1e324d}
+.speed-note{color:#76879e;font-size:12px;margin:16px 0 10px;line-height:1.5}
+#speed-status{display:flex;align-items:center;gap:8px;min-height:24px;margin:10px 0 12px;color:#435c7e;font-size:13px;font-weight:600}
+#speed-status::before{content:"";width:7px;height:7px;border-radius:50%;background:#376cf4;box-shadow:0 0 0 3px rgba(55,108,244,.18);animation:statusDotPulse 2s infinite ease-in-out;flex-shrink:0}
+@keyframes statusDotPulse{0%,100%{box-shadow:0 0 0 2px rgba(55,108,244,.25)}50%{box-shadow:0 0 0 5px rgba(55,108,244,.05)}}
+progress{width:100%;height:12px;border:0;border-radius:999px;background:#e9eff8;box-shadow:inset 0 1.5px 3px rgba(30,45,70,.1);overflow:hidden;display:block;margin-bottom:16px;position:relative}
+progress::-webkit-progress-bar{background-color:#e9eff8;border-radius:999px}
+progress::-webkit-progress-value{border-radius:999px;background:linear-gradient(90deg,#376cf4 0%,#00c0f3 50%,#20c997 100%);background-size:200% 100%;box-shadow:0 0 10px rgba(55,108,244,.4);transition:width .35s cubic-bezier(.16,1,.3,1);animation:speedShine 2.5s linear infinite}
+progress::-moz-progress-bar{border-radius:999px;background:linear-gradient(90deg,#376cf4 0%,#00c0f3 50%,#20c997 100%);background-size:200% 100%;box-shadow:0 0 10px rgba(55,108,244,.4);transition:width .35s cubic-bezier(.16,1,.3,1);animation:speedShine 2.5s linear infinite}
+@keyframes speedShine{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.speed-actions{display:flex;gap:12px;margin-top:14px}
+button{background:linear-gradient(135deg,#376cf4,#2658de);border:0;border-radius:10px;padding:10px 22px;color:#fff;cursor:pointer;font:inherit;font-size:13px;font-weight:600;box-shadow:0 3px 10px rgba(55,108,244,.25);transition:transform .15s,box-shadow .15s,opacity .15s}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 16px rgba(55,108,244,.35)}
+button:active:not(:disabled){transform:scale(.97)!important}
+button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+#speed-stop{background:#fff;color:#5a6e87;border:1px solid #d5dfed;box-shadow:0 2px 6px rgba(35,50,80,.05)}
+#speed-stop:hover:not(:disabled){border-color:#b9cbe2;color:#354963;box-shadow:0 4px 12px rgba(35,50,80,.1)}
+@media(max-width:480px){.speed-grid{gap:8px}.speed-grid>div{padding:10px}.speed-grid strong{font-size:21px}.speed-actions button{flex:1;padding:10px 12px}}
+@media(prefers-reduced-motion:reduce){progress::-webkit-progress-value,progress::-moz-progress-bar,#speed-status::before{animation:none!important}}

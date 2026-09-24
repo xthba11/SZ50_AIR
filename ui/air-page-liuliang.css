@@ -1,0 +1,555 @@
+
+        .container {
+            background-color: white;
+            padding: 10px 0px;
+            box-sizing: border-box;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #4CAF50;
+            padding-bottom: 8px;
+        }
+        
+        .stats-box {
+            margin: 10px 0;
+            padding: 14px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .stats-box h2 {
+            margin: 0;
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-content {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #334155;
+            word-break: break-all;
+        }
+
+        /* 统一今日与本月用量栅格 */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .metric-col {
+            background: rgba(255,255,255,.5);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .metric-kicker {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        
+        .alert {
+            color: #d32f2f;
+            padding: 8px 12px;
+            margin: 10px 0;
+            background-color: #ffebee;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: pre-line;
+            border: 1px solid #ffcdd2;
+        }
+        
+        /* 30天图表样式 */
+        .chart-section {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .chart-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #334155;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .chart-legend {
+            font-size: 11px;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 3px;
+        }
+
+        .rx-dot { background-color: #3b82f6; }
+        .rx-dot { background-color: #2563eb; }
+        .tx-dot { background-color: #10b981; }
+
+        /* 全机与通道一体化统计模块专属样式 */
+        .stats-box-unified {
+            border-left: 4px solid #2563eb !important;
+            background-color: #f8fafc;
+        }
+
+        .stats-title-group {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stats-subtitle {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .metric-head-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metric-head-total {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .breakdown-card {
+            background: rgba(255,255,255,.5);
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        .card-direct {
+            background: #f0f7ff;
+            border-color: #dbeafe;
+        }
+
+        .card-proxy {
+            background: #faf5ff;
+            border-color: #ede9fe;
+        }
+
+        .breakdown-card-title {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+
+        .card-direct .breakdown-card-title { color: #1d4ed8; }
+        .card-proxy .breakdown-card-title { color: #6b21a8; }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-direct { background: #2563eb; }
+        .dot-proxy { background: #8b5cf6; }
+
+        .breakdown-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-variant-numeric: tabular-nums;
+            color: #475569;
+        }
+
+        .card-direct .breakdown-card-body b { color: #2563eb; }
+        .card-direct .breakdown-card-body span:nth-child(2) b { color: #10b981; }
+        .card-proxy .breakdown-card-body b { color: #8b5cf6; }
+        .card-proxy .breakdown-card-body span:nth-child(2) b { color: #f59e0b; }
+
+        .breakdown-total {
+            margin-top: 3px;
+            padding-top: 3px;
+            border-top: 1px dashed rgba(0,0,0,0.08);
+            font-weight: 600;
+            color: #1e293b !important;
+        }
+
+        .charts-unified-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .chart-title-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .chart-title-group strong {
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .channel-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .tag-direct {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+        .tag-proxy {
+            background: #f5f3ff;
+            color: #7c3aed;
+            border: 1px solid #ddd6fe;
+        }
+
+        @media (max-width: 860px) {
+            .charts-unified-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stats-box-proxy {
+            border-left: 4px solid #8b5cf6 !important;
+            margin-top: 14px;
+        }
+        .proxy-tag-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background-color: #f3e8ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+            letter-spacing: 0.02em;
+        }
+        .kicker-proxy {
+            color: #7c3aed !important;
+        }
+        .rx-dot-proxy { background-color: #8b5cf6 !important; }
+        .tx-dot-proxy { background-color: #f59e0b !important; }
+
+        .daily-chart-svg {
+            width: 100%;
+            min-height: 140px;
+        }
+
+        .chart-empty {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+
+        /* 系统设置组 */
+        .setting-group {
+            margin: 14px 0;
+            padding: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .setting-group h2 {
+            margin: 0 0 14px 0;
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        /* 滑块行 */
+        .setting-switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .setting-switch-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setting-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .setting-switch-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 流量限制子行 */
+        .setting-sub-row {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin: 8px 0 12px 0;
+        }
+
+        .limit-input-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 13px;
+            color: #334155;
+        }
+        
+        #tfcweb-section .btn{
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            font-weight: 600;
+        }
+        
+        #tfcweb-section .btn-danger{
+            background-color: #ef4444;
+        }
+        #tfcweb-section .btn-danger:hover{
+            background-color: #dc2626;
+        }
+        
+        #tfcweb-section .btn-warning{
+            background-color: #f59e0b;
+        }
+        
+        #tfcweb-section .btn:disabled{
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        #tfcweb-section .btn:active:not(:disabled){
+            opacity: 0.8;
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 5px 8px;
+            margin: 0 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            border-color: #3b82f6;
+        }
+        
+        .status {
+            display: inline-block;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .enabled {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .disabled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .refresh-timer {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .refresh-timer .status {
+            font-size: 11px;
+            padding: 1px 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* 现代滑块开关 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        
+        /* 顶部弹窗样式 */
+        #liu-toast {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background-color: #a4eeba;
+            color: rgb(24, 24, 24);
+            padding: 8px 16px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        #liu-toast.show {
+            transform: translateY(0);
+        }
+        
+        #liu-toast.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        #liu-toast.info {
+            background-color: #bbdefb;
+            color: #0d47a1;
+        }
+        
+        #liu-toast.processing {
+            background-color: #fff9c4;
+            color: #f57f17;
+        }
+/* 内联到主界面后：只让 shell 铺满主内容区，图表卡片按名字精确跨列。
+   ⚠️ 切勿再用 [class*="radar"] / [class*="cards"] / [class*="-row"] 这类通配符：
+   它们会命中图表区里的每一个按钮、标签、明细行（radar-tab-btn / radar-scan-btn /
+   radar-ap-item / radar-ap-crypto-tag …），把内部元素全部强制成 width:100%，
+   表现为"按钮被拉得很宽很丑、周围 Wi-Fi 明细一行显示不完、频谱图四不像"。
+   同时也别给 [id*="chart-container"] 强加 min-height（会让曲线下方留一大片空白）。 */
+.liuliang-shell{max-width:none;width:100%}
+/* 两个图表保持并列：不加 grid-column，保持原来的两列并列 */
+
+/* 流量概览卡片（含两个每日趋势图）跨两列：图表改成左右并列后，
+   若卡片仍是半宽，每个图表只剩 ~243px 太窄；跨两列后各约 526px。 */
+#tfcweb-section .stats-box.stats-box-unified{grid-column:1/-1}
+
+/* 内容区宽度与其它页的 .content-wrapper(1340px) 对齐 —— 原来 .air-inner .container 是 1120px，
+   2K 屏下左右各少 110px，看起来「卡片区域明显不对齐、比别的页窄」。 */
+#tfcweb-section .container{max-width:1340px}
+/* 流量条件卡片：整行 + 条件项一行两列（用户要的版式：概览整行 → 条件两列 → 图表两列） */
+#tfcweb-section .container > .setting-group{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 34px;align-items:start}
+#tfcweb-section .container > .setting-group > h2{grid-column:1/-1}

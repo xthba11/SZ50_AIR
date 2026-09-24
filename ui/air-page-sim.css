@@ -1,0 +1,505 @@
+
+        .container {
+            background-color: white;
+            padding: 10px 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #2196F3;
+            padding-bottom: 8px;
+            width: 100%;
+        }
+        
+        .stats-box {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            background: #f9f9f9;
+        }
+        
+        .stats-box h2 {
+            margin: 0;
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .stats-content {
+            font-size: 13px;
+            line-height: 1.4;
+            width: 100%;
+        }
+        
+        .setting-group {
+            margin: 10px 0;
+            padding: 14px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .setting-group h2 {
+            margin: 0 0 14px 0;
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        #clashweb-section .btn{
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.2s;
+            width: 120px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        #clashweb-section .btn:active{
+            opacity: 0.8;
+        }
+        
+        #clashweb-section .btn-disabled{
+            background-color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        
+        .control-group {
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .setting-label {
+            display: inline-block;
+            width: 80px;
+            text-align: left;
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .sim-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232196F3"><path d="M18,3H6A2,2 0 0,0 4,5V19A2,2 0 0,0 6,21H18A2,2 0 0,0 20,19V5A2,2 0 0,0 18,3M18,19H6V5H18V19M15,17H9V7H15V17Z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .network-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232196F3"><path d="M21,11L18.8,11C18.4,9.8 17.3,9 16,9C14.7,9 13.6,9.8 13.2,11L11,11V5.73C11.6,5.39 12,4.74 12,4C12,2.9 11.1,2 10,2S8,2.9 8,4C8,4.74 8.4,5.39 9,5.73V11H6.8C6.4,9.8 5.3,9 4,9C2.7,9 1.6,9.8 1.2,11H0V13H1.2C1.6,14.2 2.7,15 4,15C5.3,15 6.4,14.2 6.8,13H9V18.27C8.4,18.61 8,19.26 8,20C8,21.1 8.9,22 10,22S12,21.1 12,20C12,19.26 11.6,18.61 11,18.27V13H13.2C13.6,14.2 14.7,15 16,15C17.3,15 18.4,14.2 18.8,13H21V11Z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        #toast {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background-color: #a4eeba;
+            color: rgb(24, 24, 24);
+            padding: 8px 16px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        #toast.show {
+            transform: translateY(0);
+        }
+        
+        #toast.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        #toast.info {
+            background-color: #bbdefb;
+            color: #1565c0;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .sim-status-display {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .current-sim {
+            color: #2196F3;
+        }
+        
+        .current-network {
+            color: #4CAF50;
+        }
+        
+        .network-desc {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 10px 0;
+        }
+
+        /* 实时网速折线图模块样式（PC端平行双列放置：非代理直连在左/前，代理通道在右/后） */
+        .sim-speed-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin: 10px 0 16px 0;
+            padding: 16px 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .sim-speed-subcard {
+            padding: 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sim-speed-row-divider {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .sim-speed-box {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .sim-speed-row-divider {
+                display: block;
+                height: 1px;
+                background: #f1f5f9;
+                margin: 4px 0;
+            }
+        }
+
+        .sim-speed-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .sim-speed-head h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .speed-title-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .proxy-badge-dot {
+            background: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+        }
+        .direct-badge-dot {
+            background: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .sim-speed-subtitle {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .sim-speed-badges {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .speed-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+            letter-spacing: 0.2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+        .speed-stat-badge .badge-arrow {
+            font-weight: 800;
+            font-size: 13px;
+        }
+        .speed-stat-badge .badge-label {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+        .speed-stat-badge .badge-num {
+            font-family: Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
+            font-weight: 700;
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 代理下载方框: 紫色主题 */
+        .badge-proxy-down {
+            color: #7c3aed;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+        }
+        /* 代理上传方框: 亮琥珀橙主题 (与下载高对比) */
+        .badge-proxy-up {
+            color: #d97706;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+        }
+        /* 直连下载方框: 科技蓝主题 */
+        .badge-direct-down {
+            color: #2563eb;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+        /* 直连上传方框: 翠绿主题 */
+        .badge-direct-up {
+            color: #059669;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+
+        .sim-speed-chart-wrap {
+            position: relative;
+            width: 100%;
+            overflow: visible;
+            margin: 12px 0 4px 0;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            top: -38px;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+            z-index: 50;
+            display: none;
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+        .chart-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px 5px 0;
+            border-style: solid;
+            border-color: rgba(15, 23, 42, 0.94) transparent transparent;
+        }
+
+        .sim-speed-chart-wrap svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .sim-speed-grid {
+            stroke: #e2e8f0;
+            stroke-width: 1;
+            stroke-dasharray: 2,2;
+        }
+
+        .sim-speed-axis {
+            fill: #94a3b8;
+            font-size: 10px;
+            font-family: monospace;
+        }
+
+        /* 代理流量折线：下载深紫，上传琥珀橙（细线精致） */
+        .speed-line-proxy {
+            fill: none;
+            stroke: #8b5cf6;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .speed-line-proxy-up {
+            fill: none;
+            stroke: #f59e0b;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 4,2;
+        }
+        .speed-dot-proxy {
+            fill: #8b5cf6;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+        .speed-dot-proxy-up {
+            fill: #f59e0b;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+
+        /* 非代理直连折线：下载科技蓝，上传翠绿（细线精致） */
+        .speed-line-direct {
+            fill: none;
+            stroke: #2563eb;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .speed-line-direct-up {
+            fill: none;
+            stroke: #10b981;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 4,2;
+        }
+        .speed-dot-direct {
+            fill: #2563eb;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+        .speed-dot-direct-up {
+            fill: #10b981;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+
+        .sim-speed-legend {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 6px;
+            padding-top: 6px;
+            font-size: 12px;
+        }
+        .sim-speed-legend small {
+            margin-left: auto;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .legend-bar {
+            display: inline-block;
+            width: 14px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .proxy-down-bar { background: #8b5cf6; }
+        .proxy-up-bar { background: #f59e0b; }
+        .direct-down-bar { background: #2563eb; }
+        .direct-up-bar { background: #10b981; }
+
+        .proxy-down-item span { color: #6d28d9; }
+        .proxy-up-item span { color: #b45309; }
+        .direct-down-item span { color: #1d4ed8; }
+        .direct-up-item span { color: #047857; }
+
+        /* 平滑滑动与入场动画 */
+        @keyframes speedSlide {
+            from { transform: translateX(18px); }
+            to { transform: translateX(0); }
+        }
+        @keyframes speedDotEnter {
+            0% { opacity: 0; transform: scale(0.3); }
+            60% { opacity: 1; transform: scale(1.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .speed-slide {
+            animation: speedSlide 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .speed-dot-enter {
+            animation: speedDotEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+/* 内联到主界面后：只让 shell 铺满主内容区，图表卡片按名字精确跨列。
+   ⚠️ 切勿再用 [class*="radar"] / [class*="cards"] / [class*="-row"] 这类通配符：
+   它们会命中图表区里的每一个按钮、标签、明细行（radar-tab-btn / radar-scan-btn /
+   radar-ap-item / radar-ap-crypto-tag …），把内部元素全部强制成 width:100%，
+   表现为"按钮被拉得很宽很丑、周围 Wi-Fi 明细一行显示不完、频谱图四不像"。
+   同时也别给 [id*="chart-container"] 强加 min-height（会让曲线下方留一大片空白）。 */
+.sim-shell{max-width:none;width:100%}
+.stats-box.sim-speed-box{grid-column:1/-1}   /* 网速折线图卡片整行 */
+
+/* 代理与非代理之间不加分隔线，改为拉开间距（用户要求：两条曲线/图例之间空间大一点） */
+
+/* 内容区宽度与其它页的 .content-wrapper(1340px) 对齐 —— 原来 .air-inner .container 是 1120px，
+   2K 屏下左右各少 110px，看起来「卡片区域明显不对齐、比别的页窄」。 */
+#clashweb-section .container{max-width:1340px}
+#clashweb-section .stats-box.sim-speed-box{column-gap:44px}
+#clashweb-section .sim-speed-subcard.proxy-chart-subcard{border-left:0}

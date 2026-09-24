@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>流量监控</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            height: auto;
+            min-height: 0;
+            overflow-y: visible;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: white;
+            padding: 10px 0px;
+            box-sizing: border-box;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #4CAF50;
+            padding-bottom: 8px;
+        }
+        
+        .stats-box {
+            margin: 10px 0;
+            padding: 14px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .stats-box h2 {
+            margin: 0;
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-content {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #334155;
+            word-break: break-all;
+        }
+
+        /* 统一今日与本月用量栅格 */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .metric-col {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .metric-kicker {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        
+        .alert {
+            color: #d32f2f;
+            padding: 8px 12px;
+            margin: 10px 0;
+            background-color: #ffebee;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: pre-line;
+            border: 1px solid #ffcdd2;
+        }
+        
+        /* 30天图表样式 */
+        .chart-section {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .chart-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #334155;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .chart-legend {
+            font-size: 11px;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 3px;
+        }
+
+        .rx-dot { background-color: #3b82f6; }
+        .rx-dot { background-color: #2563eb; }
+        .tx-dot { background-color: #10b981; }
+
+        /* 全机与通道一体化统计模块专属样式 */
+        .stats-box-unified {
+            border-left: 4px solid #2563eb !important;
+            background-color: #f8fafc;
+        }
+
+        .stats-title-group {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stats-subtitle {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .metric-head-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metric-head-total {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .breakdown-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        .card-direct {
+            background: #f0f7ff;
+            border-color: #dbeafe;
+        }
+
+        .card-proxy {
+            background: #faf5ff;
+            border-color: #ede9fe;
+        }
+
+        .breakdown-card-title {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+
+        .card-direct .breakdown-card-title { color: #1d4ed8; }
+        .card-proxy .breakdown-card-title { color: #6b21a8; }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-direct { background: #2563eb; }
+        .dot-proxy { background: #8b5cf6; }
+
+        .breakdown-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-variant-numeric: tabular-nums;
+            color: #475569;
+        }
+
+        .card-direct .breakdown-card-body b { color: #2563eb; }
+        .card-direct .breakdown-card-body span:nth-child(2) b { color: #10b981; }
+        .card-proxy .breakdown-card-body b { color: #8b5cf6; }
+        .card-proxy .breakdown-card-body span:nth-child(2) b { color: #f59e0b; }
+
+        .breakdown-total {
+            margin-top: 3px;
+            padding-top: 3px;
+            border-top: 1px dashed rgba(0,0,0,0.08);
+            font-weight: 600;
+            color: #1e293b !important;
+        }
+
+        .charts-unified-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .chart-title-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .chart-title-group strong {
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .channel-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .tag-direct {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+        .tag-proxy {
+            background: #f5f3ff;
+            color: #7c3aed;
+            border: 1px solid #ddd6fe;
+        }
+
+        @media (max-width: 860px) {
+            .charts-unified-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stats-box-proxy {
+            border-left: 4px solid #8b5cf6 !important;
+            margin-top: 14px;
+        }
+        .proxy-tag-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background-color: #f3e8ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+            letter-spacing: 0.02em;
+        }
+        .kicker-proxy {
+            color: #7c3aed !important;
+        }
+        .rx-dot-proxy { background-color: #8b5cf6 !important; }
+        .tx-dot-proxy { background-color: #f59e0b !important; }
+
+        .daily-chart-svg {
+            width: 100%;
+            min-height: 140px;
+        }
+
+        .chart-empty {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+
+        /* 系统设置组 */
+        .setting-group {
+            margin: 14px 0;
+            padding: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .setting-group h2 {
+            margin: 0 0 14px 0;
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        /* 滑块行 */
+        .setting-switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .setting-switch-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setting-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .setting-switch-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 流量限制子行 */
+        .setting-sub-row {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin: 8px 0 12px 0;
+        }
+
+        .limit-input-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 13px;
+            color: #334155;
+        }
+        
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            font-weight: 600;
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        .btn-warning {
+            background-color: #f59e0b;
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn:active:not(:disabled) {
+            opacity: 0.8;
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 5px 8px;
+            margin: 0 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            border-color: #3b82f6;
+        }
+        
+        .status {
+            display: inline-block;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .enabled {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .disabled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .refresh-timer {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .refresh-timer .status {
+            font-size: 11px;
+            padding: 1px 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* 现代滑块开关 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        
+        /* 顶部弹窗样式 */
+        .toast {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background-color: #a4eeba;
+            color: rgb(24, 24, 24);
+            padding: 8px 16px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+        }
+        
+        .toast.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .toast.info {
+            background-color: #bbdefb;
+            color: #0d47a1;
+        }
+        
+        .toast.processing {
+            background-color: #fff9c4;
+            color: #f57f17;
+        }
+    </style>
+<link rel="stylesheet" href="/air-inner.css?v=2.18"><script>if(window.self!==window.top)document.documentElement.classList.add("air-embedded");</script></head>
+<body class="air-inner" data-page="liuliang">
+    <div class="container"><header class="air-page-header"><h1>流量管理</h1></header>
+        
+        <!-- 全机与通道流量概览（蜂窝 · 直连 · 代理 统一模块，含双30天趋势图表） -->
+        <div class="stats-box stats-box-unified">
+            <div class="stats-header">
+                <div class="stats-title-group">
+                    <h2>流量概览与趋势</h2>
+                    <span class="stats-subtitle">蜂窝 · 直连 · 代理 统一统计</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-danger action-btn" id="clear-stats">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>清空统计
+                    </button>
+                </div>
+            </div>
+
+            <div class="metrics-row">
+                <!-- 今日流量 -->
+                <div class="metric-col">
+                    <div class="metric-head-row">
+                        <span class="metric-kicker">今日流量 (蜂窝)</span>
+                        <strong class="metric-head-total" id="today-total-badge">--</strong>
+                    </div>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-card card-direct">
+                            <div class="breakdown-card-title"><span class="pill-dot dot-direct"></span>直连通道</div>
+                            <div class="breakdown-card-body">
+                                <span>↓ <b id="today-direct-rx">--</b></span>
+                                <span>↑ <b id="today-direct-tx">--</b></span>
+                                <span class="breakdown-total">计: <strong id="today-direct-total">--</strong></span>
+                            </div>
+                        </div>
+                        <div class="breakdown-card card-proxy">
+                            <div class="breakdown-card-title"><span class="pill-dot dot-proxy"></span>代理通道</div>
+                            <div class="breakdown-card-body">
+                                <span>↓ <b id="today-proxy-rx">--</b></span>
+                                <span>↑ <b id="today-proxy-tx">--</b></span>
+                                <span class="breakdown-total">计: <strong id="today-proxy-total">--</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="today-result" class="stats-content-raw" style="display:none;"></div>
+                    <div id="today-proxy-result" class="stats-content-raw" style="display:none;"></div>
+                </div>
+
+                <!-- 当月流量 -->
+                <div class="metric-col">
+                    <div class="metric-head-row">
+                        <span class="metric-kicker">当月流量 (蜂窝)</span>
+                        <strong class="metric-head-total" id="month-total-badge">--</strong>
+                    </div>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-card card-direct">
+                            <div class="breakdown-card-title"><span class="pill-dot dot-direct"></span>直连通道</div>
+                            <div class="breakdown-card-body">
+                                <span>↓ <b id="month-direct-rx">--</b></span>
+                                <span>↑ <b id="month-direct-tx">--</b></span>
+                                <span class="breakdown-total">计: <strong id="month-direct-total">--</strong></span>
+                            </div>
+                        </div>
+                        <div class="breakdown-card card-proxy">
+                            <div class="breakdown-card-title"><span class="pill-dot dot-proxy"></span>代理通道</div>
+                            <div class="breakdown-card-body">
+                                <span>↓ <b id="month-proxy-rx">--</b></span>
+                                <span>↑ <b id="month-proxy-tx">--</b></span>
+                                <span class="breakdown-total">计: <strong id="month-proxy-total">--</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="month-result" class="stats-content-raw" style="display:none;"></div>
+                    <div id="month-proxy-result" class="stats-content-raw" style="display:none;"></div>
+                </div>
+            </div>
+
+            <div id="compare-alert" class="alert" style="display:none;"></div>
+
+            <!-- 近30天趋势图表合为一个网格区域 -->
+            <div class="charts-unified-grid">
+                <!-- 蜂窝/直连每日用量趋势 -->
+                <div class="chart-section chart-section-direct">
+                    <div class="chart-title-row">
+                        <div class="chart-title-group">
+                            <strong>近 30 天每日用量趋势</strong>
+                            <span class="channel-tag tag-direct">蜂窝网络</span>
+                        </div>
+                        <div class="chart-legend">
+                            <span><span class="legend-dot rx-dot"></span>下载</span>
+                            <span><span class="legend-dot tx-dot"></span>上传</span>
+                        </div>
+                    </div>
+                    <div id="daily-traffic-chart" class="daily-chart-svg"></div>
+                </div>
+
+                <!-- 代理通道每日用量趋势 -->
+                <div class="chart-section chart-section-proxy">
+                    <div class="chart-title-row">
+                        <div class="chart-title-group">
+                            <strong>近 30 天代理用量趋势</strong>
+                            <span class="channel-tag tag-proxy">Xray 代理</span>
+                        </div>
+                        <div class="chart-legend">
+                            <span><span class="legend-dot rx-dot-proxy"></span>代理下载</span>
+                            <span><span class="legend-dot tx-dot-proxy"></span>代理上传</span>
+                        </div>
+                    </div>
+                    <div id="daily-proxy-chart" class="daily-chart-svg"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系统设置模块（滑块开关 + 流量限制设置） -->
+        <div class="setting-group">
+
+            <h2>系统与流量设置</h2>
+
+            <!-- 流量限制状态控制 -->
+            <div class="setting-switch-row">
+                <div class="setting-text">
+                    <span class="setting-name">流量限制功能</span>
+                    <span class="setting-desc">达到设定上限后自动采取保护措施</span>
+                </div>
+                <div class="setting-switch-wrap">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="switch-limit">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="limit-status" class="status">加载中...</span>
+                    <!-- 兼容原有按钮 -->
+                    <button class="btn btn-warning action-btn" id="toggle-limit" style="display:none;">切换模式</button>
+                </div>
+            </div>
+
+            <!-- 流量限制设置（已放入系统设置中） -->
+            <div class="setting-sub-row" id="limit-sub-row">
+                <div class="limit-input-wrap">
+                    <div>
+                        <label for="limit-value">当月上限 (GiB):</label>
+                        <input type="number" id="limit-value" min="0.1" step="0.1" value="10">
+                    </div>
+                    <button class="btn action-btn" id="set-limit">保存设置</button>
+                </div>
+            </div>
+
+            <!-- 飞行模式控制 -->
+            <div class="setting-switch-row">
+                <div class="setting-text">
+                    <span class="setting-name">飞行模式</span>
+                    <span class="setting-desc">关闭蜂窝网络调制解调器连接</span>
+                </div>
+                <div class="setting-switch-wrap">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="switch-flight">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="flight-status" class="status">加载中...</span>
+                    <!-- 兼容原有按钮 -->
+                    <button class="btn btn-warning action-btn" id="toggle-flight" style="display:none;">切换模式</button>
+                </div>
+            </div>
+
+            <!-- 统计服务状态 -->
+            <div class="setting-switch-row">
+                <div class="setting-text">
+                    <span class="setting-name">统计服务 (vnstatd)</span>
+                    <span class="setting-desc">后台守护采集网络接口历史流量</span>
+                </div>
+                <div class="setting-switch-wrap">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="switch-vnstatd">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="vnstatd-status" class="status">加载中...</span>
+                    <!-- 兼容原有按钮 -->
+                    <button class="btn btn-warning action-btn" id="restart-vnstatd" style="display:none;">重启服务</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部弹窗元素 -->
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        // 页面加载时初始化数据
+        let refreshInterval = 30; // 30秒刷新间隔
+        let refreshTimer;
+        let currentData = {}; // 初始化数据对象
+        let timerStartTime; // 记录定时器开始时间
+        
+        window.onload = function() {
+            timerStartTime = Date.now();
+            startAutoRefresh();
+            loadStats();
+            loadDailyChart();
+        };
+        
+        // 自动刷新功能（每30秒静默自动更新，移除倒计时行）
+        function startAutoRefresh() {
+            clearInterval(refreshTimer);
+            refreshTimer = setInterval(() => {
+                if (!document.hidden) {
+                    loadStats();
+                    loadDailyChart();
+                }
+            }, 30000);
+        }
+        
+        // 静默更新
+        function showRefreshSuccess() {
+        }
+        
+        // 从后端加载统计数据
+        function loadStats() {
+            fetch('/cgi-bin/traffic.cgi?action=get_stats')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络请求失败: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    currentData = { ...currentData, ...data };
+                    
+                    // 更新流量数据原始节点
+                    const todayEl = document.getElementById('today-result');
+                    const monthEl = document.getElementById('month-result');
+                    if (todayEl) todayEl.textContent = data.today_result || '无数据';
+                    if (monthEl) monthEl.textContent = data.month_result || '无数据';
+
+                    const todayBadge = document.getElementById('today-total-badge');
+                    const monthBadge = document.getElementById('month-total-badge');
+                    if (todayBadge && todayBadge.textContent === '--' && data.today_result) {
+                        const m = data.today_result.match(/总计\s*([0-9.]+\s*[A-Za-z]+)/);
+                        todayBadge.textContent = m ? m[1] : data.today_result;
+                    }
+                    if (monthBadge && monthBadge.textContent === '--' && data.month_result) {
+                        const m = data.month_result.match(/总计\s*([0-9.]+\s*[A-Za-z]+)/);
+                        monthBadge.textContent = m ? m[1] : data.month_result;
+                    }
+                    
+                    // 更新限制状态与滑块
+                    const limitStatusEl = document.getElementById('limit-status');
+                    const switchLimitEl = document.getElementById('switch-limit');
+                    if (data.limit_enabled === "1") {
+                        limitStatusEl.textContent = "已启用";
+                        limitStatusEl.className = "status enabled";
+                        switchLimitEl.checked = true;
+                    } else {
+                        limitStatusEl.textContent = "已禁用";
+                        limitStatusEl.className = "status disabled";
+                        switchLimitEl.checked = false;
+                    }
+                    
+                    // 更新飞行模式状态与滑块
+                    const flightStatusEl = document.getElementById('flight-status');
+                    const switchFlightEl = document.getElementById('switch-flight');
+                    const isFlight = (data.flight_status || "").includes("已启用");
+                    flightStatusEl.textContent = isFlight ? "已启用" : "已禁用";
+                    flightStatusEl.className = isFlight ? "status enabled" : "status disabled";
+                    switchFlightEl.checked = isFlight;
+                    
+                    // 更新统计服务状态与滑块
+                    const vnstatdStatusEl = document.getElementById('vnstatd-status');
+                    const switchVnstatdEl = document.getElementById('switch-vnstatd');
+                    const isVnstatdRunning = (data.vnstatd_status === "运行中");
+                    if (isVnstatdRunning) {
+                        vnstatdStatusEl.textContent = "运行中";
+                        vnstatdStatusEl.className = "status enabled";
+                        switchVnstatdEl.checked = true;
+                    } else {
+                        vnstatdStatusEl.textContent = "未运行";
+                        vnstatdStatusEl.className = "status disabled";
+                        switchVnstatdEl.checked = false;
+                    }
+                    
+                    // 更新限制值输入框
+                    if (data.current_limit) {
+                        document.getElementById('limit-value').value = data.current_limit;
+                    }
+                    
+                    // 显示比较结果
+                    const compareAlert = document.getElementById('compare-alert');
+                    if (data.compare_result) {
+                        compareAlert.textContent = data.compare_result;
+                        compareAlert.style.display = 'block';
+                    } else {
+                        compareAlert.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('加载数据失败:', error);
+                    const todayEl = document.getElementById('today-result');
+                    const monthEl = document.getElementById('month-result');
+                    if (todayEl) todayEl.textContent = '加载失败';
+                    if (monthEl) monthEl.textContent = '加载失败';
+                    showToast('刷新失败: ' + error.message, 'error');
+                });
+        }
+
+        // 加载近30天图表与全机/直连/代理用量统计
+        function loadDailyChart() {
+            const chartBox = document.getElementById('daily-traffic-chart');
+            const proxyChartBox = document.getElementById('daily-proxy-chart');
+            const todayProxyEl = document.getElementById('today-proxy-result');
+            const monthProxyEl = document.getElementById('month-proxy-result');
+
+            fetch('/air-api/traffic/daily', { cache: 'no-store' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.ok) {
+                        const days = data.days || [];
+                        const proxyDays = data.proxy_days || [];
+                        const pToday = data.proxy_today || {};
+                        const pMonth = data.proxy_month || {};
+
+                        const pTodayRx = pToday.rx_bytes || 0;
+                        const pTodayTx = pToday.tx_bytes || 0;
+                        const pTodayTotal = pToday.total_bytes || (pTodayRx + pTodayTx);
+
+                        const pMonthRx = pMonth.rx_bytes || 0;
+                        const pMonthTx = pMonth.tx_bytes || 0;
+                        const pMonthTotal = pMonth.total_bytes || (pMonthRx + pMonthTx);
+
+                        // 获取今日日期与本月前缀
+                        const todayStr = pToday.date || new Date().toISOString().substring(0, 10);
+                        const monthPrefix = pMonth.date || todayStr.substring(0, 7);
+
+                        // 从蜂窝统计中提取今日与当月
+                        const cTodayItem = days.find(d => d.date === todayStr);
+                        const cTodayRx = cTodayItem ? (cTodayItem.rx_bytes || 0) : 0;
+                        const cTodayTx = cTodayItem ? (cTodayItem.tx_bytes || 0) : 0;
+                        const cTodayTotal = cTodayItem ? (cTodayItem.total_bytes || (cTodayRx + cTodayTx)) : 0;
+
+                        let cMonthRx = 0, cMonthTx = 0, cMonthTotal = 0;
+                        days.forEach(d => {
+                            if (d.date && d.date.startsWith(monthPrefix)) {
+                                cMonthRx += (d.rx_bytes || 0);
+                                cMonthTx += (d.tx_bytes || 0);
+                                cMonthTotal += (d.total_bytes || ((d.rx_bytes || 0) + (d.tx_bytes || 0)));
+                            }
+                        });
+
+                        // 直连统计 = 蜂窝总量 - 代理总量 (>= 0)
+                        const dTodayRx = Math.max(0, cTodayRx - pTodayRx);
+                        const dTodayTx = Math.max(0, cTodayTx - pTodayTx);
+                        const dTodayTotal = dTodayRx + dTodayTx;
+
+                        const dMonthRx = Math.max(0, cMonthRx - pMonthRx);
+                        const dMonthTx = Math.max(0, cMonthTx - pMonthTx);
+                        const dMonthTotal = dMonthRx + dMonthTx;
+
+                        // 更新今日卡片
+                        const todayBadge = document.getElementById('today-total-badge');
+                        if (todayBadge) todayBadge.textContent = fmtBytesLocal(cTodayTotal > 0 ? cTodayTotal : (dTodayTotal + pTodayTotal));
+                        const tDRx = document.getElementById('today-direct-rx'); if (tDRx) tDRx.textContent = fmtBytesLocal(dTodayRx);
+                        const tDTx = document.getElementById('today-direct-tx'); if (tDTx) tDTx.textContent = fmtBytesLocal(dTodayTx);
+                        const tDTotal = document.getElementById('today-direct-total'); if (tDTotal) tDTotal.textContent = fmtBytesLocal(dTodayTotal);
+                        const tPRx = document.getElementById('today-proxy-rx'); if (tPRx) tPRx.textContent = fmtBytesLocal(pTodayRx);
+                        const tPTx = document.getElementById('today-proxy-tx'); if (tPTx) tPTx.textContent = fmtBytesLocal(pTodayTx);
+                        const tPTotal = document.getElementById('today-proxy-total'); if (tPTotal) tPTotal.textContent = fmtBytesLocal(pTodayTotal);
+
+                        // 更新当月卡片
+                        const monthBadge = document.getElementById('month-total-badge');
+                        if (monthBadge) monthBadge.textContent = fmtBytesLocal(cMonthTotal > 0 ? cMonthTotal : (dMonthTotal + pMonthTotal));
+                        const mDRx = document.getElementById('month-direct-rx'); if (mDRx) mDRx.textContent = fmtBytesLocal(dMonthRx);
+                        const mDTx = document.getElementById('month-direct-tx'); if (mDTx) mDTx.textContent = fmtBytesLocal(dMonthTx);
+                        const mDTotal = document.getElementById('month-direct-total'); if (mDTotal) mDTotal.textContent = fmtBytesLocal(dMonthTotal);
+                        const mPRx = document.getElementById('month-proxy-rx'); if (mPRx) mPRx.textContent = fmtBytesLocal(pMonthRx);
+                        const mPTx = document.getElementById('month-proxy-tx'); if (mPTx) mPTx.textContent = fmtBytesLocal(pMonthTx);
+                        const mPTotal = document.getElementById('month-proxy-total'); if (mPTotal) mPTotal.textContent = fmtBytesLocal(pMonthTotal);
+
+                        // 保持兼容旧节点文本
+                        if (todayProxyEl) todayProxyEl.textContent = `下载: ${fmtBytesLocal(pTodayRx)} 上传: ${fmtBytesLocal(pTodayTx)} 总计: ${fmtBytesLocal(pTodayTotal)}`;
+                        if (monthProxyEl) monthProxyEl.textContent = `下载: ${fmtBytesLocal(pMonthRx)} 上传: ${fmtBytesLocal(pMonthTx)} 总计: ${fmtBytesLocal(pMonthTotal)}`;
+
+                        // 1. 蜂窝 30 天图表 (科技蓝/翠绿)
+                        if (chartBox) {
+                            if (days.length > 0) {
+                                renderDailyChart(days, 'daily-traffic-chart', '#2563eb', '#10b981', '蜂窝');
+                            } else {
+                                chartBox.innerHTML = '<div class="chart-empty">暂无每日流量历史记录（vnStat 正在后台采集中）</div>';
+                            }
+                        }
+
+                        // 2. 代理 30 天图表 (紫色/橙色)
+                        if (proxyChartBox) {
+                            if (proxyDays.length > 0) {
+                                renderDailyChart(proxyDays, 'daily-proxy-chart', '#8b5cf6', '#f59e0b', '代理');
+                            } else {
+                                proxyChartBox.innerHTML = '<div class="chart-empty">暂无代理历史流量记录（产生代理流量后自动统计）</div>';
+                            }
+                        }
+                    } else {
+                        if (chartBox) chartBox.innerHTML = '<div class="chart-empty">暂无历史数据</div>';
+                        if (proxyChartBox) proxyChartBox.innerHTML = '<div class="chart-empty">暂无代理历史记录</div>';
+                    }
+                })
+                .catch(() => {
+                    if (chartBox) chartBox.innerHTML = '<div class="chart-empty">流量历史图表加载中…</div>';
+                    if (proxyChartBox) proxyChartBox.innerHTML = '<div class="chart-empty">代理历史图表加载中…</div>';
+                });
+        }
+
+        function fmtBytesLocal(bytes) {
+            const gb = bytes / (1024 * 1024 * 1024);
+            if (gb >= 0.1) return gb.toFixed(2) + ' GiB';
+            const mb = bytes / (1024 * 1024);
+            return mb.toFixed(1) + ' MiB';
+        }
+
+        function renderDailyChart(days, containerId = 'daily-traffic-chart', rxColor = '#3b82f6', txColor = '#10b981', labelPrefix = '') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!days || days.length === 0) {
+                container.innerHTML = '<div class="chart-empty">暂无历史数据</div>';
+                return;
+            }
+
+            // Find max daily total
+            let maxTotal = 1024 * 1024 * 100; // 100MB minimum scale
+            days.forEach(d => {
+                if (d.total_bytes > maxTotal) maxTotal = d.total_bytes;
+            });
+            maxTotal = maxTotal * 1.15; // 15% headroom
+
+            const svgHeight = 150;
+            const svgWidth = 600;
+            const padLeft = 65;
+            const padRight = 15;
+            const padTop = 15;
+            const padBottom = 28;
+            const plotWidth = svgWidth - padLeft - padRight;
+            const plotHeight = svgHeight - padTop - padBottom;
+
+            const barSlot = plotWidth / days.length;
+            const barWidth = Math.max(6, Math.min(24, barSlot * 0.55));
+
+            let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" style="width:100%;height:auto;display:block;" role="img">`;
+            
+            // Grid lines & labels
+            for (let i = 0; i <= 3; i++) {
+                const y = padTop + (plotHeight / 3) * i;
+                const val = maxTotal * (1 - i / 3);
+                svg += `<line x1="${padLeft}" y1="${y}" x2="${svgWidth - padRight}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="2,2"/>`;
+                svg += `<text x="${padLeft - 6}" y="${y + 4}" text-anchor="end" font-size="10" fill="#94a3b8">${fmtBytesLocal(val)}</text>`;
+            }
+
+            const prefix = labelPrefix ? labelPrefix + ' ' : '';
+
+            // Bars
+            days.forEach((d, idx) => {
+                const cx = padLeft + barSlot * idx + barSlot / 2;
+                const rxH = (d.rx_bytes / maxTotal) * plotHeight;
+                const txH = (d.tx_bytes / maxTotal) * plotHeight;
+                const totalH = rxH + txH;
+
+                const barX = cx - barWidth / 2;
+                const rxY = padTop + plotHeight - rxH;
+                const txY = rxY - txH;
+
+                // Rx bar (download)
+                if (rxH > 0) {
+                    svg += `<rect x="${barX}" y="${rxY}" width="${barWidth}" height="${rxH}" fill="${rxColor}" rx="2">
+                        <title>${d.date} ${prefix}下载: ${fmtBytesLocal(d.rx_bytes)}</title>
+                    </rect>`;
+                }
+                // Tx bar (upload stacked on top)
+                if (txH > 0) {
+                    svg += `<rect x="${barX}" y="${txY}" width="${barWidth}" height="${txH}" fill="${txColor}" rx="2">
+                        <title>${d.date} ${prefix}上传: ${fmtBytesLocal(d.tx_bytes)}</title>
+                    </rect>`;
+                }
+
+                // Date label
+                const shortDate = d.date.length >= 10 ? d.date.substring(5) : d.date;
+                svg += `<text x="${cx}" y="${svgHeight - 8}" text-anchor="middle" font-size="10" fill="#64748b">${shortDate}</text>`;
+            });
+
+            svg += '</svg>';
+            container.innerHTML = svg;
+        }
+
+        
+        // 设置流量限制
+        document.getElementById('set-limit').addEventListener('click', function() {
+            const limitValue = document.getElementById('limit-value').value;
+            
+            if (isNaN(limitValue) || parseFloat(limitValue) <= 0) {
+                showToast('请输入大于0的数字', 'error');
+                return;
+            }
+            
+            fetch('/cgi-bin/traffic.cgi', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: `action=set_limit&limit=${encodeURIComponent(limitValue)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message);
+                setTimeout(loadStats, 1000);
+            })
+            .catch(error => {
+                showToast('设置失败', 'error');
+                console.error('Error:', error);
+            });
+        });
+        
+        // 切换流量限制状态
+        document.getElementById('toggle-limit').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            showToast('切换中...', 'processing');
+            
+            fetch('/cgi-bin/traffic.cgi', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: 'action=toggle_limit'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message);
+                setTimeout(() => {
+                    loadStats();
+                    btn.disabled = false;
+                }, 1000);
+            })
+            .catch(error => {
+                showToast('流量限制切换失败', 'error');
+                console.error('Error:', error);
+                btn.disabled = false;
+            });
+        });
+
+        // 滑块开关联动流量限制
+        document.getElementById('switch-limit').addEventListener('change', function() {
+            document.getElementById('toggle-limit').click();
+        });
+        
+        // 切换飞行模式
+        document.getElementById('toggle-flight').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            showToast('切换中...', 'processing');
+            
+            fetch('/cgi-bin/traffic.cgi', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: 'action=toggle_flight'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message);
+                setTimeout(() => {
+                    loadStats();
+                    btn.disabled = false;
+                }, 4000);
+            })
+            .catch(error => {
+                showToast('飞行模式切换失败', 'error');
+                console.error('Error:', error);
+                btn.disabled = false;
+            });
+        });
+
+        // 滑块开关联动飞行模式
+        document.getElementById('switch-flight').addEventListener('change', function() {
+            document.getElementById('toggle-flight').click();
+        });
+
+        // 启停统计服务 (vnstatd)
+        document.getElementById('switch-vnstatd').addEventListener('change', async function() {
+            const sw = this;
+            const wantEnable = sw.checked;
+            sw.disabled = true;
+            showToast(wantEnable ? '统计服务启动中...' : '统计服务停止中...', 'processing');
+            
+            try {
+                const res = await fetch('/air-api/traffic/vnstatd', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: wantEnable })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    sw.checked = !!data.running;
+                    const stEl = document.getElementById('vnstatd-status');
+                    stEl.textContent = data.running ? '运行中' : '未运行';
+                    stEl.className = 'status ' + (data.running ? 'enabled' : 'disabled');
+                    showToast(data.message || (data.running ? '统计服务已启动' : '统计服务已停止'));
+                } else {
+                    throw new Error(data.error || '操作失败');
+                }
+            } catch (err) {
+                sw.checked = !wantEnable;
+                showToast('统计服务切换失败: ' + err.message, 'error');
+            } finally {
+                sw.disabled = false;
+                setTimeout(loadStats, 1000);
+            }
+        });
+
+        // 清空统计数据
+        document.getElementById('clear-stats').addEventListener('click', function() {
+            if (!confirm('确定要清空所有流量统计吗？此操作不可撤销！')) {
+                return;
+            }
+            
+            // 同时清空代理30天历史
+            fetch('/air-api/traffic/daily', { method: 'DELETE' }).catch(() => {});
+
+            fetch('/cgi-bin/traffic.cgi', {
+
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: 'action=clear_stats'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message);
+                setTimeout(() => {
+                    loadStats();
+                    loadDailyChart();
+                }, 1000);
+            })
+            .catch(error => {
+                showToast('清空失败', 'error');
+                console.error('Error:', error);
+            });
+        });
+        
+        /**
+         * 显示全局提示框
+         * @param {string} text - 提示文本
+         * @param {string} type - 类型（空为成功，error为错误，info为信息，processing为处理中）
+         */
+        function showToast(text, type = '') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            
+            toastText.textContent = text;
+            toast.className = 'toast';
+            if (type === 'error') {
+                toast.classList.add('error');
+            } else if (type === 'info') {
+                toast.classList.add('info');
+            } else if (type === 'processing') {
+                toast.classList.add('processing');
+            }
+            toast.classList.add('show');
+            
+            if (toast.timeoutId) {
+                clearTimeout(toast.timeoutId);
+            }
+            
+            toast.timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+<script src="/air-embed.js?v=2.5"></script></body>
+</html>

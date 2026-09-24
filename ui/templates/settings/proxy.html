@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>代理设置 · SZ50 AIR</title>
+  <link rel="stylesheet" href="/air-inner.css?v=2.18">
+  <link rel="stylesheet" href="/air-proxy.css?v=1.1">
+  <script>if(self!==top)document.documentElement.classList.add('air-embedded');</script>
+</head>
+<body class="air-inner" data-page="proxy">
+  <main class="proxy-shell">
+    <header class="proxy-hero">
+      <div>
+        <p class="proxy-kicker">NETWORK PROXY</p>
+        <h1>代理设置</h1>
+        <p class="proxy-intro">基于高效内核级透明代理，Wi-Fi 热点与 USB 直连网络均全自动走代理通道。</p>
+      </div>
+      <div class="hero-actions">
+        <button id="btn-test-latency" class="action-button" type="button">
+          <span class="btn-icon">⚡</span> 测试当前节点
+        </button>
+      </div>
+    </header>
+
+    <!-- 主状态卡片 -->
+    <section class="proxy-card status-card">
+      <div class="card-title-row">
+        <div class="title-with-icon">
+          <span class="card-badge-icon">🌐</span>
+          <div>
+            <h2>透明代理总控</h2>
+            <p class="card-subtitle">控制全机流量转发状态</p>
+          </div>
+        </div>
+        <div class="switch-container">
+          <label class="toggle-switch">
+            <input type="checkbox" id="proxy-toggle">
+            <span class="slider"></span>
+          </label>
+          <span id="proxy-status-text" class="status-pill status-off">已停用</span>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <span class="metric-label">当前节点</span>
+          <strong id="metric-node" class="metric-value">未配置</strong>
+          <span id="metric-proto" class="metric-sub">--</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">分流模式</span>
+          <strong id="metric-mode" class="metric-value">智能分流</strong>
+          <span id="metric-mode-sub" class="metric-sub">绕过大陆 IP 与域名</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">节点延迟</span>
+          <strong id="metric-latency" class="metric-value">--</strong>
+          <span id="metric-latency-status" class="metric-sub">点击测试</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">内存开销</span>
+          <strong id="metric-memory" class="metric-value">--</strong>
+          <span class="metric-sub">物理内存 (RSS)</span>
+        </div>
+      </div>
+
+      <!-- 兼容隐藏元素 -->
+      <span id="metric-server" style="display:none;"></span>
+      <span id="metric-port" style="display:none;"></span>
+
+      <div id="proxy-alert" class="proxy-alert" hidden></div>
+    </section>
+
+    <!-- 智能分流规则设置 -->
+    <section class="proxy-card">
+      <div class="card-title-row">
+        <div class="title-with-icon">
+          <span class="card-badge-icon">🔀</span>
+          <div>
+            <h2>路由分流模式</h2>
+            <p class="card-subtitle">灵活选择内外网分流规则，兼顾国内访问速度与国外加速</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="routing-mode-grid">
+        <label class="mode-card active" id="mode-card-bypass">
+          <input type="radio" name="routing-mode" value="bypass_cn" checked id="radio-mode-bypass">
+          <div class="mode-header">
+            <span class="mode-icon">🇨🇳</span>
+            <div class="mode-title-wrap">
+              <strong>智能分流（绕过大陆）</strong>
+              <span class="mode-tag rec-tag">推荐</span>
+            </div>
+          </div>
+          <p class="mode-desc">国内主流应用、网站域名及大陆 IP 均走蜂窝原生直连，不消耗节点流量；国外站点自动经由代理节点加速。</p>
+        </label>
+
+        <label class="mode-card" id="mode-card-global">
+          <input type="radio" name="routing-mode" value="global" id="radio-mode-global">
+          <div class="mode-header">
+            <span class="mode-icon">🌍</span>
+            <div class="mode-title-wrap">
+              <strong>全局代理</strong>
+              <span class="mode-tag">全部外网</span>
+            </div>
+          </div>
+          <p class="mode-desc">除本地内网私有网段（192.168.0.0/16 等）直连外，其余所有外网流量全部强制经由代理节点转发。</p>
+        </label>
+      </div>
+    </section>
+
+    <!-- 代理排除名单（强制直连） -->
+    <section class="proxy-card">
+      <div class="card-title-row">
+        <div class="title-with-icon">
+          <span class="card-badge-icon">🚫</span>
+          <div>
+            <h2>代理排除名单</h2>
+            <p class="card-subtitle">名单内的域名或 IP 无论是全局代理还是智能分流，均强制走蜂窝原生直连，绝不走代理</p>
+          </div>
+        </div>
+        <div class="node-manage-actions">
+          <button id="btn-save-bypass" class="primary-button small-btn" type="button">💾 保存排除名单</button>
+        </div>
+      </div>
+
+      <div class="bypass-edit-section">
+        <label for="bypass-textarea" class="input-label">配置直连域名或 IP（每行一个，例如 <code>www.bing.com</code> 或 <code>bing.com</code>）：</label>
+        <textarea id="bypass-textarea" class="node-textarea" rows="3" placeholder="例如：
+www.bing.com
+bing.com
+apple.com
+204.79.197.200"></textarea>
+
+        <div class="bypass-quick-actions">
+          <button id="btn-clear-bypass" class="secondary-button small-btn" type="button">清空输入</button>
+        </div>
+      </div>
+
+      <!-- 当前生效的排除标签展示 -->
+      <div class="bypass-active-section">
+        <div class="nodes-list-header">
+          <strong>当前已生效的排除名单 (<span id="bypass-count">0</span>)</strong>
+          <span class="nodes-hint">点击标签上的 × 即可快速移除</span>
+        </div>
+        <div id="bypass-tags-container" class="bypass-tags-container">
+          <span class="empty-hint">暂未配置排除项，所有非大陆流量（智能分流）或全部流量（全局）将走代理</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 节点管理与导入卡片 -->
+    <section class="proxy-card">
+      <div class="card-title-row">
+        <div class="title-with-icon">
+          <span class="card-badge-icon">📋</span>
+          <div>
+            <h2>节点管理与导入</h2>
+            <p class="card-subtitle">支持多节点管理、一键切换、单节点分享链接与订阅地址批量导入</p>
+          </div>
+        </div>
+        <div class="node-manage-actions">
+          <button id="btn-ping-all" class="action-btn small-btn" type="button">⚡ 全部测速</button>
+          <button id="btn-clear-all" class="action-btn small-btn danger-btn" type="button">🗑️ 清空列表</button>
+        </div>
+      </div>
+
+      <!-- 导入选项卡 -->
+      <div class="import-tabs">
+        <button type="button" class="tab-btn active" id="tab-btn-link">节点链接 / 批量导入</button>
+        <button type="button" class="tab-btn" id="tab-btn-sub">订阅链接拉取</button>
+      </div>
+
+      <!-- 节点链接导入面 -->
+      <div id="import-pane-link" class="import-pane">
+        <label for="node-link-input" class="input-label">粘贴分享链接（支持单个或批量多行、Base64 订阅文本）：</label>
+        <textarea id="node-link-input" class="node-textarea" rows="3" placeholder="支持格式：
+vless://uuid@host:port?security=tls&type=ws&sni=...#名称
+vmess://eyadd...
+trojan://password@host:port?security=tls&sni=...#名称
+ss://base64@host:port#名称"></textarea>
+        
+        <div class="button-row">
+          <button id="btn-save-node" class="primary-button" type="button">添加并导入节点</button>
+          <button id="btn-clear-node" class="secondary-button" type="button">清空输入</button>
+        </div>
+      </div>
+
+      <!-- 订阅拉取面板 -->
+      <div id="import-pane-sub" class="import-pane" style="display:none;">
+        <label for="sub-url-input" class="input-label">机场订阅 URL（HTTP/HTTPS）：</label>
+        <div class="sub-input-row">
+          <input type="url" id="sub-url-input" class="sub-url-input" placeholder="https://example.com/api/v1/client/subscribe?token=...">
+          <button id="btn-fetch-sub" class="primary-button" type="button">拉取订阅</button>
+        </div>
+      </div>
+
+      <!-- 节点列表展示区 -->
+      <div class="nodes-list-section">
+        <div class="nodes-list-header">
+          <strong>已保存节点 (<span id="node-count">0</span>)</strong>
+          <span class="nodes-hint">点击卡片或“使用”按钮可立即切换活动节点</span>
+        </div>
+        <div id="nodes-container" class="nodes-container">
+          <div class="empty-nodes">暂无节点，请在上方粘贴链接或输入订阅进行添加</div>
+        </div>
+      </div>
+
+      <!-- 解析结果详情兼容 -->
+      <div id="parsed-details" class="parsed-details" hidden>
+        <div class="details-header">当前生效节点参数</div>
+        <div class="details-grid">
+          <div><span class="dt-label">协议类型：</span><strong id="dt-proto"></strong></div>
+          <div><span class="dt-label">节点名称：</span><strong id="dt-name"></strong></div>
+          <div><span class="dt-label">目标主机：</span><strong id="dt-host"></strong></div>
+          <div><span class="dt-label">目标端口：</span><strong id="dt-port"></strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 规则与网络特性 -->
+    <section class="proxy-card info-panel">
+      <div class="card-title-row">
+        <div class="title-with-icon">
+          <span class="card-badge-icon">🛡️</span>
+          <div>
+            <h2>特性与安全策略</h2>
+            <p class="card-subtitle">系统内核转发保障</p>
+          </div>
+        </div>
+      </div>
+      <ul class="feature-list">
+        <li>
+          <strong>全接口覆盖：</strong>
+          Wi-Fi 局域网（热点设备）与 USB / 有线直连共享设备的全部外网 TCP 流量均由内核重定向至代理核心。
+        </li>
+        <li>
+          <strong>智能分流保障：</strong>
+          绕过大陆模式下，国内域名、大厂 CDN 与中国大陆 IP 自动直连，国外请求走代理加速，网速快且节省节点流量。
+        </li>
+        <li>
+          <strong>内网白名单直连：</strong>
+          局域网及保留网段（<code>192.168.0.0/16</code>、<code>10.0.0.0/8</code>、<code>172.16.0.0/12</code>）自动直连，不影响设备后台访问与内网互联。
+        </li>
+        <li>
+          <strong>防回环与服务器穿透：</strong>
+          节点服务器 IP 自动注入 iptables 白名单，代理通道流量直达服务器，杜绝死循环。
+        </li>
+        <li>
+          <strong>故障安全回退：</strong>
+          关闭代理或服务停止时，自动即时清理重定向规则，恢复纯蜂窝直连，保障不断网。
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="/air-proxy.js?v=1.1"></script>
+  <script src="/air-embed.js?v=2.5"></script>
+</body>
+</html>

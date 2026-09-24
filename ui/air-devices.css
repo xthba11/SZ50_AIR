@@ -1,0 +1,195 @@
+:root{--ink:#172033;--muted:#718096;--line:#e7ebf2;--soft:#f6f8fb;--blue:#356ae6;--blue-soft:#edf3ff;--green:#16866b;--red:#c2414b}
+.devices-shell{max-width:none;margin:0;padding:0 0 28px;color:var(--ink);width:100%;box-sizing:border-box}
+.devices-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:16px;padding-top:6px}
+.air-embedded .devices-hero{display:none!important}
+.devices-kicker{margin:0 0 6px;color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.14em}
+.devices-hero h1{margin:0;font-size:26px;line-height:1.15;letter-spacing:-.03em}
+.devices-intro{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.devices-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}
+.devices-shell button{border:0;border-radius:8px;padding:7px 13px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s}
+.devices-shell button:hover{transform:translateY(-1px)}
+.devices-shell button:active{transform:scale(.97)!important}
+.devices-shell button:focus-visible,.devices-shell input:focus-visible{outline:3px solid rgba(53,106,230,.2);outline-offset:2px}
+.devices-shell button:disabled{opacity:.5;cursor:wait;transform:none}
+.refresh-button{flex:none;background:#fff;color:var(--ink);border:1px solid var(--line)!important;box-shadow:0 2px 6px rgba(35,48,74,.04);padding:7px 12px!important;border-radius:8px!important}
+.refresh-button span{color:var(--blue);font-size:15px;margin-right:4px}
+.devices-overview{display:flex;align-items:center;gap:8px;min-height:22px;color:var(--muted);font-size:13px;flex-wrap:wrap}
+.devices-overview strong{color:var(--ink)}
+.overview-dot{width:8px;height:8px;border-radius:50%;background:#25ad80;box-shadow:0 0 0 4px rgba(37,173,128,.12);animation:overviewDotPulse 2.5s infinite ease-in-out}
+@keyframes overviewDotPulse{0%,100%{box-shadow:0 0 0 3px rgba(37,173,128,.18)}50%{box-shadow:0 0 0 6px rgba(37,173,128,.04)}}
+#status:before{content:'·';margin-right:8px}
+#status.error{color:#b45309}
+
+/* 总代理状态徽章 */
+.summary-proxy-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;line-height:1.2}
+.summary-proxy-tag.on{background:#ecfdf5;color:#059669;border:1px solid #a7f3d0}
+.summary-proxy-tag.off{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0}
+
+/* PC双列平行网格 */
+.device-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+@media(max-width:900px){.device-grid{grid-template-columns:1fr}}
+
+.device-card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 16px rgba(40,55,85,.04);transition:transform .22s cubic-bezier(.16,1,.3,1),box-shadow .22s ease,border-color .2s ease;animation:deviceCardEnter .32s cubic-bezier(.16,1,.3,1) both}
+.device-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(40,55,85,.08);border-color:#d3def0}
+.device-card.is-blocked{border-color:#f2c8cc}
+@keyframes deviceCardEnter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* 卡片头部与单设备代理滑块 */
+.device-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px 10px}
+.device-title{min-width:0}
+.device-title h2{margin:0 0 4px;font-size:16px;font-weight:700;overflow-wrap:anywhere}
+.device-identity{margin:0;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.device-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+/* 单设备代理滑块控件 */
+.device-proxy-ctrl{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;padding:2px 8px;border-radius:20px;transition:all .2s ease}
+.device-proxy-ctrl.is-disabled{opacity:.55;cursor:not-allowed}
+.device-proxy-txt{font-size:11px;font-weight:700;color:#475569}
+.device-proxy-switch{position:relative;display:inline-block;width:32px;height:18px;margin:0;cursor:pointer}
+.device-proxy-input{opacity:0;width:0;height:0;position:absolute}
+.device-proxy-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#cbd5e1;transition:.25s;border-radius:18px}
+.device-proxy-slider:before{position:absolute;content:"";height:14px;width:14px;left:2px;bottom:2px;background-color:#fff;transition:.25s;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.device-proxy-input:checked + .device-proxy-slider{background-color:#2563eb}
+.device-proxy-input:checked + .device-proxy-slider:before{transform:translateX(14px)}
+.device-proxy-input:disabled + .device-proxy-slider{cursor:not-allowed}
+
+.status-chip{flex:none;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 9px;background:#eaf8f2;color:#13745d;font-size:11px;font-weight:800}
+.status-chip:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.status-chip.offline{background:#f0f2f5;color:#778195}
+.status-chip.blocked{background:#fff0f1;color:var(--red)}
+
+/* 累计流量紧凑面板 (左右两列并列：直连与代理同栏紧凑排布) */
+.traffic-panel-compact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 16px}
+.traffic-col{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;gap:4px;transition:background .2s ease,border-color .2s ease}
+.device-card:hover .traffic-col{background:#f9fbfd;border-color:#dbe4f0}
+.traffic-col-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.traffic-col-title{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.02em}
+.traffic-col-total{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);letter-spacing:-.02em}
+.traffic-col-sub{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;border-top:1px dashed #e2e8f0;padding-top:4px;margin-top:2px}
+.sub-stat{display:inline-flex;align-items:center;gap:3px;font-variant-numeric:tabular-nums;font-size:11px}
+.sub-stat span{font-size:10px;opacity:.85}
+.sub-stat strong{font-weight:600}
+.stat-direct-down{color:#2563eb}
+.stat-proxy-down{color:#7c3aed}
+.stat-direct-up{color:#059669}
+.stat-proxy-up{color:#d97706}
+
+/* 设备详情列表 */
+.device-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px 16px}
+.detail-item span{display:block;margin-bottom:2px;color:var(--muted);font-size:11px}
+.detail-item strong{display:block;font-size:12px;font-weight:650;overflow-wrap:anywhere}
+
+/* 速率与配额面板 */
+.limits-panel{margin:0 16px 12px;padding:12px 14px;background:rgba(237,243,255,.66);border:1px solid rgba(255,255,255,.7);border-radius:10px}
+.limits-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.limits-heading strong{font-size:13px}
+.limits-heading span{color:#687897;font-size:11px}
+.device-limits{display:grid;grid-template-columns:repeat(3,minmax(75px,1fr)) auto auto;gap:8px;align-items:end}
+.device-limits label,.device-note label{display:flex;flex-direction:column;gap:4px;color:#66748e;font-size:11px;font-weight:700}
+.device-limits input,.device-note input{box-sizing:border-box;width:100%;min-width:0;border:1px solid #d5ddeb;border-radius:7px;background:#fff;padding:7px 9px;color:var(--ink);font:inherit;font-size:12px;transition:border-color .15s ease,box-shadow .15s ease}
+.device-limits input[data-dirty],.device-note input[data-dirty]{border-color:#e3a528;box-shadow:0 0 0 2px rgba(227,165,40,.12)}
+.save-button{background:var(--blue);color:#fff}
+.quiet-button{background:#fff;color:#53627d;border:1px solid #dce3ef!important}
+.restore-button{background:var(--red);color:#fff}
+.form-output{grid-column:1/-1;min-height:14px;color:#53627d;font-size:11px}
+.track-warning{margin:0 16px 12px;padding:10px 12px;border-radius:10px;background:#fff7e8;color:#8a5a08;font-size:12px}
+
+/* 备注面板 */
+.device-note{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;padding:10px 16px;border-top:1px solid var(--line)}
+.device-note button{background:#eef1f6;color:#46536b}
+.device-note output{grid-column:1/-1;color:#53627d;font-size:11px}
+.blocked-note{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 16px 12px;padding:10px 12px;border-radius:10px;background:#fff0f1;color:#96333b;font-size:12px}
+.empty-state{padding:48px 24px;text-align:center;color:var(--muted);background:#fff;border:1px dashed #d6dce7;border-radius:16px}
+
+/* 实时网速折线图（单卡片融入代理流量，四色细线） */
+.speed-panel{margin:10px 16px 0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;position:relative;transition:border-color .2s ease,box-shadow .2s ease}
+.speed-panel:hover{border-color:#ccd9ef;box-shadow:0 3px 12px #356ae60a}
+.speed-tooltip{position:absolute;top:6px;transform:translateX(-50%);background:rgba(15,23,42,0.94);backdrop-filter:blur(8px);color:#fff;padding:5px 10px;border-radius:6px;font-size:11px;line-height:1.35;pointer-events:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,0.22);z-index:50;display:none;border:1px solid rgba(255,255,255,0.14)}
+.speed-tooltip::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border-width:5px 5px 0;border-style:solid;border-color:rgba(15,23,42,0.94) transparent transparent}
+.speed-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.speed-head strong{font-size:13px;font-weight:700;color:var(--ink)}
+
+.speed-rate-badges{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rate-badge-group{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rate-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;padding:2px 7px;border-radius:6px}
+.rate-badge .badge-tag{font-size:10px;font-weight:700;opacity:.85}
+.rate-direct{color:#1d4ed8;background:#eff6ff;border:1px solid #dbeafe}
+.rate-proxy{color:#7c3aed;background:#f5f3ff;border:1px dashed #ddd6fe}
+
+.rate-val{font-weight:700}
+.val-blue{color:#2563eb}
+.val-green{color:#10b981}
+.val-purple{color:#8b5cf6}
+.val-orange{color:#d97706}
+
+.speed-panel svg{display:block;width:100%;height:auto;aspect-ratio:600/146;max-height:140px;overflow:visible}
+
+/* 4条细折线：直连蓝色/绿色实线；代理紫色/橙色虚线 */
+.speed-line-direct-down{fill:none;stroke:#2563eb;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.speed-line-direct-up{fill:none;stroke:#10b981;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.speed-line-proxy-down{fill:none;stroke:#8b5cf6;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.speed-line-proxy-up{fill:none;stroke:#f59e0b;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+
+/* 4枚端点点标，保持正圆 */
+.speed-dot{cursor:pointer}
+.speed-panel circle{transform:none!important}
+.dot-direct-down{fill:#2563eb;stroke:#ffffff;stroke-width:1.4}
+.dot-direct-up{fill:#10b981;stroke:#ffffff;stroke-width:1.4}
+.dot-proxy-down{fill:#8b5cf6;stroke:#ffffff;stroke-width:1.4}
+.dot-proxy-up{fill:#f59e0b;stroke:#ffffff;stroke-width:1.4}
+
+.speed-area-down,.speed-area-up{pointer-events:none;animation:speedAreaFade .35s ease both}
+@keyframes speedAreaFade{from{opacity:0}to{opacity:1}}
+
+.speed-legend{display:flex;align-items:center;gap:12px;margin-top:6px;color:#6c7890;font-size:11px;flex-wrap:wrap}
+.speed-legend .legend-item{display:inline-flex;align-items:center;gap:5px}
+.speed-legend .legend-bar{display:inline-block;width:14px;border-radius:2px}
+.bar-direct-down{background:#2563eb;height:2.5px}
+.bar-direct-up{background:#10b981;height:2.5px}
+.bar-proxy-down{border-top:2px dashed #8b5cf6;height:0;width:14px;background:transparent}
+.bar-proxy-up{border-top:2px dashed #f59e0b;height:0;width:14px;background:transparent}
+.legend-hint{margin-left:auto;color:#8993a5;font-size:10px}
+
+.speed-grid{stroke:#e4ebf5;stroke-width:1;stroke-dasharray:4 4}
+.speed-axis{fill:#7b879c;font-size:10px;font-variant-numeric:tabular-nums}
+.speed-slide{animation:speedLineSlideIn .45s cubic-bezier(.25,1,.5,1) both}
+@keyframes speedLineSlideIn{from{transform:translateX(17.86px);opacity:.85}to{transform:translateX(0);opacity:1}}
+.speed-dot-enter{animation:speedDotEntrance .4s cubic-bezier(.16,1,.3,1) .1s both}
+@keyframes speedDotEntrance{0%{opacity:0;transform:scale(.2)}50%{opacity:.8;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}
+
+.kick-button{background:#fff7e8!important;color:#965f06!important;border:1px solid #f0d59f!important}
+.note-actions{display:flex;gap:6px;align-items:center}
+.delete-button{background:#fff!important;color:#b33a45!important;border:1px solid #efc9cd!important}
+
+@media(max-width:760px){
+  .devices-shell{padding:0 0 20px}
+  .devices-hero{align-items:flex-start}
+  .devices-intro{max-width:270px}
+  .device-head{padding:14px 14px 10px}
+  .traffic-panel,.limits-panel,.track-warning,.blocked-note{margin-left:14px;margin-right:14px}
+  .device-details{grid-template-columns:1fr 1fr;padding:10px 14px}
+  .device-limits{grid-template-columns:1fr 1fr}
+  .device-limits label:last-of-type{grid-column:1/-1}
+  .device-note{padding:10px 14px}
+  .speed-panel{margin-left:14px;margin-right:14px}
+  .blocked-note{align-items:flex-start;flex-direction:column}
+  .blocked-note button{width:100%}
+}
+@media(max-width:430px){
+  .devices-toolbar{flex-direction:column;align-items:stretch;gap:10px}
+  .refresh-button{align-self:flex-start}
+  .devices-overview{align-items:flex-start;flex-wrap:wrap}
+  .devices-overview #status{width:100%;padding-left:17px}
+  .devices-overview #status:before{display:none}
+  .traffic-stat strong{font-size:16px}
+  .device-details{grid-template-columns:1fr 1fr}
+  .device-limits{grid-template-columns:1fr}
+  .device-limits label:last-of-type{grid-column:auto}
+  .device-limits button{width:100%}
+  .speed-head{align-items:flex-start;flex-direction:column;gap:6px}
+  .speed-panel svg{height:auto;aspect-ratio:600/146}
+  .device-note{grid-template-columns:1fr}
+  .note-actions{display:grid;grid-template-columns:1fr 1fr}
+  .note-actions button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.device-card,.speed-panel path,.speed-panel polyline,.speed-area-down,.speed-area-up,.speed-dot,.overview-dot{animation:none!important;transition:none!important}}

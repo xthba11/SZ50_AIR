@@ -1,0 +1,49 @@
+# Local toolchain, captures, backups, and deployment scratch files.
+# Keep reusable test, audit, and tool setup scripts as reviewable source.
+/.tools/*
+!/.tools/test_*.py
+!/.tools/verify_*.py
+!/.tools/audit_*.py
+!/.tools/get_*.py
+
+# Vendor utilities, drivers, device images, and historical backups.
+/原始工具/
+
+# Build outputs.
+/admin-auth/admin-gateway
+*.test
+*.out
+coverage.out
+*.cover
+*.prof
+
+# Python and JavaScript local environments.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Device state and secrets. Keep credentials.example.json trackable.
+credentials.json
+devices.json
+traffic.json
+charge_rule.json
+sfp.json
+proxy.json
+.env
+.env.*
+!.env.example
+
+# Logs and transient editor/OS files.
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini

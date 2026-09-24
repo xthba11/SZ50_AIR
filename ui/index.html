@@ -1,0 +1,9614 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f5f7fb"><title>网络概览 · SZ50 AIR</title><script>(function(){var t=localStorage.getItem('air-theme');if(t==='dark'||(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.setAttribute('data-theme','dark');}})();</script><link rel="stylesheet" href="/layui/css/layui.css"><link rel="stylesheet" href="/air-ui.css?v=2.37"><link rel="stylesheet" href="/air-overview.css?v=2.25"><link rel="stylesheet" href="/air-monitor.css?v=2.28"><link rel="stylesheet" href="/air-trend.css?v=2.26"><script src="/layui/layui.js"></script><link rel="stylesheet" href="/air-devices.css?v=2.3"><link rel="stylesheet" href="/air-proxy.css?v=2.2"><link rel="stylesheet" href="/air-charge.css?v=2.6"><link rel="stylesheet" href="/air-inner.css?v=2.27"><link rel="stylesheet" href="/air-system.css?v=1.8"><link rel="stylesheet" href="/air-page-sim.css?v=1.8"><link rel="stylesheet" href="/air-page-wifi.css?v=1.7"><link rel="stylesheet" href="/air-page-liuliang.css?v=2.0"><link rel="stylesheet" href="/air-wifi-radar.css?v=2.27"><link rel="stylesheet" href="/air-consistency.css?v=1.6"><link rel="stylesheet" href="/air-dark.css?v=1.0"></head><body><canvas id="air-bg"></canvas><svg class="symbol-library" aria-hidden="true"><symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 8.5a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r=".7"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol><symbol id="i-sim" viewBox="0 0 24 24"><path d="M8 3h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z"/><rect x="8" y="10" width="8" height="7" rx="1"/><path d="M12 10v7M8 13.5h8"/></symbol><symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="3"/><path d="M23 10v4M6 10v4M9 10v4M12 10v4"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16M8 15l4-5 4 2 4-7"/></symbol><symbol id="i-terminal" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m6 9 3 3-3 3m7 0h4"/></symbol><symbol id="i-code" viewBox="0 0 24 24"><path d="m7 6-5 6 5 6m10-12 5 6-5 6M14 3l-4 18"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="currentColor" stroke="none"/><circle cx="16" cy="17" r="3" fill="currentColor" stroke="none"/></symbol><symbol id="i-signal" viewBox="0 0 24 24"><path d="M4 19v-3m5 3v-7m5 7V8m5 11V4"/></symbol><symbol id="i-temp" viewBox="0 0 24 24"><path d="M9 14.5V5a3 3 0 0 1 6 0v9.5a5 5 0 1 1-6 0Z"/><path d="M12 7v10"/><circle cx="12" cy="18" r="1.5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 10a8 8 0 0 0-14-4L3 9m0-6v6h6m-5 5a8 8 0 0 0 14 4l3-3m0 6v-6h-6"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 3 6v5c0 6 9 11 9 11s9-5 9-11V6Z"/><path d="m8 12 3 3 5-6"/></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M10.5 5.6h3"/><circle cx="12" cy="18.2" r=".75"/></symbol><symbol id="i-tower" viewBox="0 0 24 24"><circle cx="12" cy="7" r="2"/><path d="m12 9-4 12m4-12 4 12M9 17h6M6 3a8 8 0 0 0 0 8m12-8a8 8 0 0 1 0 8"/></symbol><symbol id="i-chip" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/><rect x="9" y="9" width="6" height="6" rx="1"/></symbol></svg>
+
+
+
+
+
+
+
+<aside class="sidebar" id="sidebar" aria-label="主导航">
+
+
+
+
+
+
+
+ <a class="brand" href="#dashboard" data-section="dashboard"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg></span><div><strong>SZ50 <span>AIR</span></strong></div></a>
+
+
+
+
+
+
+
+ <ul class="nav-menu"><li class="nav-caption">工作台</li><li><a href="#dashboard" data-section="dashboard"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span>网络概览</span></a></li><li><a href="#monitor" data-section="monitor"><svg class="icon" aria-hidden="true"><use href="#i-temp"/></svg><span>状态监测</span></a></li><li><a href="#clashweb" data-section="clashweb"><svg class="icon" aria-hidden="true"><use href="#i-sim"/></svg><span>网络与 SIM</span></a></li><li><a href="#usbmodeweb" data-section="usbmodeweb"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg><span>Wi-Fi 设置</span></a></li><li><a href="#devices" data-section="devices"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>连接设备</span></a></li><li><a href="#tfcweb" data-section="tfcweb"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg><span>流量管理</span></a></li><li class="nav-caption">设备工具</li><li><a href="#proxyweb" data-section="proxyweb"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg><span>代理设置</span></a></li><li><a href="#chargeweb" data-section="chargeweb"><svg class="icon" aria-hidden="true"><use href="#i-battery"/></svg><span>电池设置</span></a></li><li><a href="#atweb" data-section="atweb"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span>AT 控制台</span></a></li><li><a href="#terminalweb" data-section="terminalweb"><svg class="icon" aria-hidden="true"><use href="#i-terminal"/></svg><span>网页终端</span></a></li><li><a href="#atcommand" data-section="atcommand"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>快捷调试</span></a></li><li><a href="#clashui" data-section="clashui"><svg class="icon" aria-hidden="true"><use href="#i-chip"/></svg><span>系统设置</span></a></li></ul>
+
+
+
+
+
+
+
+</aside><div id="overlay" class="overlay" aria-hidden="true"></div>
+
+
+
+
+
+
+
+<main class="main-content"><div class="content-wrapper">
+
+
+
+
+
+
+
+ <header class="topbar"><button class="icon-button mobile-menu-btn" id="menu-toggle" aria-label="打开导航菜单" aria-expanded="false" aria-controls="sidebar"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button><div class="breadcrumbs"><span>工作台</span><span>/</span><strong id="page-location">网络概览</strong></div><div class="toolbar"><span class="freshness" id="data-freshness" role="status">正在读取设备</span><button class="icon-button" id="theme-toggle-btn" title="切换深色/浅色模式" aria-label="切换深色模式"><svg class="icon" aria-hidden="true" id="theme-icon"><use href="#i-moon"/></svg></button><button class="icon-button" id="refresh-page" title="刷新状态" aria-label="刷新状态"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg></button><div class="avatar"><b>A</b><span>管理员</span></div></div></header>
+
+
+
+
+
+
+
+ <section id="dashboard-section">
+
+
+
+
+
+
+
+  <div class="panel-heading"><h2>网络概览</h2><p>实时状态与信号概览</p></div>
+
+
+
+
+
+
+
+  <div class="connection-banner compact"><div class="connection-copy"><span class="status-inline" id="networkStatus">读取中</span></div><div class="connection-actions"><button class="btn primary" data-section="usbmodeweb"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg>Wi-Fi 设置</button><button class="btn" data-section="clashweb">网络设置</button></div></div>
+
+
+
+
+
+
+
+  <div class="quick-actions"><div class="stat-card"><div class="stat-top"><span>蜂窝网络</span><span class="stat-icon "><svg class="icon" aria-hidden="true"><use href="#i-signal"/></svg></span></div><div class="stat-value" id="technology">--</div></div><div class="stat-card"><div class="stat-top"><span>信号强度</span><span class="stat-icon mint"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg></span></div><div class="stat-value" id="RSRP">--</div></div><div class="stat-card"><div class="stat-top"><span>基带温度</span><span class="stat-icon amber"><svg class="icon" aria-hidden="true"><use href="#i-temp"/></svg></span></div><div class="stat-value" id="temperature">--</div></div><div class="stat-card"><div class="stat-top"><span>电池电量</span><span class="stat-icon violet"><svg class="icon" aria-hidden="true"><use href="#i-battery"/></svg></span></div><div class="stat-value" id="batteryLevel">--</div></div></div>
+
+
+
+
+
+
+
+  <div class="cards-grid">
+
+
+
+
+
+
+
+   <article class="info-card"><div class="card-header"><div class="card-heading"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg><div><div class="card-title">无线连接</div></div></div><span class="pill" id="wifiSwitchStatus">读取中</span></div><div class="wifi-identity"><div><div class="wifi-name" id="wifiSsid">--</div></div><span class="wifi-glyph"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg></span></div><table class="info-table"><tr><td>Wi-Fi 频段</td><td id="wifiBand">--</td></tr><tr><td>当前信道</td><td id="wifiChannel">--</td></tr><tr><td>加密方式</td><td id="wifiEncryption">--</td></tr><tr><td>连接密码</td><td><span id="wifiPassword" class="secret-value">--</span><button id="reveal-password" class="reveal-btn" aria-pressed="false">显示</button></td></tr><tr><td>运营商</td><td id="ISP">--</td></tr><tr><td>SIM 卡状态</td><td id="simStatus">--</td></tr></table><button id="share-wifi" type="button">分享 Wi-Fi</button><details class="device-details"><summary>设备标识</summary><table class="info-table"><tr><td>IMEI</td><td id="imei">--</td></tr><tr><td>ICCID</td><td id="iccid">--</td></tr></table></details></article>
+
+
+
+
+
+
+
+   <article class="info-card"><div class="card-header"><div class="card-heading"><svg class="icon" aria-hidden="true"><use href="#i-signal"/></svg><div><div class="card-title">蜂窝网络与基站</div></div></div><button class="text-link" data-section="clashweb">网络设置<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div><div class="signal-metrics"><div><small>频段 BAND</small><b id="Band">--</b></div><div><small>小区 PCI</small><b id="PCI">--</b></div><div><small>频道 ARFCN</small><b id="ARFCN">--</b></div></div>
+
+
+
+
+
+
+
+    <div class="cell-contract"><div><small>签约下行上限</small><b id="dl">--</b></div><div><small>签约上行上限</small><b id="ul">--</b></div><div><small>服务等级 QCI</small><b id="qci">--</b></div></div><div id="signal-trends" class="signal-trends"></div><p id="signal-history-status" class="trend-error" role="status" hidden></p>
+
+
+
+
+
+
+
+   </article>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+<div class="cards-grid device-grid">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <article class="info-card"><div class="card-header"><div><div class="card-title">电池与供电</div></div></div>
+
+
+
+
+
+
+
+  <div class="device-highlights">
+
+
+
+
+
+
+
+    <div>
+
+
+
+
+
+
+
+      <small>供电状态</small>
+
+
+
+
+
+
+
+      <div class="charge-status-row">
+
+
+
+
+
+
+
+        <div class="battery-visual" id="battery-visual" aria-hidden="true">
+
+
+
+
+
+
+
+          <div class="battery-shell">
+
+
+
+
+
+
+
+            <div class="battery-core" id="battery-core"></div>
+
+
+
+
+
+
+
+            <div class="battery-bolt" id="battery-bolt"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 11-12h-7l2-8z"/></svg></div>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <div class="battery-terminal"></div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <strong id="chargeStatus">--</strong>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div><small>电池温度</small><strong id="battery-temp">--</strong></div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+   <div class="battery-estimate-banner" id="battery-estimate-banner">
+    <div class="battery-estimate-icon" id="battery-estimate-icon">⏱️</div>
+    <div class="battery-estimate-content">
+      <small id="battery-estimate-label">续航 / 充电预估</small>
+      <strong id="battery-estimate-val">计算中…</strong>
+    </div>
+   </div>
+   <table class="info-table"><tr><td>电池健康</td><td id="battery-health">--</td></tr><tr><td>当前电压</td><td id="battery-voltage">--</td></tr><tr><td>当前电流</td><td id="currentNow">--</td></tr><tr><td>电池检测 / 供电在线</td><td id="battery-presence">--</td></tr></table>
+  </article>
+
+  <article class="info-card"><div class="card-header"><div class="card-heading"><svg class="icon" aria-hidden="true"><use href="#i-battery"/></svg><div><div class="card-title">电池详细参数</div></div></div><button class="text-link" data-section="chargeweb">电池设置<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+   <table class="info-table"><tbody id="battery-details"></tbody></table>
+  </article>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+  <article class="info-card nearby-card"><div class="card-header"><div class="card-heading"><svg class="icon" aria-hidden="true"><use href="#i-tower"/></svg><div><div class="card-title">基站列表</div></div></div><span id="technology2"></span></div><div class="table-scroll" tabindex="0" role="region" aria-label="基站列表数据，可横向滚动"><table class="network-table"><thead><tr><th>BAND <small>频段</small></th><th>ARFCN <small>频道</small></th><th>PCI <small>小区</small></th><th>RSRP <small>强度</small></th><th>RSRQ <small>质量</small></th><th>SINR <small>信噪比</small></th></tr></thead><tbody id="networkTableBody"><tr><td colspan="6">正在读取小区信息…</td></tr></tbody></table></div></article>
+
+
+
+
+
+
+
+ </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="atcommand-section" hidden>
+
+
+
+
+
+
+
+    <div class="panel-heading"><h2>快捷调试</h2></div><div class="info-card">
+
+
+
+
+
+
+
+        <div>
+
+
+
+
+
+
+
+            <!-- 原有的AT命令输入部分保持不变 -->
+
+
+
+
+
+
+
+            <div style="margin-bottom:15px">
+
+
+
+
+
+
+
+                <!-- IMEI1 修改 -->
+
+
+
+
+
+
+
+                <div style="display:flex;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+
+
+
+
+
+
+
+                    <div style="width:70px;color:#666;font-size:13px">IMEI 1：</div>
+
+
+
+
+
+
+
+                    <input id="imei1Input" type="text" class="layui-input" 
+
+
+
+
+
+
+
+                           placeholder="请输入15位IMEI" 
+
+
+
+
+
+
+
+                           maxlength="15"
+
+
+
+
+
+
+
+                           style="width:170px;margin-right:10px;font-family:monospace">
+
+
+
+
+
+
+
+                    <button onclick="setImei(1)" class="layui-btn layui-btn-sm" style="background:#52c41a;color:white">修改</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                <!-- IMEI2 修改 -->
+
+
+
+
+
+
+
+                <div style="display:flex;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+
+
+
+
+
+
+
+                    <div style="width:70px;color:#666;font-size:13px">IMEI 2：</div>
+
+
+
+
+
+
+
+                    <input id="imei2Input" type="text" class="layui-input" 
+
+
+
+
+
+
+
+                           placeholder="请输入15位IMEI" 
+
+
+
+
+
+
+
+                           maxlength="15"
+
+
+
+
+
+
+
+                           style="width:170px;margin-right:10px;font-family:monospace">
+
+
+
+
+
+
+
+                    <button onclick="setImei(2)" class="layui-btn layui-btn-sm" style="background:#fa8c16;color:white">修改</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <br><br>
+
+
+
+
+
+
+
+                <div><label for="atCommandInput">AT命令：</label></div>
+
+
+
+
+
+
+
+                <br>
+
+
+
+
+
+
+
+                <div style="display:flex;align-items:center">
+
+
+
+
+
+
+
+                    <input id="atCommandInput" type="text" class="layui-input" lay-affix="clear" style="flex:1;max-width:350px;margin-right:10px">
+
+
+
+
+
+
+
+                    <button id="sendAtCommandBtn" class="layui-btn layui-btn-normal">发送</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--<div class="layui-form-item">
+
+
+
+
+
+
+
+                <div style="margin-bottom:10px;font-size:14px;color:#666">常用命令，点击快捷输入</div>
+
+
+
+
+
+
+
+                <div id="atcommand-btns">
+
+
+
+
+
+
+
+                    <button class="layui-btn layui-btn-primary">查询ICCID：AT+CCID</button>
+
+
+
+
+
+
+
+                    <button class="layui-btn layui-btn-primary">查询IMEI：AT+GSN</button>
+
+
+
+
+
+
+
+                    <button class="layui-btn layui-btn-primary">查询签约速率：AT+C5GQOSRDP</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div style="margin:15px 0 0">
+
+
+
+
+
+
+
+                <label for="atCommandResponse">响应内容：</label>
+
+
+
+
+
+
+
+                <textarea id="atCommandResponse" class="layui-textarea" style="width:100%;height:500px;margin:10px 0 0" readonly="readonly"></textarea>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <section id="monitor-section" hidden><div class="panel-heading"><h2>状态监测</h2><p>资源状态与温度历史</p></div><main class="monitor-shell air-inner"><div class="monitor-toolbar"><span id="monitor-status" role="status">读取中</span><button id="monitor-refresh" type="button">刷新</button></div><p id="battery-alert" role="status" hidden></p><div class="monitor-grid"><article class="monitor-card"><h2>CPU</h2><strong id="cpu-value">—</strong><div id="cpu-chart" class="monitor-chart-box"></div></article><article class="monitor-card"><h2>内存占用 / 总量</h2><strong id="ram-value">—</strong><div id="ram-chart" class="monitor-chart-box"></div></article><article class="monitor-card"><h2>可用存储 / 总量</h2><strong id="disk-value">—</strong></article><article class="monitor-card"><h2>运行时间</h2><strong id="uptime-value">—</strong></article></div><article class="monitor-card chart-card"><h2>温度</h2><div id="temperature-trends"></div></article></main></section>
+
+
+
+
+
+
+
+<section id="devices-section" hidden><div class="panel-heading"><h2>连接设备</h2><p>在线状态、IP 与设备备注</p></div><main class="devices-shell air-inner"><div class="devices-toolbar"><section class="devices-overview" aria-live="polite"><span class="overview-dot" aria-hidden="true"></span><strong id="summary">正在读取…</strong><span id="status" role="status"></span></section><button id="refresh" class="refresh-button" type="button" aria-label="刷新设备状态"><span aria-hidden="true">↻</span> 刷新</button></div><div id="devices" class="device-grid"></div></main></section>
+
+
+
+
+
+
+
+<section id="proxyweb-section" hidden><div class="panel-heading"><h2>代理设置</h2><p>透明代理与节点管理</p></div><div class="proxy-actions"><div class="hero-actions">
+
+
+
+
+
+
+
+        <button id="btn-test-latency" class="action-button" type="button">
+
+
+
+
+
+
+
+          <span class="btn-icon">⚡</span> 测试当前节点
+
+
+
+
+
+
+
+        </button>
+
+
+
+
+
+
+
+      </div></div><main class="proxy-shell air-inner"><!-- 主状态卡片 -->
+
+
+
+
+
+
+
+    <section class="proxy-card status-card">
+
+
+
+
+
+
+
+      <div class="card-title-row">
+
+
+
+
+
+
+
+        <div class="title-with-icon">
+
+
+
+
+
+
+
+          <span class="card-badge-icon">🌐</span>
+
+
+
+
+
+
+
+          <div>
+
+
+
+
+
+
+
+            <h2>透明代理总控</h2>
+
+
+
+
+
+
+
+            <p class="card-subtitle">控制全机流量转发状态</p>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="switch-container">
+
+
+
+
+
+
+
+          <label class="toggle-switch">
+
+
+
+
+
+
+
+            <input type="checkbox" id="proxy-toggle">
+
+
+
+
+
+
+
+            <span class="slider"></span>
+
+
+
+
+
+
+
+          </label>
+
+
+
+
+
+
+
+          <span id="proxy-status-text" class="status-pill status-off">已停用</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="metrics-grid">
+
+
+
+
+
+
+
+        <div class="metric-box">
+
+
+
+
+
+
+
+          <span class="metric-label">当前节点</span>
+
+
+
+
+
+
+
+          <strong id="metric-node" class="metric-value">未配置</strong>
+
+
+
+
+
+
+
+          <span id="metric-proto" class="metric-sub">--</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="metric-box">
+
+
+
+
+
+
+
+          <span class="metric-label">分流模式</span>
+
+
+
+
+
+
+
+          <strong id="metric-mode" class="metric-value">智能分流</strong>
+
+
+
+
+
+
+
+          <span id="metric-mode-sub" class="metric-sub">绕过大陆 IP 与域名</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="metric-box">
+
+
+
+
+
+
+
+          <span class="metric-label">节点延迟</span>
+
+
+
+
+
+
+
+          <strong id="metric-latency" class="metric-value">--</strong>
+
+
+
+
+
+
+
+          <span id="metric-latency-status" class="metric-sub">点击测试</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="metric-box">
+
+
+
+
+
+
+
+          <span class="metric-label">内存开销</span>
+
+
+
+
+
+
+
+          <strong id="metric-memory" class="metric-value">--</strong>
+
+
+
+
+
+
+
+          <span class="metric-sub">物理内存 (RSS)</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 兼容隐藏元素 -->
+
+
+
+
+
+
+
+      <span id="metric-server" style="display:none;"></span>
+
+
+
+
+
+
+
+      <span id="metric-port" style="display:none;"></span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div id="proxy-alert" class="proxy-alert" hidden></div>
+
+
+
+
+
+
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 智能分流规则设置 -->
+
+
+
+
+
+
+
+    <section class="proxy-card">
+
+
+
+
+
+
+
+      <div class="card-title-row">
+
+
+
+
+
+
+
+        <div class="title-with-icon">
+
+
+
+
+
+
+
+          <span class="card-badge-icon">🔀</span>
+
+
+
+
+
+
+
+          <div>
+
+
+
+
+
+
+
+            <h2>路由分流模式</h2>
+
+
+
+
+
+
+
+            <p class="card-subtitle">灵活选择内外网分流规则，兼顾国内访问速度与国外加速</p>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="routing-mode-grid">
+
+
+
+
+
+
+
+        <label class="mode-card active" id="mode-card-bypass">
+
+
+
+
+
+
+
+          <input type="radio" name="routing-mode" value="bypass_cn" checked id="radio-mode-bypass">
+
+
+
+
+
+
+
+          <div class="mode-header">
+
+
+
+
+
+
+
+            <span class="mode-icon">🇨🇳</span>
+
+
+
+
+
+
+
+            <div class="mode-title-wrap">
+
+
+
+
+
+
+
+              <strong>智能分流（绕过大陆）</strong>
+
+
+
+
+
+
+
+              <span class="mode-tag rec-tag">推荐</span>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <p class="mode-desc">国内主流应用、网站域名及大陆 IP 均走蜂窝原生直连，不消耗节点流量；国外站点自动经由代理节点加速。</p>
+
+
+
+
+
+
+
+        </label>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <label class="mode-card" id="mode-card-global">
+
+
+
+
+
+
+
+          <input type="radio" name="routing-mode" value="global" id="radio-mode-global">
+
+
+
+
+
+
+
+          <div class="mode-header">
+
+
+
+
+
+
+
+            <span class="mode-icon">🌍</span>
+
+
+
+
+
+
+
+            <div class="mode-title-wrap">
+
+
+
+
+
+
+
+              <strong>全局代理</strong>
+
+
+
+
+
+
+
+              <span class="mode-tag">全部外网</span>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+          <p class="mode-desc">除本地内网私有网段（192.168.0.0/16 等）直连外，其余所有外网流量全部强制经由代理节点转发。</p>
+
+
+
+
+
+
+
+        </label>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 代理排除名单（强制直连） -->
+
+
+
+
+
+
+
+    <section class="proxy-card">
+
+
+
+
+
+
+
+      <div class="card-title-row">
+
+
+
+
+
+
+
+        <div class="title-with-icon">
+
+
+
+
+
+
+
+          <span class="card-badge-icon">🚫</span>
+
+
+
+
+
+
+
+          <div>
+
+
+
+
+
+
+
+            <h2>代理排除名单</h2>
+
+
+
+
+
+
+
+            <p class="card-subtitle">名单内的域名或 IP 无论是全局代理还是智能分流，均强制走蜂窝原生直连，绝不走代理</p>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="node-manage-actions">
+
+
+
+
+
+
+
+          <button id="btn-save-bypass" class="primary-button small-btn" type="button">💾 保存排除名单</button>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="bypass-edit-section">
+
+
+
+
+
+
+
+        <label for="bypass-textarea" class="input-label">配置直连域名或 IP（每行一个，例如 <code>www.bing.com</code> 或 <code>bing.com</code>）：</label>
+
+
+
+
+
+
+
+        <textarea id="bypass-textarea" class="node-textarea" rows="3" placeholder="例如：
+
+
+
+
+
+
+
+www.bing.com
+
+
+
+
+
+
+
+bing.com
+
+
+
+
+
+
+
+apple.com
+
+
+
+
+
+
+
+204.79.197.200"></textarea>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="bypass-quick-actions">
+
+
+
+
+
+
+
+          <button id="btn-clear-bypass" class="secondary-button small-btn" type="button">清空输入</button>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 当前生效的排除标签展示 -->
+
+
+
+
+
+
+
+      <div class="bypass-active-section">
+
+
+
+
+
+
+
+        <div class="nodes-list-header">
+
+
+
+
+
+
+
+          <strong>当前已生效的排除名单 (<span id="bypass-count">0</span>)</strong>
+
+
+
+
+
+
+
+          <span class="nodes-hint">点击标签上的 × 即可快速移除</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div id="bypass-tags-container" class="bypass-tags-container">
+
+
+
+
+
+
+
+          <span class="empty-hint">暂未配置排除项，所有非大陆流量（智能分流）或全部流量（全局）将走代理</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 节点管理与导入卡片 -->
+
+
+
+
+
+
+
+    <section class="proxy-card">
+
+
+
+
+
+
+
+      <div class="card-title-row">
+
+
+
+
+
+
+
+        <div class="title-with-icon">
+
+
+
+
+
+
+
+          <span class="card-badge-icon">📋</span>
+
+
+
+
+
+
+
+          <div>
+
+
+
+
+
+
+
+            <h2>节点管理与导入</h2>
+
+
+
+
+
+
+
+            <p class="card-subtitle">支持多节点管理、一键切换、单节点分享链接与订阅地址批量导入</p>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="node-manage-actions">
+
+
+
+
+
+
+
+          <button id="btn-ping-all" class="action-btn small-btn" type="button">⚡ 全部测速</button>
+
+
+
+
+
+
+
+          <button id="btn-clear-all" class="action-btn small-btn danger-btn" type="button">🗑️ 清空列表</button>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 导入选项卡 -->
+
+
+
+
+
+
+
+      <div class="import-tabs">
+
+
+
+
+
+
+
+        <button type="button" class="tab-btn active" id="tab-btn-link">节点链接 / 批量导入</button>
+
+
+
+
+
+
+
+        <button type="button" class="tab-btn" id="tab-btn-sub">订阅链接拉取</button>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 节点链接导入面 -->
+
+
+
+
+
+
+
+      <div id="import-pane-link" class="import-pane">
+
+
+
+
+
+
+
+        <label for="node-link-input" class="input-label">粘贴分享链接（支持单个或批量多行、Base64 订阅文本）：</label>
+
+
+
+
+
+
+
+        <textarea id="node-link-input" class="node-textarea" rows="3" placeholder="支持格式：
+
+
+
+
+
+
+
+vless://uuid@host:port?security=tls&type=ws&sni=...#名称
+
+
+
+
+
+
+
+vmess://eyadd...
+
+
+
+
+
+
+
+trojan://password@host:port?security=tls&sni=...#名称
+
+
+
+
+
+
+
+ss://base64@host:port#名称"></textarea>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <div class="button-row">
+
+
+
+
+
+
+
+          <button id="btn-save-node" class="primary-button" type="button">添加并导入节点</button>
+
+
+
+
+
+
+
+          <button id="btn-clear-node" class="secondary-button" type="button">清空输入</button>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 订阅拉取面板 -->
+
+
+
+
+
+
+
+      <div id="import-pane-sub" class="import-pane" style="display:none;">
+
+
+
+
+
+
+
+        <label for="sub-url-input" class="input-label">机场订阅 URL（HTTP/HTTPS）：</label>
+
+
+
+
+
+
+
+        <div class="sub-input-row">
+
+
+
+
+
+
+
+          <input type="url" id="sub-url-input" class="sub-url-input" placeholder="https://example.com/api/v1/client/subscribe?token=...">
+
+
+
+
+
+
+
+          <button id="btn-fetch-sub" class="primary-button" type="button">拉取订阅</button>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 节点列表展示区 -->
+
+
+
+
+
+
+
+      <div class="nodes-list-section">
+
+
+
+
+
+
+
+        <div class="nodes-list-header">
+
+
+
+
+
+
+
+          <strong>已保存节点 (<span id="node-count">0</span>)</strong>
+
+
+
+
+
+
+
+          <span class="nodes-hint">点击卡片或“使用”按钮可立即切换活动节点</span>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div id="nodes-container" class="nodes-container">
+
+
+
+
+
+
+
+          <div class="empty-nodes">暂无节点，请在上方粘贴链接或输入订阅进行添加</div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- 解析结果详情兼容 -->
+
+
+
+
+
+
+
+      <div id="parsed-details" class="parsed-details" hidden>
+
+
+
+
+
+
+
+        <div class="details-header">当前生效节点参数</div>
+
+
+
+
+
+
+
+        <div class="details-grid">
+
+
+
+
+
+
+
+          <div><span class="dt-label">协议类型：</span><strong id="dt-proto"></strong></div>
+
+
+
+
+
+
+
+          <div><span class="dt-label">节点名称：</span><strong id="dt-name"></strong></div>
+
+
+
+
+
+
+
+          <div><span class="dt-label">目标主机：</span><strong id="dt-host"></strong></div>
+
+
+
+
+
+
+
+          <div><span class="dt-label">目标端口：</span><strong id="dt-port"></strong></div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 规则与网络特性 -->
+
+
+
+
+
+
+
+    <section class="proxy-card info-panel">
+
+
+
+
+
+
+
+      <div class="card-title-row">
+
+
+
+
+
+
+
+        <div class="title-with-icon">
+
+
+
+
+
+
+
+          <span class="card-badge-icon">🛡️</span>
+
+
+
+
+
+
+
+          <div>
+
+
+
+
+
+
+
+            <h2>特性与安全策略</h2>
+
+
+
+
+
+
+
+            <p class="card-subtitle">系统内核转发保障</p>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <ul class="feature-list">
+
+
+
+
+
+
+
+        <li>
+
+
+
+
+
+
+
+          <strong>全接口覆盖：</strong>
+
+
+
+
+
+
+
+          Wi-Fi 局域网（热点设备）与 USB / 有线直连共享设备的全部外网 TCP 流量均由内核重定向至代理核心。
+
+
+
+
+
+
+
+        </li>
+
+
+
+
+
+
+
+        <li>
+
+
+
+
+
+
+
+          <strong>智能分流保障：</strong>
+
+
+
+
+
+
+
+          绕过大陆模式下，国内域名、大厂 CDN 与中国大陆 IP 自动直连，国外请求走代理加速，网速快且节省节点流量。
+
+
+
+
+
+
+
+        </li>
+
+
+
+
+
+
+
+        <li>
+
+
+
+
+
+
+
+          <strong>内网白名单直连：</strong>
+
+
+
+
+
+
+
+          局域网及保留网段（<code>192.168.0.0/16</code>、<code>10.0.0.0/8</code>、<code>172.16.0.0/12</code>）自动直连，不影响设备后台访问与内网互联。
+
+
+
+
+
+
+
+        </li>
+
+
+
+
+
+
+
+        <li>
+
+
+
+
+
+
+
+          <strong>防回环与服务器穿透：</strong>
+
+
+
+
+
+
+
+          节点服务器 IP 自动注入 iptables 白名单，代理通道流量直达服务器，杜绝死循环。
+
+
+
+
+
+
+
+        </li>
+
+
+
+
+
+
+
+        <li>
+
+
+
+
+
+
+
+          <strong>故障安全回退：</strong>
+
+
+
+
+
+
+
+          关闭代理或服务停止时，自动即时清理重定向规则，恢复纯蜂窝直连，保障不断网。
+
+
+
+
+
+
+
+        </li>
+
+
+
+
+
+
+
+      </ul>
+
+
+
+
+
+
+
+    </section></main></section>
+
+
+
+
+
+
+
+<section id="chargeweb-section" hidden><div class="panel-heading"><h2>电池设置</h2><p>智能充电规则与电池健康</p></div><main class="charge-shell air-inner"><div id="air-charge-mount"></div></main></section>
+
+
+
+
+
+
+
+<section id="atweb-section" hidden><div class="panel-heading"><h2>AT 控制台</h2></div><div class="info-card frame-card"><iframe id="atweb" data-target="8080" title="AT 控制台" height="800"></iframe></div></section><section id="terminalweb-section" hidden><div class="panel-heading"><h2>网页终端</h2></div><div class="info-card frame-card"><iframe id="terminalweb" data-target="7681" title="网页终端" height="800"></iframe></div></section><section id="clashweb-section" hidden><div class="panel-heading"><h2>网络与 SIM</h2><p>网络模式与 SIM 卡槽</p></div><main class="sim-shell air-inner"><div class="container">
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- 实时网速折线图模块（PC端平行双列放置：非代理直连在左/前，代理通道在右/后） -->
+
+
+
+
+
+
+
+        <div class="stats-box sim-speed-box" id="sim-speed-chart">
+
+
+
+
+
+
+
+            <div id="sim-speed-total" style="display:none">整体: ↓ 0.000 MB/s　↑ 0.000 MB/s</div>
+
+
+
+
+
+
+
+            <!-- 列 1：非代理直连网速折线图 -->
+
+
+
+
+
+
+
+            <div class="sim-speed-subcard direct-chart-subcard">
+
+
+
+
+
+
+
+                <div class="sim-speed-head">
+
+
+
+
+
+
+
+                    <div>
+
+
+
+
+
+
+
+                        <h2><span class="speed-title-badge direct-badge-dot"></span>非代理直连实时网速</h2>
+
+
+
+
+
+
+
+                        <div class="sim-speed-subtitle" id="direct-samples-hint"></div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="sim-speed-badges">
+
+
+
+
+
+
+
+                        <div class="speed-stat-badge badge-direct-down">
+
+
+
+
+
+
+
+                            <span class="badge-arrow">↓</span>
+
+
+
+
+
+
+
+                            <span class="badge-label">下载</span>
+
+
+
+
+
+
+
+                            <span class="badge-num" id="rate-direct-down">0.000 MB/s</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="speed-stat-badge badge-direct-up">
+
+
+
+
+
+
+
+                            <span class="badge-arrow">↑</span>
+
+
+
+
+
+
+
+                            <span class="badge-label">上传</span>
+
+
+
+
+
+
+
+                            <span class="badge-num" id="rate-direct-up">0.000 MB/s</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <span id="rate-direct-text" style="display:none">↓ 0.000 MB/s　↑ 0.000 MB/s</span>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div id="direct-chart-container" class="sim-speed-chart-wrap"></div>
+
+
+
+
+
+
+
+                <div class="sim-speed-legend">
+
+
+
+
+
+
+
+                    <span class="legend-item direct-down-item">
+
+
+
+
+
+
+
+                        <span class="legend-bar direct-down-bar"></span>
+
+
+
+
+
+
+
+                        <span>直连下载</span>
+
+
+
+
+
+
+
+                        <span id="direct-down-text" style="display:none">0.000 MB/s</span>
+
+
+
+
+
+
+
+                    </span>
+
+
+
+
+
+
+
+                    <span class="legend-item direct-up-item">
+
+
+
+
+
+
+
+                        <span class="legend-bar direct-up-bar"></span>
+
+
+
+
+
+
+
+                        <span>直连上传</span>
+
+
+
+
+
+
+
+                        <span id="direct-up-text" style="display:none">0.000 MB/s</span>
+
+
+
+
+
+
+
+                    </span>
+
+
+
+
+
+
+
+                    <small>蜂窝原生直连</small>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="sim-speed-row-divider"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 列 2：代理通道网速折线图 -->
+
+
+
+
+
+
+
+            <div class="sim-speed-subcard proxy-chart-subcard">
+
+
+
+
+
+
+
+                <div class="sim-speed-head">
+
+
+
+
+
+
+
+                    <div>
+
+
+
+
+
+
+
+                        <h2><span class="speed-title-badge proxy-badge-dot"></span>代理通道实时网速</h2>
+
+
+
+
+
+
+
+                        <div class="sim-speed-subtitle" id="proxy-samples-hint"></div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="sim-speed-badges">
+
+
+
+
+
+
+
+                        <div class="speed-stat-badge badge-proxy-down">
+
+
+
+
+
+
+
+                            <span class="badge-arrow">↓</span>
+
+
+
+
+
+
+
+                            <span class="badge-label">下载</span>
+
+
+
+
+
+
+
+                            <span class="badge-num" id="rate-proxy-down">0.000 MB/s</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="speed-stat-badge badge-proxy-up">
+
+
+
+
+
+
+
+                            <span class="badge-arrow">↑</span>
+
+
+
+
+
+
+
+                            <span class="badge-label">上传</span>
+
+
+
+
+
+
+
+                            <span class="badge-num" id="rate-proxy-up">0.000 MB/s</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <span id="rate-proxy-text" style="display:none">↓ 0.000 MB/s　↑ 0.000 MB/s</span>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div id="proxy-chart-container" class="sim-speed-chart-wrap"></div>
+
+
+
+
+
+
+
+                <div class="sim-speed-legend">
+
+
+
+
+
+
+
+                    <span class="legend-item proxy-down-item">
+
+
+
+
+
+
+
+                        <span class="legend-bar proxy-down-bar"></span>
+
+
+
+
+
+
+
+                        <span>代理下载</span>
+
+
+
+
+
+
+
+                        <span id="proxy-down-text" style="display:none">0.000 MB/s</span>
+
+
+
+
+
+
+
+                    </span>
+
+
+
+
+
+
+
+                    <span class="legend-item proxy-up-item">
+
+
+
+
+
+
+
+                        <span class="legend-bar proxy-up-bar"></span>
+
+
+
+
+
+
+
+                        <span>代理上传</span>
+
+
+
+
+
+
+
+                        <span id="proxy-up-text" style="display:none">0.000 MB/s</span>
+
+
+
+
+
+
+
+                    </span>
+
+
+
+
+
+
+
+                    <small id="proxy-status-hint">代理转发流量</small>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <!-- 当前状态显示 -->
+
+
+
+
+
+
+
+        <div class="stats-box">
+
+
+
+
+
+
+
+            <h2>当前状态</h2>
+
+
+
+
+
+
+
+            <div class="stats-content">
+
+
+
+
+
+
+
+                <!-- SIM卡状态 -->
+
+
+
+
+
+
+
+                <div class="control-group">
+
+
+
+
+
+
+
+                    <span class="setting-label">当前卡槽：</span>
+
+
+
+
+
+
+
+                    <span id="current-sim" class="sim-status-display current-sim">加载中...</span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                <div class="divider"></div>
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                <!-- 网络模式状态 -->
+
+
+
+
+
+
+
+                <div class="control-group">
+
+
+
+
+
+
+
+                    <span class="setting-label">网络模式：</span>
+
+
+
+
+
+
+
+                    <span id="current-network-mode" class="sim-status-display current-network">加载中...</span>
+
+
+
+
+
+
+
+                    <span id="network-mode-desc" class="network-desc"></span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="control-group">
+
+
+
+
+
+
+
+                    <span class="setting-label">模式代码：</span>
+
+
+
+
+
+
+
+                    <span id="network-mode-code" class="network-desc"></span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <!-- SIM卡切换区域 -->
+
+
+
+
+
+
+
+        <div class="setting-group"><h2>SIM 卡与网络模式</h2><div class="control-group"><span class="setting-label">SIM 卡切换：</span><div class="button-group"><button class="btn btn-disabled" id="switch-to-sim1" disabled="">切换到SIM1</button><button class="btn" id="switch-to-sim2">切换到SIM2</button></div></div><div class="control-group"><span class="setting-label">网络模式：</span><div class="button-group"><button class="btn btn-disabled" id="switch-to-auto" disabled="">自动模式</button><button class="btn" id="switch-to-5g">仅5G模式</button><button class="btn" id="switch-to-4g">仅4G模式</button></div></div></div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="toast" class="toast">
+
+
+
+
+
+
+
+        <span id="toast-text"></span>
+
+
+
+
+
+
+
+    </div></main></section>
+
+
+
+
+
+
+
+<section id="usbmodeweb-section" hidden><div class="panel-heading"><h2>Wi-Fi 设置</h2><p>无线连接与热点配置</p></div><main class="wifi-shell air-inner"><div class="container">
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <!-- 下面显示设置功能 -->
+
+
+
+
+
+
+
+        <div class="setting-group">
+
+
+
+
+
+
+
+            <h2>Wi-Fi 设置</h2><p id="settings-error" role="status" hidden>读取失败</p>
+
+
+
+
+
+
+
+            <div class="control-group">
+
+
+
+
+
+
+
+                <span class="setting-label">WiFi状态：</span>
+
+
+
+
+
+
+
+                <span id="wifi-status-text-setting" class="wifi-status-display">加载中...</span>
+
+
+
+
+
+
+
+                <div class="toggle-switch" id="toggle-wifi" role="button" tabindex="0" style="cursor:pointer;">
+
+
+
+
+
+
+
+                    <input type="checkbox">
+
+
+
+
+
+
+
+                    <span class="toggle-slider"></span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <div class="control-group">
+
+
+
+
+
+
+
+                <span class="setting-label">WiFi频段：</span>
+
+
+
+
+
+
+
+                <span id="wifi-mode-setting" class="wifi-mode-setting">
+
+
+
+
+
+
+
+                    <span class="mode-active-setting">2.4G</span><span class="mode-inactive-setting">/5G</span>
+
+
+
+
+
+
+
+                </span>
+
+
+
+
+
+
+
+                <!-- 频段切换开关 -->
+
+
+
+
+
+
+
+                <div class="toggle-switch" id="switch-mode" role="button" tabindex="0" style="cursor:pointer;">
+
+
+
+
+
+
+
+                    <input type="checkbox">
+
+
+
+
+
+
+
+                    <span class="toggle-slider"></span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <p id="mode-status" role="status" style="margin:2px 0 6px;font-size:12px;line-height:1.4;color:#64748b"></p>
+
+
+
+
+
+
+
+            <!-- 第二行：SSID输入框，右侧添加按钮占位区域保持对齐 -->
+
+
+
+
+
+
+
+            <div class="form-group">
+
+
+
+
+
+
+
+                <label for="ssid-input">wifi名字：</label>
+
+
+
+
+
+
+
+                <input type="text" id="ssid-input" placeholder="输入WiFi名称">
+
+
+
+
+
+
+
+                <div class="button-placeholder">保存</div> <!-- 占位区域 -->
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            <!-- 第三行：密码输入框，右边保存按钮 -->
+
+
+
+
+
+
+
+            <div class="form-group">
+
+
+
+
+
+
+
+                <label for="password-input">wifi密码：</label>
+
+
+
+
+
+
+
+                <input type="password" id="password-input" placeholder="输入WiFi密码">
+
+
+
+
+
+
+
+                <button class="btn" id="apply-settings">保存</button>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            <div class="form-group">
+
+
+
+
+
+
+
+                <label for="security-select">加密方式：</label>
+
+
+
+
+
+
+
+                <select id="security-select"><option value="wpa2">WPA2（推荐）</option><option value="wpa">WPA（兼容）</option><option value="none">开放</option></select>
+
+
+
+
+
+
+
+                <button class="btn" id="apply-security" type="button" disabled>保存</button>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <p id="security-status" role="status" style="margin:4px 0 0;font-size:12px;line-height:1.4;color:#64748b"></p>
+
+
+
+
+
+
+
+            <!-- 第四行：信道输入框，右边保存按钮 -->
+
+
+
+
+
+
+
+            <div class="form-group">
+
+
+
+
+
+
+
+                <label for="channel-select">wifi信道：</label>
+
+
+
+
+
+
+
+                <select id="channel-select">
+
+
+
+
+
+
+
+                    <!-- 动态生成选项 -->
+
+
+
+
+
+
+
+                </select>
+
+
+
+
+
+
+
+                <button class="btn" id="apply-channel">保存</button>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <p id="channel-status" role="status" style="margin:2px 0 6px;font-size:12px;line-height:1.4;color:#64748b"></p>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- 信道雷达与频域图谱 -->
+
+
+
+
+
+
+
+        <div class="setting-group wifi-radar-card">
+
+
+
+
+
+
+
+            <div class="radar-header">
+
+
+
+
+
+
+
+                <div class="radar-title-box">
+
+
+
+
+
+
+
+                    <span class="radar-badge-pulse"></span>
+
+
+
+
+
+
+
+                    <h2>信道雷达与频域图谱</h2>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="radar-actions">
+
+
+
+
+
+
+
+                    <div class="radar-band-tabs">
+
+
+
+
+
+
+
+                        <button type="button" class="radar-tab-btn" id="radar-tab-24g">2.4 GHz</button>
+
+
+
+
+
+
+
+                        <button type="button" class="radar-tab-btn active" id="radar-tab-5g">5 GHz</button>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <button type="button" class="radar-scan-btn" id="btn-scan-radar">探测周围信道</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="radar-scan-status" class="radar-scan-status"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="radar-chart-container">
+
+
+
+
+
+
+
+                <svg id="wifi-radar-svg" viewBox="0 0 640 260"></svg>
+
+
+
+
+
+
+
+                <div id="radar-tooltip" class="radar-tooltip"></div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="radar-analysis-box">
+
+
+
+
+
+
+
+                <div class="radar-meta-line">
+
+
+
+
+
+
+
+                    <span class="radar-meta-label">当前热点：</span>
+
+
+
+
+
+
+
+                    <b id="radar-cur-channel">读取中…</b>
+
+
+
+
+
+
+
+                    <span class="radar-cur-score-text" id="radar-cur-score" style="color:#64748b;font-size:12px;margin-left:6px;font-weight:600;"></span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="radar-meta-line radar-meta-rec-line">
+
+
+
+
+
+
+
+                    <span class="radar-meta-label">推荐最优：</span>
+
+
+
+
+
+
+
+                    <span class="radar-rec-badge" id="radar-rec-channel">—</span>
+
+
+
+
+
+
+
+                    <span class="radar-rec-score-text" id="radar-rec-score">（清洁度 —）</span>
+
+
+
+
+
+
+
+                    <button type="button" class="btn-auto-switch" id="btn-auto-switch-channel">⚡ 一键应用</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <p class="radar-rec-desc" id="radar-rec-reason">正在分析当前频段所有热点的同频与邻频重叠干扰…</p>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 周围热点分布清单（彻底解决重叠遮挡与文字看不清问题） -->
+
+
+
+
+
+
+
+            <div class="radar-ap-section">
+
+
+
+
+
+
+
+                <div class="radar-ap-header">
+
+
+
+
+
+
+
+                    <div class="radar-ap-title">
+
+
+
+
+
+
+
+                        <span>周围 Wi-Fi 信号明细</span>
+
+
+
+
+
+
+
+                        <span class="radar-ap-count-tag" id="radar-ap-count">0 个</span>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="radar-ap-tip">悬停或点击热点条目，频域图中对应曲线将独占高亮</div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="radar-ap-list" id="radar-ap-list">
+
+
+
+
+
+
+
+                    <!-- 动态渲染热点卡片 -->
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="wifi-toast" class="toast">
+
+
+
+
+
+
+
+        <span id="wifi-toast-text"></span>
+
+
+
+
+
+
+
+    </div></main></section>
+
+
+
+
+
+
+
+<section id="tfcweb-section" hidden><div class="panel-heading"><h2>流量管理</h2><p>流量使用与统计配置</p></div><main class="liuliang-shell air-inner"><div class="container">
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <!-- 全机与通道流量概览（蜂窝 · 直连 · 代理 统一模块，含双30天趋势图表） -->
+
+
+
+
+
+
+
+        <div class="stats-box stats-box-unified">
+
+
+
+
+
+
+
+            <div class="stats-header">
+
+
+
+
+
+
+
+                <div class="stats-title-group">
+
+
+
+
+
+
+
+                    <h2>流量概览与趋势</h2>
+
+
+
+
+
+
+
+                    <span class="stats-subtitle">蜂窝 · 直连 · 代理 统一统计</span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="header-actions">
+
+
+
+
+
+
+
+                    <button class="btn btn-danger action-btn" id="clear-stats">
+
+
+
+
+
+
+
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>清空统计
+
+
+
+
+
+
+
+                    </button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="metrics-row">
+
+
+
+
+
+
+
+                <!-- 今日流量 -->
+
+
+
+
+
+
+
+                <div class="metric-col">
+
+
+
+
+
+
+
+                    <div class="metric-head-row">
+
+
+
+
+
+
+
+                        <span class="metric-kicker">今日流量 (蜂窝)</span>
+
+
+
+
+
+
+
+                        <strong class="metric-head-total" id="today-total-badge">--</strong>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="breakdown-grid">
+
+
+
+
+
+
+
+                        <div class="breakdown-card card-direct">
+
+
+
+
+
+
+
+                            <div class="breakdown-card-title"><span class="pill-dot dot-direct"></span>直连通道</div>
+
+
+
+
+
+
+
+                            <div class="breakdown-card-body">
+
+
+
+
+
+
+
+                                <span>↓ <b id="today-direct-rx">--</b></span>
+
+
+
+
+
+
+
+                                <span>↑ <b id="today-direct-tx">--</b></span>
+
+
+
+
+
+
+
+                                <span class="breakdown-total">计: <strong id="today-direct-total">--</strong></span>
+
+
+
+
+
+
+
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="breakdown-card card-proxy">
+
+
+
+
+
+
+
+                            <div class="breakdown-card-title"><span class="pill-dot dot-proxy"></span>代理通道</div>
+
+
+
+
+
+
+
+                            <div class="breakdown-card-body">
+
+
+
+
+
+
+
+                                <span>↓ <b id="today-proxy-rx">--</b></span>
+
+
+
+
+
+
+
+                                <span>↑ <b id="today-proxy-tx">--</b></span>
+
+
+
+
+
+
+
+                                <span class="breakdown-total">计: <strong id="today-proxy-total">--</strong></span>
+
+
+
+
+
+
+
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div id="today-result" class="stats-content-raw" style="display:none;"></div>
+
+
+
+
+
+
+
+                    <div id="today-proxy-result" class="stats-content-raw" style="display:none;"></div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!-- 当月流量 -->
+
+
+
+
+
+
+
+                <div class="metric-col">
+
+
+
+
+
+
+
+                    <div class="metric-head-row">
+
+
+
+
+
+
+
+                        <span class="metric-kicker">当月流量 (蜂窝)</span>
+
+
+
+
+
+
+
+                        <strong class="metric-head-total" id="month-total-badge">--</strong>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="breakdown-grid">
+
+
+
+
+
+
+
+                        <div class="breakdown-card card-direct">
+
+
+
+
+
+
+
+                            <div class="breakdown-card-title"><span class="pill-dot dot-direct"></span>直连通道</div>
+
+
+
+
+
+
+
+                            <div class="breakdown-card-body">
+
+
+
+
+
+
+
+                                <span>↓ <b id="month-direct-rx">--</b></span>
+
+
+
+
+
+
+
+                                <span>↑ <b id="month-direct-tx">--</b></span>
+
+
+
+
+
+
+
+                                <span class="breakdown-total">计: <strong id="month-direct-total">--</strong></span>
+
+
+
+
+
+
+
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="breakdown-card card-proxy">
+
+
+
+
+
+
+
+                            <div class="breakdown-card-title"><span class="pill-dot dot-proxy"></span>代理通道</div>
+
+
+
+
+
+
+
+                            <div class="breakdown-card-body">
+
+
+
+
+
+
+
+                                <span>↓ <b id="month-proxy-rx">--</b></span>
+
+
+
+
+
+
+
+                                <span>↑ <b id="month-proxy-tx">--</b></span>
+
+
+
+
+
+
+
+                                <span class="breakdown-total">计: <strong id="month-proxy-total">--</strong></span>
+
+
+
+
+
+
+
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div id="month-result" class="stats-content-raw" style="display:none;"></div>
+
+
+
+
+
+
+
+                    <div id="month-proxy-result" class="stats-content-raw" style="display:none;"></div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="compare-alert" class="alert" style="display:none;"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 近30天趋势图表合为一个网格区域 -->
+
+
+
+
+
+
+
+            <div class="charts-unified-grid">
+
+
+
+
+
+
+
+                <!-- 蜂窝/直连每日用量趋势 -->
+
+
+
+
+
+
+
+                <div class="chart-section chart-section-direct">
+
+
+
+
+
+
+
+                    <div class="chart-title-row">
+
+
+
+
+
+
+
+                        <div class="chart-title-group">
+
+
+
+
+
+
+
+                            <strong>近 30 天每日用量趋势</strong>
+
+
+
+
+
+
+
+                            <span class="channel-tag tag-direct">蜂窝网络</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="chart-legend">
+
+
+
+
+
+
+
+                            <span><span class="legend-dot rx-dot"></span>下载</span>
+
+
+
+
+
+
+
+                            <span><span class="legend-dot tx-dot"></span>上传</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div id="daily-traffic-chart" class="daily-chart-svg"></div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!-- 代理通道每日用量趋势 -->
+
+
+
+
+
+
+
+                <div class="chart-section chart-section-proxy">
+
+
+
+
+
+
+
+                    <div class="chart-title-row">
+
+
+
+
+
+
+
+                        <div class="chart-title-group">
+
+
+
+
+
+
+
+                            <strong>近 30 天代理用量趋势</strong>
+
+
+
+
+
+
+
+                            <span class="channel-tag tag-proxy">Xray 代理</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="chart-legend">
+
+
+
+
+
+
+
+                            <span><span class="legend-dot rx-dot-proxy"></span>代理下载</span>
+
+
+
+
+
+
+
+                            <span><span class="legend-dot tx-dot-proxy"></span>代理上传</span>
+
+
+
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div id="daily-proxy-chart" class="daily-chart-svg"></div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <!-- 系统设置模块（滑块开关 + 流量限制设置） -->
+
+
+
+
+
+
+
+        <div class="setting-group">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <h2>系统与流量设置</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 流量限制状态控制 -->
+
+
+
+
+
+
+
+            <div class="setting-switch-row">
+
+
+
+
+
+
+
+                <div class="setting-text">
+
+
+
+
+
+
+
+                    <span class="setting-name">流量限制功能</span>
+
+
+
+
+
+
+
+                    <span class="setting-desc">达到设定上限后自动采取保护措施</span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="setting-switch-wrap">
+
+
+
+
+
+
+
+                    <label class="toggle-switch">
+
+
+
+
+
+
+
+                        <input type="checkbox" id="switch-limit">
+
+
+
+
+
+
+
+                        <span class="slider"></span>
+
+
+
+
+
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <span id="limit-status" class="status">加载中...</span>
+
+
+
+
+
+
+
+                    <!-- 兼容原有按钮 -->
+
+
+
+
+
+
+
+                    <button class="btn btn-warning action-btn" id="toggle-limit" style="display:none;">切换模式</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 流量限制设置（已放入系统设置中） -->
+
+
+
+
+
+
+
+            <div class="setting-sub-row" id="limit-sub-row">
+
+
+
+
+
+
+
+                <div class="limit-input-wrap">
+
+
+
+
+
+
+
+                    <div>
+
+
+
+
+
+
+
+                        <label for="limit-value">当月上限 (GiB):</label>
+
+
+
+
+
+
+
+                        <input type="number" id="limit-value" min="0.1" step="0.1" value="10">
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <button class="btn action-btn" id="set-limit">保存设置</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 飞行模式控制 -->
+
+
+
+
+
+
+
+            <div class="setting-switch-row">
+
+
+
+
+
+
+
+                <div class="setting-text">
+
+
+
+
+
+
+
+                    <span class="setting-name">飞行模式</span>
+
+
+
+
+
+
+
+                    <span class="setting-desc">关闭蜂窝网络调制解调器连接</span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="setting-switch-wrap">
+
+
+
+
+
+
+
+                    <label class="toggle-switch">
+
+
+
+
+
+
+
+                        <input type="checkbox" id="switch-flight">
+
+
+
+
+
+
+
+                        <span class="slider"></span>
+
+
+
+
+
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <span id="flight-status" class="status">加载中...</span>
+
+
+
+
+
+
+
+                    <!-- 兼容原有按钮 -->
+
+
+
+
+
+
+
+                    <button class="btn btn-warning action-btn" id="toggle-flight" style="display:none;">切换模式</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- 统计服务状态 -->
+
+
+
+
+
+
+
+            <div class="setting-switch-row">
+
+
+
+
+
+
+
+                <div class="setting-text">
+
+
+
+
+
+
+
+                    <span class="setting-name">统计服务 (vnstatd)</span>
+
+
+
+
+
+
+
+                    <span class="setting-desc">后台守护采集网络接口历史流量</span>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="setting-switch-wrap">
+
+
+
+
+
+
+
+                    <label class="toggle-switch">
+
+
+
+
+
+
+
+                        <input type="checkbox" id="switch-vnstatd">
+
+
+
+
+
+
+
+                        <span class="slider"></span>
+
+
+
+
+
+
+
+                    </label>
+
+
+
+
+
+
+
+                    <span id="vnstatd-status" class="status">加载中...</span>
+
+
+
+
+
+
+
+                    <!-- 兼容原有按钮 -->
+
+
+
+
+
+
+
+                    <button class="btn btn-warning action-btn" id="restart-vnstatd" style="display:none;">重启服务</button>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 顶部弹窗元素 -->
+
+
+
+
+
+
+
+    <div id="liu-toast" class="toast">
+
+
+
+
+
+
+
+        <span id="liu-toast-text"></span>
+
+
+
+
+
+
+
+    </div></main></section>
+
+
+
+
+
+
+
+<section id="clashui-section" hidden><div class="panel-heading"><h2>系统设置</h2><p>设备运行与系统管理</p></div><div class="air-system-shell air-inner"><!-- 展锐转发加速 (SFP) 设置卡片 -->
+
+
+
+
+
+
+
+    <div class="setting-card">
+
+
+
+
+
+
+
+        <div class="card-header">
+
+
+
+
+
+
+
+            <div class="card-title-group">
+
+
+
+
+
+
+
+                <span class="card-icon">⚡</span>
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+
+
+
+                    <h2 class="card-title">展锐转发加速 (SFP)</h2>
+
+
+
+
+
+
+
+                    <p class="card-desc">紫光展锐芯片级硬件数据包转发旁路</p>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <div class="card-control">
+
+
+
+
+
+
+
+                <span class="status-badge" id="sfp-status-badge">读取中…</span>
+
+
+
+
+
+
+
+                <label class="toggle-switch" title="切换展锐硬件加速旁路">
+
+
+
+
+
+
+
+                    <input type="checkbox" id="sfp-toggle" onchange="toggleSFP(this.checked)">
+
+
+
+
+
+
+
+                    <span class="toggle-slider"></span>
+
+
+
+
+
+
+
+                </label>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="card-note">
+
+
+
+
+
+
+
+            <p><strong>说明：</strong>开启后由硬件旁路直接卸载转发数据包，提升极限吞吐并降低 CPU 负载；<strong>若需要精准的设备流量统计与限速功能，请保持关闭</strong>（修改后立即生效）。</p>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    <!-- 后台登录密码 -->
+
+
+
+
+
+
+
+    <div class="setting-card">
+
+
+
+
+
+
+
+        <div class="card-header">
+
+
+
+
+
+
+
+            <div class="card-title-group">
+
+
+
+
+
+
+
+                <span class="card-icon">&#128273;</span>
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+
+
+
+                    <h2 class="card-title">后台登录密码</h2>
+
+
+
+
+
+
+
+                    <p class="card-desc">修改本后台的登录密码</p>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="pwd-form">
+
+
+
+
+
+
+
+            <input type="password" id="pwd-old" placeholder="当前密码" autocomplete="current-password">
+
+
+
+
+
+
+
+            <input type="password" id="pwd-new" placeholder="新密码（6~64 位）" autocomplete="new-password">
+
+
+
+
+
+
+
+            <input type="password" id="pwd-confirm" placeholder="确认新密码" autocomplete="new-password">
+
+
+
+
+
+
+
+            <button class="pwd-save" id="pwd-save" type="button">保存</button>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="card-note">
+
+
+
+
+
+
+
+            <p><strong>说明：</strong>保存后当前密码立即失效，已登录的会话需要重新登录。</p>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 退出登录 -->
+
+
+
+
+
+
+
+    <div class="setting-card">
+
+
+
+
+
+
+
+        <div class="card-header">
+
+
+
+
+
+
+
+            <div class="card-title-group">
+
+
+
+
+
+
+
+                <span class="card-icon">&#128682;</span>
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+
+
+
+                    <h2 class="card-title">退出登录</h2>
+
+
+
+
+
+
+
+                    <p class="card-desc">结束当前会话，重新访问需要输入密码</p>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <div class="card-control">
+
+
+
+
+
+
+
+                <button class="logout-btn" id="logout-btn" type="button">退出登录</button>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="power-buttons">
+
+
+
+
+
+
+
+        <button class="btn reboot-btn" onclick="showConfirmation('reboot')"><span class="air-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0-1 7M20 4v6h-6"/></svg></span><span class="air-action-copy"><strong>重启设备</strong></span></button>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        <button class="btn shutdown-btn" onclick="showConfirmation('shutdown')"><span class="air-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v10M6 5a9 9 0 1 0 12 0"/></svg></span><span class="air-action-copy"><strong>关闭设备</strong></span></button>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    <p class="air-system-note">重启或关机会断开连接。</p></div><!-- 顶部下拉确认对话框 -->
+
+
+
+
+
+
+
+    <div class="confirmation" id="confirmation">
+
+
+
+
+
+
+
+        <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+
+
+
+
+
+
+
+            <h2 id="dialog-title">确认操作</h2>
+
+
+
+
+
+
+
+            <div class="dialog-buttons">
+
+
+
+
+
+
+
+                <button class="dialog-btn dialog-confirm" id="dialog-confirm">确认</button>
+
+
+
+
+
+
+
+                <button class="dialog-btn dialog-cancel" onclick="hideConfirmation()">取消</button>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 顶部下拉提示框 -->
+
+
+
+
+
+
+
+    <div id="sys-toast" class="sys-toast" style="position:fixed;top:0;left:50%;right:auto;bottom:auto;transform:translate(-50%,-200%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .3s ease,opacity .2s ease;z-index:1200;background:#4caf50;color:#fff;padding:12px 22px;border:none;border-radius:0 0 10px 10px;font-size:13px;line-height:1.4;white-space:nowrap;max-width:calc(100vw - 32px);box-sizing:border-box;margin:0;text-align:center">
+
+
+
+
+
+
+
+        <span id="sys-toast-text"></span></div></section></div></main><script>document.querySelectorAll('iframe[data-target]').forEach(frame=>{const target=frame.dataset.target;if(target.startsWith('/')){frame.dataset.src=target}else{const url=new URL(window.location.origin);url.port=target;frame.dataset.src=url.origin+'/';}});</script><script src="/air-bg.js?v=12.1"></script><script src="/air-ui.js?v=2.22"></script><script src="/air-overview.js?v=2.15"></script><script src="/air-trend.js?v=2.15"></script><script src="/air-monitor.js?v=2.24"></script><script src="/air-signal.js?v=2.15"></script><script src="/vendor/qrcode.js"></script><script src="/vendor/qrcode_UTF8.js"></script><script src="/air-share.js?v=2.15"></script><script>function setImei(type) {
+
+
+
+
+
+
+
+    const inputId = type === 1 ? 'imei1Input' : 'imei2Input';
+
+
+
+
+
+
+
+    const imei = document.getElementById(inputId).value.trim();
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    if (!imei || imei.length !== 15 || !/^\d+$/.test(imei)) {
+
+
+
+
+
+
+
+        layer.msg('请输入15位有效的IMEI号码', {icon: 2});
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    // 弹出确认提示框
+
+
+
+
+
+
+
+    layer.confirm(
+
+
+
+
+
+
+
+        '修改IMEI后必须重启设备才能生效！\n是否继续修改？',
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            title: '重要提示',
+
+
+
+
+
+
+
+            icon: 3,
+
+
+
+
+
+
+
+            btn: ['确认修改', '取消'] // 两个按钮
+
+
+
+
+
+
+
+        },
+
+
+
+
+
+
+
+        function(index) {
+
+
+
+
+
+
+
+            // 点击确认按钮的回调
+
+
+
+
+
+
+
+            const atCommand = `AT+SPIMEI=${type === 1 ? 0 : 2},"${imei}"`;
+
+
+
+
+
+
+
+            document.getElementById('atCommandInput').value = atCommand;
+
+
+
+
+
+
+
+            // 自动点击发送按钮
+
+
+
+
+
+
+
+            document.getElementById('sendAtCommandBtn').click();
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            // 关闭提示框
+
+
+
+
+
+
+
+            layer.close(index);
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            // 提示重启
+
+
+
+
+
+
+
+            layer.msg('IMEI修改命令已发送，请重启设备使修改生效', {icon: 1, time: 3000});
+
+
+
+
+
+
+
+        },
+
+
+
+
+
+
+
+        function(index) {
+
+
+
+
+
+
+
+            // 点击取消按钮的回调
+
+
+
+
+
+
+
+            layer.close(index); // 关闭提示框
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    );
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+    </script><script>// 完整的JavaScript代码，从8080端口获取所有信息，并添加WiFi状态显示
+
+
+
+
+
+
+
+const baseUrl = window.location.origin + '/';
+
+
+
+
+
+
+
+const wifiBaseUrl = window.location.origin + '/'; // WiFi管理接口
+
+
+
+
+
+
+
+let socThmZoneValue = 0;
+
+
+
+
+
+
+
+let imei = '';
+
+
+
+
+
+
+
+let iccid = '';
+
+
+
+
+
+
+
+let hasAmbrData = false;
+
+
+
+
+
+
+
+let ambrRefreshInterval = 2000;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+layui.use(function() {
+
+
+
+
+
+
+
+    var element = layui.element;
+
+
+
+
+
+
+
+    var table = layui.table;
+
+
+
+
+
+
+
+    var form = layui.form;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    let btns = document.querySelectorAll('#atcommand-btns button');
+
+
+
+
+
+
+
+    if (btns) {
+
+
+
+
+
+
+
+        btns.forEach(item => {
+
+
+
+
+
+
+
+            item.onclick = function() {
+
+
+
+
+
+
+
+                let atcmd = item.innerText.split('：')[1];
+
+
+
+
+
+
+
+                document.getElementById('atCommandInput').value = atcmd;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+        })
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function fetchNetwork() {
+
+
+
+
+
+
+
+        fetch(baseUrl + 'api/get/network').then((response) => response.json()).then((data) => {
+
+
+
+
+
+
+
+            if (data.Code !== 0 || !data.Data) {
+
+
+
+
+
+
+
+                return;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            let networks = data.Data.Network;
+
+
+
+
+
+
+
+            let networkTableBody = document.getElementById('networkTableBody');
+
+
+
+
+
+
+
+            networkTableBody.innerHTML = '';
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            for (let network of networks) {
+
+
+
+
+
+
+
+                const row = document.createElement('tr');
+
+
+
+
+
+
+
+                row.innerHTML = `<td>${network.Band}</td><td>${network.ARFCN}</td><td>${network.PCI}</td><td>${network.RSRP}</td><td>${network.RSRQ}</td><td>${network.SINR}</td>`;
+
+
+
+
+
+
+
+                networkTableBody.appendChild(row);
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            if (networks.length) {
+
+
+
+
+
+
+
+                document.getElementById('Band').innerHTML = networks[0].Band;
+
+
+
+
+
+
+
+                document.getElementById('ARFCN').innerHTML = networks[0].ARFCN;
+
+
+
+
+
+
+
+                document.getElementById('PCI').innerHTML = networks[0].PCI;
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                const rsrpValue = networks[0].RSRP;
+
+
+
+
+
+
+
+                document.getElementById('RSRP').innerHTML = rsrpValue + ' dBm';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            let technology = data.Data.Technology;
+
+
+
+
+
+
+
+            let technologyDisplay = '';
+
+
+
+
+
+
+
+            if (technology == 'lte') {
+
+
+
+
+
+
+
+                technologyDisplay = `<span class="network-type"><span class="network-primary">4G</span><span class="network-secondary">LTE</span></span>`;
+
+
+
+
+
+
+
+            } else if (technology == 'nr5g' || technology == 'nr') {
+
+
+
+
+
+
+
+                technologyDisplay = `<span class="network-type"><span class="network-primary">5G</span><span class="network-secondary">NR</span></span>`;
+
+
+
+
+
+
+
+            } else {
+
+
+
+
+
+
+
+                technologyDisplay = `<span class="network-type"><span class="network-primary">${String(technology || '--').toUpperCase()}</span></span>`;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            document.getElementById('technology').innerHTML = technologyDisplay;
+
+
+
+
+
+
+
+            document.getElementById('technology2').innerHTML = technologyDisplay;
+
+
+
+
+
+
+
+            window.airDataUpdated();
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+        }).catch((error) => {
+
+
+
+
+
+
+
+            window.airDataFailed(); console.error('fetchNetwork err', error);
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 独立的签约信息获取函数
+
+
+
+
+
+
+
+    function fetchAmbrInfo() {
+
+
+
+
+
+
+
+        fetch(baseUrl + 'api/get/network').then((response) => {
+
+
+
+
+
+
+
+            if (!response.ok) {
+
+
+
+
+
+
+
+                throw new Error('Network response was not ok');
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            return response.json();
+
+
+
+
+
+
+
+        }).then((data) => {
+
+
+
+
+
+
+
+            if (data.Code === 0 && data.Data && data.Data.Cgeqosrdp) {
+
+
+
+
+
+
+
+                const ambr = data.Data.Cgeqosrdp;
+
+
+
+
+
+
+
+                const hasData = !!(ambr && ambr.Qci);
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                // 更新签约信息显示
+
+
+
+
+
+
+
+                document.getElementById('qci').innerHTML = ambr.Qci || '--';
+
+
+
+
+
+
+
+                document.getElementById('dl').innerHTML = ambr.DL ? (ambr.DL / 1000 + ' Mbps') : '--';
+
+
+
+
+
+
+
+                document.getElementById('ul').innerHTML = ambr.UL ? (ambr.UL / 1000 + ' Mbps') : '--';
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                if (ambr.Qci) {
+
+
+
+
+
+
+
+                    document.getElementById('networkStatus').innerHTML = `签约信息已获取`;
+
+
+
+
+
+
+
+                    hasAmbrData = true;
+
+
+
+
+
+
+
+                } else {
+
+
+
+
+
+
+
+                    document.getElementById('networkStatus').innerHTML = `<span style="color: #e74c3c">签约信息暂不可用</span>`;
+
+
+
+
+
+
+
+                    hasAmbrData = false;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+                // 动态调整刷新频率
+
+
+
+
+
+
+
+                adjustAmbrRefreshRate(hasData);
+
+
+
+
+
+
+
+            } else {
+
+
+
+
+
+
+
+                hasAmbrData = false;
+
+
+
+
+
+
+
+                document.getElementById('networkStatus').innerHTML = `<span style="color: #e74c3c">× 无签约信息</span>`;
+
+
+
+
+
+
+
+                adjustAmbrRefreshRate(false);
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+        }).catch((error) => {
+
+
+
+
+
+
+
+            console.log('fetchAmbrInfo err:', error);
+
+
+
+
+
+
+
+            hasAmbrData = false;
+
+
+
+
+
+
+
+            adjustAmbrRefreshRate(false);
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 调整签约信息刷新频率
+
+
+
+
+
+
+
+    function adjustAmbrRefreshRate(hasData) {
+
+
+
+
+
+
+
+        const newInterval = hasData ? 60000 : 2000;
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        if (newInterval !== ambrRefreshInterval) {
+
+
+
+
+
+
+
+            ambrRefreshInterval = newInterval;
+
+
+
+
+
+
+
+            console.log(`签约信息刷新频率调整为: ${ambrRefreshInterval}ms`);
+
+
+
+
+
+
+
+            restartAmbrTimer();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 重启签约信息定时器
+
+
+
+
+
+
+
+    function restartAmbrTimer() {
+
+
+
+
+
+
+
+        if (window.ambrTimer) {
+
+
+
+
+
+
+
+            clearInterval(window.ambrTimer);
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+        window.ambrTimer = setInterval(fetchAmbrInfo, ambrRefreshInterval);
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 获取WiFi状态信息
+
+
+
+
+
+
+
+    function fetchWifiInfo() {
+
+
+
+
+
+
+
+        fetch(wifiBaseUrl + 'cgi-bin/traffic.cgi?action=get_wifi')
+
+
+
+
+
+
+
+            .then(response => {
+
+
+
+
+
+
+
+                if (!response.ok) throw new Error('WiFi信息获取失败');
+
+
+
+
+
+
+
+                return response.json();
+
+
+
+
+
+
+
+            })
+
+
+
+
+
+
+
+            .then(data => {
+
+
+
+
+
+
+
+                // 更新WiFi状态显示
+
+
+
+
+
+
+
+                updateWifiDisplay(data);
+
+
+
+
+
+
+
+            })
+
+
+
+
+
+
+
+            .catch(error => {
+
+
+
+
+
+
+
+                console.error('获取WiFi信息失败:', error);
+
+
+
+
+
+
+
+                // 显示错误状态
+
+
+
+
+
+
+
+                document.getElementById('wifiSwitchStatus').innerHTML = '--';
+
+
+
+
+
+
+
+                document.getElementById('wifiBand').innerHTML = '--';document.getElementById('wifiChannel').textContent='--';document.getElementById('wifiEncryption').textContent='--';
+
+
+
+
+
+
+
+                document.getElementById('wifiSsid').innerHTML = '--';
+
+
+
+
+
+
+
+                document.getElementById('wifiPassword').innerHTML = '--';
+
+
+
+
+
+
+
+            });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 更新WiFi状态显示
+
+
+
+
+
+
+
+    function updateWifiDisplay(wifiData) {
+
+
+
+
+
+
+
+        document.getElementById('wifiChannel').textContent = wifiData.wifi_channel && wifiData.wifi_channel !== 'unknown' ? wifiData.wifi_channel : '--';
+
+
+
+
+
+
+
+        const security = String(wifiData.wifi_encryption || '').toLowerCase();
+
+
+
+
+
+
+
+        document.getElementById('wifiEncryption').textContent = ({none:'开放',wpa:'WPA',wpa2:'WPA2'})[security] || (security && security !== 'unknown' ? security.toUpperCase() : '--');
+
+
+
+
+
+
+
+        // WiFi开关状态
+
+
+
+
+
+
+
+        const wifiSwitchStatus = document.getElementById('wifiSwitchStatus');
+
+
+
+
+
+
+
+        if (wifiData.wifi_enabled === "on") {
+
+
+
+
+
+
+
+            wifiSwitchStatus.innerHTML = '<span style="color: #52c41a">✓ 已开启</span>';
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+            wifiSwitchStatus.innerHTML = '<span style="color: #ff4d4f">× 已关闭</span>';
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // WiFi频段
+
+
+
+
+
+
+
+        const wifiBand = document.getElementById('wifiBand');
+
+
+
+
+
+
+
+        if (wifiData.wifi_mode) {
+
+
+
+
+
+
+
+            wifiBand.innerHTML = wifiData.wifi_mode + "Hz";
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+            wifiBand.innerHTML = '--';
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // WiFi名称
+
+
+
+
+
+
+
+        const wifiSsid = document.getElementById('wifiSsid');
+
+
+
+
+
+
+
+        if (wifiData.wifi_ssid) {
+
+
+
+
+
+
+
+            wifiSsid.textContent = wifiData.wifi_ssid;
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+            wifiSsid.textContent = '--';
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // WiFi密码 - 改为默认显示
+
+
+
+
+
+
+
+    const wifiPassword = document.getElementById('wifiPassword');
+
+
+
+
+
+
+
+    if (wifiData.wifi_key && wifiData.wifi_key !== 'unknown') {
+
+
+
+
+
+
+
+        wifiPassword.textContent = wifiData.wifi_key;  // 直接显示密码
+
+
+
+
+
+
+
+        wifiPassword.setAttribute('data-password', wifiData.wifi_key);
+
+
+
+
+
+
+
+    } else {
+
+
+
+
+
+
+
+        wifiPassword.textContent = '未设置';
+
+
+
+
+
+
+
+        wifiPassword.removeAttribute('data-password');
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 系统信息获取 - 从8080端口获取电池信息
+
+
+
+
+
+
+
+    function fetchSysInfo() {
+
+
+
+
+
+
+
+        fetch(baseUrl + 'api/get/sysinfo').then(response => {
+
+
+
+
+
+
+
+            if (!response.ok) throw new Error('System status unavailable');
+
+
+
+
+
+
+
+            return response.json();
+
+
+
+
+
+
+
+        }).then(data => {
+
+
+
+
+
+
+
+            if (data.Code !== 0 || !data.Data) throw new Error('System status unavailable');
+
+
+
+
+
+
+
+            window.airRenderSystem(data.Data);
+
+
+
+
+
+
+
+        }).catch(() => window.airSystemFailed());
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // AT命令发送
+
+
+
+
+
+
+
+    document.getElementById('sendAtCommandBtn').onclick = function() {
+
+
+
+
+
+
+
+        const commandInput = document.getElementById('atCommandInput').value;
+
+
+
+
+
+
+
+        const responseBox = document.getElementById('atCommandResponse');
+
+
+
+
+
+
+
+        if (commandInput === '') {
+
+
+
+
+
+
+
+            layer.msg('请输入一个 AT 命令！');
+
+
+
+
+
+
+
+            return;
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        fetch(baseUrl + 'api/exec/atcmd', {
+
+
+
+
+
+
+
+            method: 'POST',
+
+
+
+
+
+
+
+            headers: {
+
+
+
+
+
+
+
+                'Content-Type': 'application/json',
+
+
+
+
+
+
+
+            },
+
+
+
+
+
+
+
+            body: JSON.stringify({
+
+
+
+
+
+
+
+                Method: "execat",
+
+
+
+
+
+
+
+                Cmd: commandInput
+
+
+
+
+
+
+
+            }),
+
+
+
+
+
+
+
+        }).then((response) => response.json()).then((data) => {
+
+
+
+
+
+
+
+            if (data.Code === 0) {
+
+
+
+
+
+
+
+                responseBox.value = commandInput + '\n' + data.Data + '\n' + responseBox.value;
+
+
+
+
+
+
+
+            } else {
+
+
+
+
+
+
+
+                responseBox.value = commandInput + '\n错误: ' + data.Error + '\n' + responseBox.value;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+        }).catch((error) => {
+
+
+
+
+
+
+
+            console.error('Error sending AT command:', error);
+
+
+
+
+
+
+
+            responseBox.value = commandInput + '\n发送失败：' + error + '\n' + responseBox.value;
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 初始化加载
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    fetchNetwork();
+
+
+
+
+
+
+
+    fetchSysInfo();
+
+
+
+
+
+
+
+    fetchAmbrInfo();
+
+
+
+
+
+
+
+    fetchWifiInfo(); // 获取WiFi信息
+
+
+
+
+
+
+
+    getIMEI();
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    // 设置定时器
+
+
+
+
+
+
+
+    setInterval(function() {
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        fetchNetwork();
+
+
+
+
+
+
+
+        fetchSysInfo();
+
+
+
+
+
+
+
+        fetchWifiInfo(); // 定期更新WiFi信息
+
+
+
+
+
+
+
+        if (!imei || !iccid) {
+
+
+
+
+
+
+
+            getIMEI();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    }, 3000);
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    // 启动签约信息定时器
+
+
+
+
+
+
+
+    restartAmbrTimer();
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    setInterval(function() {
+
+
+
+
+
+
+
+        getIMEI();
+
+
+
+
+
+
+
+    }, 1000 * 60);
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function calcPercent(value, min, max) {
+
+
+
+
+
+
+
+    value = Number(value);
+
+
+
+
+
+
+
+    min = Number(min);
+
+
+
+
+
+
+
+    max = Number(max);
+
+
+
+
+
+
+
+    if (min >= max) {
+
+
+
+
+
+
+
+        console.warn('calcPercent: 最小值必须小于最大值');
+
+
+
+
+
+
+
+        return 0;
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+    if (value <= min) return 0;
+
+
+
+
+
+
+
+    if (value >= max) return 100;
+
+
+
+
+
+
+
+    return Math.round(((value - min) / (max - min)) * 100);
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getIMEI() {
+
+
+
+
+
+
+
+    fetch(baseUrl + 'api/exec/atcmd', {
+
+
+
+
+
+
+
+        method: 'POST',
+
+
+
+
+
+
+
+        headers: {
+
+
+
+
+
+
+
+            'Content-Type': 'application/json',
+
+
+
+
+
+
+
+        },
+
+
+
+
+
+
+
+        body: JSON.stringify({
+
+
+
+
+
+
+
+            Method: "execat",
+
+
+
+
+
+
+
+            Cmd: "AT+CGSN"
+
+
+
+
+
+
+
+        }),
+
+
+
+
+
+
+
+    }).then((response) => response.json()).then((data) => {
+
+
+
+
+
+
+
+        if (data.Code === 0) {
+
+
+
+
+
+
+
+            imei = data.Data.replace(/[^\d]/g, '');
+
+
+
+
+
+
+
+            document.getElementById('imei').innerHTML = imei;
+
+
+
+
+
+
+
+            getICCID();
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+            console.error('Error getIMEI:', data.Error);
+
+
+
+
+
+
+
+            getICCID();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    }).catch((error) => {
+
+
+
+
+
+
+
+        console.error('Error getIMEI:', error);
+
+
+
+
+
+
+
+        getICCID();
+
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getICCID() {
+
+
+
+
+
+
+
+    fetch(baseUrl + 'api/exec/atcmd', {
+
+
+
+
+
+
+
+        method: 'POST',
+
+
+
+
+
+
+
+        headers: {
+
+
+
+
+
+
+
+            'Content-Type': 'application/json',
+
+
+
+
+
+
+
+        },
+
+
+
+
+
+
+
+        body: JSON.stringify({
+
+
+
+
+
+
+
+            Method: "execat",
+
+
+
+
+
+
+
+            Cmd: "AT+CCID"
+
+
+
+
+
+
+
+        }),
+
+
+
+
+
+
+
+    }).then((response) => response.json()).then((data) => {
+
+
+
+
+
+
+
+        if (data.Code === 0) {
+
+
+
+
+
+
+
+            let result = data.Data.match(/"([^"]*)"/);
+
+
+
+
+
+
+
+            if (result) {
+
+
+
+
+
+
+
+                iccid = result[1];
+
+
+
+
+
+
+
+                getISP(iccid);
+
+
+
+
+
+
+
+                document.getElementById('simStatus').innerHTML = '✓ 已插卡';
+
+
+
+
+
+
+
+            } else {
+
+
+
+
+
+
+
+                iccid = '';
+
+
+
+
+
+
+
+                document.getElementById('simStatus').innerHTML = '--';
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            document.getElementById('iccid').innerHTML = iccid;
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+            console.error('Error getICCID:', data.Error);
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    }).catch((error) => {
+
+
+
+
+
+
+
+        console.error('Error getICCID:', error);
+
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getISP(iccid) {
+
+
+
+
+
+
+
+    if (iccid.startsWith('898600') || iccid.startsWith('898602') || iccid.startsWith('898604') || iccid.startsWith('898607')) {
+
+
+
+
+
+
+
+        document.getElementById('ISP').innerHTML = '中国移动';
+
+
+
+
+
+
+
+    } else if (iccid.startsWith('898601') || iccid.startsWith('898606') || iccid.startsWith('898609')) {
+
+
+
+
+
+
+
+        document.getElementById('ISP').innerHTML = '中国联通';
+
+
+
+
+
+
+
+    } else if (iccid.startsWith('898603') || iccid.startsWith('898611')) {
+
+
+
+
+
+
+
+        document.getElementById('ISP').innerHTML = '中国电信';
+
+
+
+
+
+
+
+    } else if (iccid.startsWith('898615')) {
+
+
+
+
+
+
+
+        document.getElementById('ISP').innerHTML = '中国广电';
+
+
+
+
+
+
+
+    } else {
+
+
+
+
+
+
+
+        document.getElementById('ISP').innerHTML = '未知';
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+</script><script>
+(function() {
+    var themeBtn = document.getElementById('theme-toggle-btn');
+    var themeIcon = document.getElementById('theme-icon');
+    function updateThemeUI(isDark) {
+        if (!themeIcon) return;
+        var useEl = themeIcon.querySelector('use');
+        if (useEl) {
+            useEl.setAttribute('href', isDark ? '#i-sun' : '#i-moon');
+        }
+        if (themeBtn) {
+            themeBtn.title = isDark ? '切换浅色模式' : '切换深色模式';
+            themeBtn.setAttribute('aria-label', themeBtn.title);
+        }
+    }
+    var currentTheme = document.documentElement.getAttribute('data-theme');
+    updateThemeUI(currentTheme === 'dark');
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', function() {
+            var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('air-theme', 'light');
+                updateThemeUI(false);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('air-theme', 'dark');
+                updateThemeUI(true);
+            }
+        });
+    }
+})();
+</script><script src="/air-security.js?v=2.12"></script><script src="/air-wifi-radar.js?v=2.12"></script></body></html>

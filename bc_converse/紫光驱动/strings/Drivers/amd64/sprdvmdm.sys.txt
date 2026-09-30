@@ -1,0 +1,75 @@
+UVWAUAWH
+UcomE3
+A_A]_^]
+VWATAUAWH
+A_A]A\_^
+D$0!D$4H
+D$8!D$8
+t#9\$Dt
+D$8!D$8H
+h VWAUH
+H!8H!x
+@8h0t$H
+UVWATAUAVAWH
+A_A^A]A\_^]
+H!T$ E3
+fffffff
+CONNECT
+PortName
+\DosDevices\
+%ws%ws
+SERIALCOMM
+VendorRequestTimeoutValue
+SprdVendorRequest
+CdcControlLineState
+UseContinuousRead
+RxFifoSize
+BulkInBufSize
+UsbEnableZLP
+\Device\sprd_usbcomm_modem
+(null)
+`h````
+xpxxpp
+USBCOMM_DEVICE_CONTEXT
+USBCOMM_BULK_REQUEST_CONTEXT
+USBCOMM_REQUEST_CONTEXT
+d:\workspace\driver\smartphoneport\modem\objfre_win7_amd64\amd64\sprdvmdm.pdb
+KmdfLibrary
+KeClearEvent
+IoGetConfigurationInformation
+RtlInitUnicodeString
+KeSetEvent
+KeInitializeEvent
+KeWaitForSingleObject
+RtlWriteRegistryValue
+RtlDeleteRegistryValue
+strncmp
+KeBugCheckEx
+ntoskrnl.exe
+RtlCopyUnicodeString
+RtlAnsiCharToUnicodeChar
+WdfVersionUnbind
+WdfVersionBind
+WdfVersionBindClass
+WdfVersionUnbindClass
+WDFLDR.SYS
+VS_VERSION_INFO
+StringFileInfo
+000004B0
+CompanyName
+SPRD Device
+FileDescription
+USB Modem/Serial Device Driver
+FileVersion
+4,19,38,134 built by: WinDDK
+InternalName
+wdfu2s.sys
+LegalCopyright
+Copyright (c) 2013-2019 UNISOC Communications Inc.
+OriginalFilename
+ProductName
+SPRD USB COMM Driver
+ProductVersion
+4,19,38,134
+VarFileInfo
+Translation

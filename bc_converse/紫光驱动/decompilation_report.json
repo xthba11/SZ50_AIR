@@ -1,0 +1,92 @@
+{
+  "Drivers/amd64/rdavcom.sys": {
+    "status": "ok",
+    "input_sha256": "4229646a58b616bdf39818707d160ebd5230788459595937c46dd8f3067785ed",
+    "seconds": 3.86,
+    "output": "recovered_c/Drivers_amd64_rdavcom.sys.c",
+    "output_bytes": 144377,
+    "function_definitions_estimate": 82,
+    "log": "decompilation_logs/Drivers_amd64_rdavcom.sys.log",
+    "scope": "whole binary"
+  },
+  "Drivers/amd64/sprdvcom.sys": {
+    "status": "ok",
+    "input_sha256": "53e573cd4d5371ede7846f0f6e5243367e24b18e1d374dd999c052302c65e182",
+    "seconds": 3.53,
+    "output": "recovered_c/Drivers_amd64_sprdvcom.sys.c",
+    "output_bytes": 144379,
+    "function_definitions_estimate": 82,
+    "log": "decompilation_logs/Drivers_amd64_sprdvcom.sys.log",
+    "scope": "whole binary"
+  },
+  "Drivers/amd64/sprdvmdm.sys": {
+    "status": "ok",
+    "input_sha256": "05d6a745c683125d54b671df5a4d464fefd2e2dffd31a995e304d781e73e1b03",
+    "seconds": 3.49,
+    "output": "recovered_c/Drivers_amd64_sprdvmdm.sys.c",
+    "output_bytes": 143048,
+    "function_definitions_estimate": 80,
+    "log": "decompilation_logs/Drivers_amd64_sprdvmdm.sys.log",
+    "scope": "whole binary"
+  },
+  "Drivers/i386/rdavcom.sys": {
+    "status": "ok",
+    "input_sha256": "424fc9d893049eb2522d6b47c035b53437d51f0b822a77613078ff998817f8e0",
+    "seconds": 4.05,
+    "output": "recovered_c/Drivers_i386_rdavcom.sys.c",
+    "output_bytes": 141965,
+    "function_definitions_estimate": 159,
+    "log": "decompilation_logs/Drivers_i386_rdavcom.sys.log",
+    "scope": "whole binary"
+  },
+  "Drivers/i386/sprdvcom.sys": {
+    "status": "ok",
+    "input_sha256": "dd80f68489a7444bee1cc0014407aaa7144d55b79ae653a0852c4d158702932c",
+    "seconds": 3.61,
+    "output": "recovered_c/Drivers_i386_sprdvcom.sys.c",
+    "output_bytes": 141966,
+    "function_definitions_estimate": 159,
+    "log": "decompilation_logs/Drivers_i386_sprdvcom.sys.log",
+    "scope": "whole binary"
+  },
+  "Drivers/i386/sprdvmdm.sys": {
+    "status": "ok",
+    "input_sha256": "961ebce885573c734f29deb9c5eaa4a766ca2ad51f22faa786bb6f74ff4e79a0",
+    "seconds": 3.91,
+    "output": "recovered_c/Drivers_i386_sprdvmdm.sys.c",
+    "output_bytes": 140405,
+    "function_definitions_estimate": 157,
+    "log": "decompilation_logs/Drivers_i386_sprdvmdm.sys.log",
+    "scope": "whole binary"
+  },
+  "DriverSetup.exe": {
+    "status": "ok",
+    "input_sha256": "d8485dce378bc04329593b587e33ae6a5f51be20add98598d718b707c1b666f6",
+    "seconds": 17.08,
+    "output": "recovered_c/DriverSetup.exe.c",
+    "output_bytes": 801548,
+    "function_definitions_estimate": 926,
+    "log": "decompilation_logs/DriverSetup.exe.log",
+    "scope": "whole binary"
+  },
+  "DriverUninstall32.exe": {
+    "status": "ok",
+    "input_sha256": "0c5821aa99348c261d8b52932da7496fbcba4ebaaf4f051007418b494d07662b",
+    "seconds": 18.3,
+    "output": "recovered_c/DriverUninstall32_core.c",
+    "output_bytes": 133001,
+    "scope": "selected range 0x401000-0x403000",
+    "function_definitions_estimate": 16,
+    "log": "decompilation_logs/DriverUninstall32.exe.log"
+  },
+  "DriverUninstall64.exe": {
+    "status": "ok",
+    "input_sha256": "19679ea35ad1b1598c02671016a13c85a4eb6dee73e0e1336f2b6b6e44678db3",
+    "seconds": 7.24,
+    "output": "recovered_c/DriverUninstall64_core.c",
+    "output_bytes": 105189,
+    "scope": "selected range 0x140001000-0x140004000",
+    "function_definitions_estimate": 16,
+    "log": "decompilation_logs/DriverUninstall64.exe.log"
+  }
+}
